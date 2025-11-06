@@ -1,0 +1,425 @@
+{
+  "welcome": {
+    "title": "ASP.NET Stack",
+    "subtitle": "Desarrollo Web Moderno",
+    "hero": {
+      "badge": "Plantilla Completa para Desarrollo Moderno",
+      "title": "ASP.NET Core 8 + React + Shadcn/ui",
+      "description": "Plantilla completa con ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS y todos los 56 componentes Shadcn/ui. Comience su próximo proyecto en minutos, no en horas.",
+      "startNow": "Comenzar Ahora",
+      "viewDashboard": "Ver Dashboard"
+    },
+    "features": {
+      "title": "Todo lo que necesitas, ya configurado",
+      "subtitle": "Stack moderno y completo para desarrollo web profesional",
+      "aspnet": {
+        "title": "ASP.NET Core 8",
+        "description": "Backend robusto y performante con la última versión de .NET"
+      },
+      "inertia": {
+        "title": "Inertia.js",
+        "description": "SPA moderno sin APIs - conecta directamente controladores con React"
+      },
+      "shadcn": {
+        "title": "Shadcn/ui + Tailwind",
+        "description": "56+ componentes modernos con sistema de diseño profesional"
+      },
+      "auth": {
+        "title": "Autenticación Completa",
+        "description": "Sistema integrado de login, registro y recuperación de contraseña"
+      },
+      "ef": {
+        "title": "Entity Framework",
+        "description": "ORM integrado para fácil gestión de base de datos"
+      },
+      "production": {
+        "title": "Listo para Producción",
+        "description": "Plantilla configurada y optimizada para proyectos reales"
+      },
+      "tanstack": {
+        "title": "TanStack Table",
+        "description": "Tablas de datos potentes con ordenación, filtrado, paginación y selección de filas para aplicaciones modernas"
+      }
+    },
+    "stats": {
+      "components": "Componentes shadcn/ui",
+      "typescript": "TypeScript",
+      "noApis": "APIs necesarias",
+      "setup": "Configuración completa"
+    },
+    "cta": {
+      "title": "¿Listo para comenzar?",
+      "description": "Crea tu cuenta y comienza a desarrollar con la mejor plantilla ASP.NET Core + React disponible.",
+      "startNow": "Comenzar Ahora",
+      "viewDashboard": "Ver Dashboard"
+    },
+    "footer": {
+      "description": "Plantilla completa para desarrollo moderno con ASP.NET Core 8, Inertia.js, React y shadcn/ui.",
+      "copyright": "© 2025 ASP.NET Stack Template. Desarrollado con ❤️ para la comunidad."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "welcome": "Bienvenido de vuelta",
+      "description": "Inicia sesión en tu cuenta para continuar",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "rememberMe": "Recordarme",
+      "signIn": "Iniciar sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes una cuenta?",
+      "register": "Registrarse",
+      "backToHome": "Volver al inicio"
+    },
+    "register": {
+      "title": "Crear Cuenta",
+      "welcome": "Crear nueva cuenta",
+      "description": "Comienza tu viaje con nosotros hoy",
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Tu nombre completo",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Tu contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "terms": "Acepto los",
+      "termsLink": "Términos de Servicio",
+      "and": "y",
+      "privacyLink": "Política de Privacidad",
+      "createAccount": "Crear cuenta",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "login": "Iniciar sesión",
+      "backToHome": "Volver al inicio"
+    },
+    "forgotPassword": {
+      "title": "¿Olvidaste tu contraseña?",
+      "description": "¡No te preocupes! Ingresa tu email y te enviaremos instrucciones para restablecer tu contraseña.",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "sendInstructions": "Enviar instrucciones",
+      "sending": "Enviando...",
+      "backToLogin": "Volver al login",
+      "rememberedPassword": "¿Recordaste tu contraseña?",
+      "signIn": "Iniciar sesión",
+      "emailNotReceived": "¿No recibiste el email? Revisa tu carpeta de spam o inténtalo de nuevo."
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "description": "Ingresa tu nueva contraseña para la cuenta",
+      "password": "Nueva contraseña",
+      "passwordPlaceholder": "Ingresa tu nueva contraseña",
+      "confirmPassword": "Confirmar nueva contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu nueva contraseña",
+      "resetPassword": "Restablecer contraseña",
+      "resetting": "Restableciendo...",
+      "backToLogin": "Volver al login",
+      "passwordRequirements": "Requisitos de contraseña:",
+      "minCharacters": "Mínimo 6 caracteres",
+      "upperCase": "Al menos una letra mayúscula",
+      "lowerCase": "Al menos una letra minúscula",
+      "number": "Al menos un número",
+      "rememberedPassword": "¿Recordaste tu contraseña?",
+      "signIn": "Iniciar sesión",
+      "securityNote": "Por seguridad, serás desconectado automáticamente de otros dispositivos."
+    },
+    "emailConfirmationResult": {
+      "success": {
+        "title": "¡Email Confirmado!",
+        "description": "Su cuenta ha sido verificada exitosamente",
+        "congratulations": "🎉 ¡Felicitaciones!",
+        "accountActivated": "Su cuenta está completamente activada",
+        "accessResources": "Puede acceder a todas las funciones",
+        "dataSecure": "Sus datos están seguros",
+        "signIn": "Iniciar Sesión",
+        "enjoyPlatform": "Ahora puede disfrutar de todas las funciones de nuestra plataforma."
+      },
+      "error": {
+        "title": "Error de Confirmación",
+        "description": "No se pudo confirmar su email",
+        "possibleCauses": "❓ Posibles causas:",
+        "linkExpired": "El enlace de confirmación ha expirado",
+        "linkUsed": "El enlace ya fue usado anteriormente",
+        "linkCorrupted": "El enlace fue corrompido o modificado",
+        "resendEmail": "Reenviar Email de Confirmación",
+        "signInAnyway": "Iniciar Sesión de Todos Modos",
+        "persistentProblem": "Si el problema persiste, contacte a nuestro soporte."
+      },
+      "common": {
+        "email": "Email:",
+        "needHelp": "¿Necesita ayuda?",
+        "contact": "Contáctenos",
+        "or": "O",
+        "backToHome": "vuelva al inicio",
+        "resendSuccess": "¡Email de confirmación reenviado exitosamente!",
+        "resendError": "Error al reenviar email:",
+        "resendErrorGeneric": "Error al reenviar email de confirmación."
+      }
+    },
+    "resetPasswordConfirmation": {
+      "title": "¡Contraseña Restablecida!",
+      "description": "Su contraseña ha sido cambiada exitosamente",
+      "changeCompleted": "Cambio completado",
+      "passwordChanged": "La contraseña de la cuenta {email} ha sido restablecida exitosamente.",
+      "emailNotification": "Notificación por email",
+      "emailSent": "Se le ha enviado un email de confirmación con detalles del cambio.",
+      "securityTips": "Por seguridad:",
+      "loggedOutDevices": "Ha sido desconectado automáticamente de otros dispositivos",
+      "keepSecure": "Mantenga su nueva contraseña en lugar seguro",
+      "dontShare": "No comparta su contraseña con nadie",
+      "signInNow": "Iniciar Sesión",
+      "needHelp": "¿Necesita ayuda?",
+      "contact": "Contáctenos",
+      "or": "O",
+      "backToHome": "vuelva al inicio",
+      "securityAlert": "Si no realizó este cambio, contáctenos inmediatamente."
+    },
+    "emailConfirmation": {
+      "successTitle": "Email Confirmado",
+      "errorTitle": "Error de Confirmación",
+      "successMessage": "¡Email confirmado exitosamente!",
+      "accountActivated": "Cuenta activada",
+      "accountReady": "Tu cuenta ha sido activada exitosamente. Ahora puedes acceder a todas las funciones de la plataforma.",
+      "welcomeMessage": "¡Bienvenido a nuestra plataforma!",
+      "getStarted": "Comenzar",
+      "errorOccurred": "Ocurrió un error",
+      "tryAgain": "Intentar de nuevo",
+      "resendConfirmation": "Reenviar confirmación",
+      "backToHome": "Volver al inicio"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "appName": "AspNet Stack",
+    "appSubtitle": "Panel de Control",
+    "welcome": "Bienvenido",
+    "overview": "Resumen",
+    "search": "Buscar...",
+    "notifications": "Notificaciones",
+    "profile": "Perfil",
+    "settings": "Configuraciones",
+    "logout": "Cerrar sesión",
+    "newProject": "Nuevo Proyecto",
+    "nav": {
+      "main": "Principal",
+      "tools": "Herramientas",
+      "settings": "Configuraciones",
+      "overview": "Resumen",
+      "analytics": "Análisis",
+      "users": "Usuarios",
+      "finances": "Finanzas",
+      "revenue": "Ingresos",
+      "expenses": "Gastos",
+      "reports": "Informes",
+      "calendar": "Calendario",
+      "messages": "Mensajes",
+      "notifications": "Notificaciones",
+      "profile": "Perfil",
+      "security": "Seguridad",
+      "preferences": "Preferencias"
+    },
+    "user": {
+      "defaultName": "Usuario",
+      "defaultEmail": "usuario@email.com",
+      "profile": "Perfil",
+      "settings": "Configuraciones",
+      "language": "Idioma",
+      "theme": "Tema",
+      "logout": "Cerrar sesión"
+    },
+    "theme": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "stats": {
+      "totalUsers": "Total de Usuarios",
+      "monthlyRevenue": "Ingresos Mensuales",
+      "conversionRate": "Tasa de Conversión",
+      "monthlyActivity": "Actividad Mensual"
+    },
+    "recentActivity": {
+      "title": "Actividad Reciente",
+      "viewAll": "Ver todas",
+      "newUser": "Nuevo usuario registrado",
+      "userRegistered": "creó una cuenta",
+      "paymentProcessed": "Pago procesado",
+      "paymentApproved": "Pago aprobado",
+      "newOrder": "Nuevo pedido",
+      "orderPlaced": "Pedido realizado",
+      "systemUpdate": "Actualización del sistema",
+      "systemUpdated": "Sistema actualizado a versión",
+      "minutesAgo": "minutos atrás",
+      "hoursAgo": "horas atrás"
+    },
+    "quickActions": {
+      "title": "Acciones Rápidas",
+      "description": "Accede a las funcionalidades más usadas",
+      "createUser": "Crear Usuario",
+      "generateReport": "Generar Reporte",
+      "viewAnalytics": "Ver Analytics",
+      "manageSettings": "Gestionar Configuraciones",
+      "scheduleTask": "Programar Tarea"
+    },
+    "previousMonth": "vs mes anterior"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "yes": "Sí",
+    "no": "No",
+    "confirm": "Confirmar",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "privacy": {
+    "title": "Política de Privacidad",
+    "backToHome": "Volver al inicio",
+    "lastUpdated": "Última actualización: 23 de octubre de 2024",
+    "introduction": "Esta Política de Privacidad describe cómo recopilamos, usamos y protegemos su información personal cuando utiliza nuestro servicio. Estamos comprometidos a proteger su privacidad y garantizar la transparencia sobre nuestras prácticas de datos.",
+    "dataCollection": {
+      "title": "Recopilación de Datos",
+      "description": "Recopilamos información que nos proporciona directamente y datos generados automáticamente durante el uso de nuestros servicios:",
+      "personalInfo": "Información personal como nombre, correo electrónico y teléfono",
+      "accountInfo": "Datos de la cuenta incluyendo preferencias y configuraciones",
+      "usageData": "Información sobre cómo utiliza nuestro servicio",
+      "technicalData": "Datos técnicos como dirección IP y tipo de navegador"
+    },
+    "dataUsage": {
+      "title": "Uso de Datos",
+      "description": "Utilizamos su información para los siguientes propósitos:",
+      "provideServices": "Proporcionar y mantener nuestros servicios",
+      "improveServices": "Mejorar y personalizar su experiencia",
+      "communicate": "Comunicarnos con usted sobre actualizaciones y soporte",
+      "security": "Garantizar la seguridad y prevenir fraudes"
+    },
+    "dataProtection": {
+      "title": "Protección de Datos",
+      "description": "Implementamos medidas de seguridad técnicas y organizacionales para proteger su información:",
+      "encryption": "Cifrado de datos en tránsito y en reposo",
+      "accessControl": "Control de acceso estricto a sus datos",
+      "regularAudits": "Auditorías regulares de seguridad",
+      "secureStorage": "Almacenamiento seguro en servidores protegidos"
+    },
+    "dataSharing": {
+      "title": "Compartir Datos",
+      "description": "No vendemos su información personal. Compartimos datos solo en las siguientes situaciones:",
+      "consent": "Con su consentimiento explícito",
+      "legal": "Cuando lo exija la ley o proceso legal",
+      "serviceProviders": "Con proveedores de servicios terceros bajo contratos estrictos"
+    },
+    "yourRights": {
+      "title": "Sus Derechos",
+      "description": "Tiene los siguientes derechos sobre sus datos personales:",
+      "access": "Derecho de acceder a su información personal",
+      "rectification": "Derecho de corregir datos incorrectos",
+      "erasure": "Derecho de solicitar la eliminación de sus datos",
+      "portability": "Derecho a la portabilidad de datos",
+      "objection": "Derecho de oponerse al procesamiento"
+    },
+    "contact": {
+      "title": "Contáctenos",
+      "description": "Si tiene preguntas sobre esta política o quiere ejercer sus derechos, contáctenos:",
+      "email": "Correo electrónico:"
+    },
+    "footer": {
+      "terms": "Términos de Servicio",
+      "backToRegister": "Volver al Registro",
+      "backToLogin": "Volver al Inicio de Sesión"
+    }
+  },
+  "currency": {
+    "never": "Nunca",
+    "justNow": "Ahora mismo",
+    "minutesAgo": "hace {{count}} min",
+    "hoursAgo": "hace {{count}}h",
+    "status": {
+      "title": "Estado del Cambio",
+      "refresh": "Actualizar",
+      "connection": "Conexión",
+      "online": "En línea",
+      "offline": "Sin conexión",
+      "lastUpdate": "Última Actualización",
+      "currentRate": "Tasa Actual",
+      "offlineWarning": "Modo sin conexión: usando tasas en caché o estáticas.",
+      "loading": "Actualizando tasas de cambio..."
+    }
+  },
+  "terms": {
+    "title": "Términos de Servicio",
+    "description": "Lea atentamente nuestros términos y condiciones de uso del servicio.",
+    "lastUpdated": "25 de octubre de 2024",
+    "header": {
+      "backHome": "Volver al Inicio",
+      "lastUpdated": "Última actualización"
+    },
+    "sections": {
+      "introduction": {
+        "title": "1. Introducción",
+        "content1": "Bienvenido a ASP.NET Stack. Estos Términos de Servicio rigen el uso de nuestra plataforma y servicios. Al acceder o usar nuestro servicio, usted acepta cumplir con estos términos.",
+        "content2": "Si no está de acuerdo con alguna parte de estos términos, no podrá acceder o usar nuestros servicios."
+      },
+      "service": {
+        "title": "2. Descripción del Servicio",
+        "content1": "ASP.NET Stack es una plataforma de desarrollo que ofrece:",
+        "feature1": "Plantilla completa para desarrollo web moderno",
+        "feature2": "Integración con ASP.NET Core, React y TypeScript",
+        "feature3": "Componentes shadcn/ui preconfigurados",
+        "feature4": "Sistema de autenticación y gestión de usuarios"
+      },
+      "obligations": {
+        "title": "3. Obligaciones del Usuario",
+        "content1": "Al usar nuestros servicios, usted acepta:",
+        "rule1": "Proporcionar información precisa y actualizada durante el registro",
+        "rule2": "Mantener la seguridad de su cuenta y contraseña",
+        "rule3": "No usar el servicio para actividades ilegales o no autorizadas",
+        "rule4": "Respetar los derechos de propiedad intelectual",
+        "rule5": "No intentar comprometer la seguridad o funcionalidad de la plataforma"
+      },
+      "intellectual": {
+        "title": "4. Propiedad Intelectual",
+        "content1": "Todo el contenido, diseño, código fuente y funcionalidades de ASP.NET Stack son nuestra propiedad y están protegidos por leyes de propiedad intelectual.",
+        "content2": "Usted recibe una licencia limitada y no exclusiva para usar nuestros servicios según lo permitido por estos términos."
+      },
+      "liability": {
+        "title": "5. Limitación de Responsabilidad",
+        "content1": "Nuestros servicios se proporcionan 'tal como están' sin garantías de ningún tipo. No garantizamos que el servicio será ininterrumpido o libre de errores.",
+        "content2": "Bajo ninguna circunstancia seremos responsables por daños indirectos, incidentales, especiales o consecuentes que surjan del uso de nuestros servicios."
+      },
+      "termination": {
+        "title": "6. Terminación de Cuenta",
+        "content1": "Puede terminar su cuenta en cualquier momento a través de la configuración del perfil o contactándanos.",
+        "content2": "Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos de servicio o nuestra política de uso aceptable."
+      },
+      "changes": {
+        "title": "7. Cambios en los Términos",
+        "content1": "Podemos actualizar estos Términos de Servicio periódicamente. Cuando hagamos cambios significativos, le notificaremos por correo electrónico o a través de la plataforma.",
+        "content2": "El uso continuado de nuestros servicios después de los cambios constituirá su aceptación de los nuevos términos."
+      },
+      "contact": {
+        "title": "8. Información de Contacto",
+        "content1": "Si tiene preguntas sobre estos Términos de Servicio, contáctenos:",
+        "responseTime": "Tiempo de respuesta: 24-48 horas"
+      }
+    },
+    "footer": {
+      "effective": "Vigente desde",
+      "home": "Inicio",
+      "privacy": "Política de Privacidad",
+      "dashboard": "Panel de Control"
+    }
+  }
+}

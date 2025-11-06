@@ -1,0 +1,425 @@
+{
+  "welcome": {
+    "title": "ASP.NET Stack",
+    "subtitle": "Modern Web Development",
+    "hero": {
+      "badge": "Complete Template for Modern Development",
+      "title": "ASP.NET Core 8 + React + Shadcn/ui",
+      "description": "Complete template with ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS and all 56 Shadcn/ui components. Start your next project in minutes, not hours.",
+      "startNow": "Get Started",
+      "viewDashboard": "View Dashboard"
+    },
+    "features": {
+      "title": "Everything you need, already configured",
+      "subtitle": "Modern and complete stack for professional web development",
+      "aspnet": {
+        "title": "ASP.NET Core 8",
+        "description": "Robust and performant backend with the latest .NET version"
+      },
+      "inertia": {
+        "title": "Inertia.js",
+        "description": "Modern SPA without APIs - directly connects controllers with React"
+      },
+      "shadcn": {
+        "title": "Shadcn/ui + Tailwind",
+        "description": "56+ modern components with professional design system"
+      },
+      "auth": {
+        "title": "Complete Authentication",
+        "description": "Integrated login, registration and password recovery system"
+      },
+      "ef": {
+        "title": "Entity Framework",
+        "description": "Integrated ORM for easy database management"
+      },
+      "production": {
+        "title": "Production Ready",
+        "description": "Template configured and optimized for real projects"
+      },
+      "tanstack": {
+        "title": "TanStack Table",
+        "description": "Powerful data tables with sorting, filtering, pagination and row selection for modern applications"
+      }
+    },
+    "stats": {
+      "components": "shadcn/ui Components",
+      "typescript": "TypeScript",
+      "noApis": "APIs needed",
+      "setup": "Complete setup"
+    },
+    "cta": {
+      "title": "Ready to get started?",
+      "description": "Create your account and start developing with the best ASP.NET Core + React template available.",
+      "startNow": "Get Started",
+      "viewDashboard": "View Dashboard"
+    },
+    "footer": {
+      "description": "Complete template for modern development with ASP.NET Core 8, Inertia.js, React and shadcn/ui.",
+      "copyright": "© 2025 ASP.NET Stack Template. Built with ❤️ for the community."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "welcome": "Welcome back",
+      "description": "Sign in to your account to continue",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "rememberMe": "Remember me",
+      "signIn": "Sign in",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up",
+      "backToHome": "Back to home"
+    },
+    "register": {
+      "title": "Create Account",
+      "welcome": "Create new account",
+      "description": "Start your journey with us today",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "terms": "I agree to the",
+      "termsLink": "Terms of Service",
+      "and": "and",
+      "privacyLink": "Privacy Policy",
+      "createAccount": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Sign in",
+      "backToHome": "Back to home"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Don't worry! Enter your email and we'll send you instructions to reset your password.",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "sendInstructions": "Send instructions",
+      "sending": "Sending...",
+      "backToLogin": "Back to login",
+      "rememberedPassword": "Remembered your password?",
+      "signIn": "Sign in",
+      "emailNotReceived": "Didn't receive the email? Check your spam folder or try again."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Enter your new password for account",
+      "password": "New password",
+      "passwordPlaceholder": "Enter your new password",
+      "confirmPassword": "Confirm new password",
+      "confirmPasswordPlaceholder": "Confirm your new password",
+      "resetPassword": "Reset password",
+      "resetting": "Resetting...",
+      "backToLogin": "Back to login",
+      "passwordRequirements": "Password requirements:",
+      "minCharacters": "Minimum 6 characters",
+      "upperCase": "At least one uppercase letter",
+      "lowerCase": "At least one lowercase letter",
+      "number": "At least one number",
+      "rememberedPassword": "Remembered your password?",
+      "signIn": "Sign in",
+      "securityNote": "For security, you will be automatically logged out from other devices."
+    },
+    "emailConfirmationResult": {
+      "success": {
+        "title": "Email Confirmed!",
+        "description": "Your account has been successfully verified",
+        "congratulations": "🎉 Congratulations!",
+        "accountActivated": "Your account is fully activated",
+        "accessResources": "You can access all features",
+        "dataSecure": "Your data is secure",
+        "signIn": "Sign In",
+        "enjoyPlatform": "Now you can enjoy all the features of our platform."
+      },
+      "error": {
+        "title": "Confirmation Error",
+        "description": "Unable to confirm your email",
+        "possibleCauses": "❓ Possible causes:",
+        "linkExpired": "The confirmation link has expired",
+        "linkUsed": "The link has already been used",
+        "linkCorrupted": "The link was corrupted or modified",
+        "resendEmail": "Resend Confirmation Email",
+        "signInAnyway": "Sign In Anyway",
+        "persistentProblem": "If the problem persists, contact our support."
+      },
+      "common": {
+        "email": "Email:",
+        "needHelp": "Need help?",
+        "contact": "Contact us",
+        "or": "Or",
+        "backToHome": "go back to home",
+        "resendSuccess": "Confirmation email resent successfully!",
+        "resendError": "Error resending email:",
+        "resendErrorGeneric": "Error resending confirmation email."
+      }
+    },
+    "resetPasswordConfirmation": {
+      "title": "Password Reset!",
+      "description": "Your password has been successfully changed",
+      "changeCompleted": "Change completed",
+      "passwordChanged": "The password for account {email} has been successfully reset.",
+      "emailNotification": "Email notification",
+      "emailSent": "A confirmation email has been sent to you with change details.",
+      "securityTips": "For security:",
+      "loggedOutDevices": "You have been automatically logged out from other devices",
+      "keepSecure": "Keep your new password in a secure place",
+      "dontShare": "Don't share your password with anyone",
+      "signInNow": "Sign In",
+      "needHelp": "Need help?",
+      "contact": "Contact us",
+      "or": "Or",
+      "backToHome": "go back to home",
+      "securityAlert": "If you didn't make this change, contact us immediately."
+    },
+    "emailConfirmation": {
+      "successTitle": "Email Confirmed",
+      "errorTitle": "Confirmation Error",
+      "successMessage": "Email confirmed successfully!",
+      "accountActivated": "Account activated",
+      "accountReady": "Your account has been successfully activated. You can now access all platform features.",
+      "welcomeMessage": "Welcome to our platform!",
+      "getStarted": "Get started",
+      "errorOccurred": "An error occurred",
+      "tryAgain": "Try again",
+      "resendConfirmation": "Resend confirmation",
+      "backToHome": "Back to home"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "appName": "AspNet Stack",
+    "appSubtitle": "Control Panel",
+    "welcome": "Welcome",
+    "overview": "Overview",
+    "search": "Search...",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Sign out",
+    "newProject": "New Project",
+    "nav": {
+      "main": "Main",
+      "tools": "Tools",
+      "settings": "Settings",
+      "overview": "Overview",
+      "analytics": "Analytics",
+      "users": "Users",
+      "finances": "Finance",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "reports": "Reports",
+      "calendar": "Calendar",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "security": "Security",
+      "preferences": "Preferences"
+    },
+    "user": {
+      "defaultName": "User",
+      "defaultEmail": "user@email.com",
+      "profile": "Profile",
+      "settings": "Settings",
+      "language": "Language",
+      "theme": "Theme",
+      "logout": "Sign out"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "monthlyRevenue": "Monthly Revenue",
+      "conversionRate": "Conversion Rate",
+      "monthlyActivity": "Monthly Activity"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "viewAll": "View all",
+      "newUser": "New user registered",
+      "userRegistered": "created an account",
+      "paymentProcessed": "Payment processed",
+      "paymentApproved": "Payment approved",
+      "newOrder": "New order",
+      "orderPlaced": "Order placed",
+      "systemUpdate": "System update",
+      "systemUpdated": "System updated to version",
+      "minutesAgo": "minutes ago",
+      "hoursAgo": "hours ago"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "description": "Access the most used features",
+      "createUser": "Create User",
+      "generateReport": "Generate Report",
+      "viewAnalytics": "View Analytics",
+      "manageSettings": "Manage Settings",
+      "scheduleTask": "Schedule Task"
+    },
+    "previousMonth": "vs previous month"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "backToHome": "Back to home",
+    "lastUpdated": "Last updated: October 23, 2024",
+    "introduction": "This Privacy Policy describes how we collect, use, and protect your personal information when you use our service. We are committed to protecting your privacy and ensuring transparency about our data practices.",
+    "dataCollection": {
+      "title": "Data Collection",
+      "description": "We collect information you provide directly to us and data generated automatically during your use of our services:",
+      "personalInfo": "Personal information such as name, email, and phone",
+      "accountInfo": "Account data including preferences and settings",
+      "usageData": "Information about how you use our service",
+      "technicalData": "Technical data such as IP address and browser type"
+    },
+    "dataUsage": {
+      "title": "Data Usage",
+      "description": "We use your information for the following purposes:",
+      "provideServices": "Provide and maintain our services",
+      "improveServices": "Improve and personalize your experience",
+      "communicate": "Communicate with you about updates and support",
+      "security": "Ensure security and prevent fraud"
+    },
+    "dataProtection": {
+      "title": "Data Protection",
+      "description": "We implement technical and organizational security measures to protect your information:",
+      "encryption": "Data encryption in transit and at rest",
+      "accessControl": "Strict access control to your data",
+      "regularAudits": "Regular security audits",
+      "secureStorage": "Secure storage on protected servers"
+    },
+    "dataSharing": {
+      "title": "Data Sharing",
+      "description": "We do not sell your personal information. We share data only in the following situations:",
+      "consent": "With your explicit consent",
+      "legal": "When required by law or legal process",
+      "serviceProviders": "With third-party service providers under strict contracts"
+    },
+    "yourRights": {
+      "title": "Your Rights",
+      "description": "You have the following rights regarding your personal data:",
+      "access": "Right to access your personal information",
+      "rectification": "Right to correct incorrect data",
+      "erasure": "Right to request deletion of your data",
+      "portability": "Right to data portability",
+      "objection": "Right to object to processing"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have questions about this policy or want to exercise your rights, contact us:",
+      "email": "Email:"
+    },
+    "footer": {
+      "terms": "Terms of Service",
+      "backToRegister": "Back to Register",
+      "backToLogin": "Back to Login"
+    }
+  },
+  "currency": {
+    "never": "Never",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}}h ago",
+    "status": {
+      "title": "Exchange Status",
+      "refresh": "Refresh",
+      "connection": "Connection",
+      "online": "Online",
+      "offline": "Offline",
+      "lastUpdate": "Last Update",
+      "currentRate": "Current Rate",
+      "offlineWarning": "Offline mode: using cached or static rates.",
+      "loading": "Updating exchange rates..."
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "description": "Please read our terms and conditions of service use carefully.",
+    "lastUpdated": "October 25, 2024",
+    "header": {
+      "backHome": "Back to Home",
+      "lastUpdated": "Last updated"
+    },
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content1": "Welcome to ASP.NET Stack. These Terms of Service govern the use of our platform and services. By accessing or using our service, you agree to comply with these terms.",
+        "content2": "If you disagree with any part of these terms, then you may not access or use our services."
+      },
+      "service": {
+        "title": "2. Service Description",
+        "content1": "ASP.NET Stack is a development platform that offers:",
+        "feature1": "Complete template for modern web development",
+        "feature2": "Integration with ASP.NET Core, React and TypeScript",
+        "feature3": "Pre-configured shadcn/ui components",
+        "feature4": "Authentication system and user management"
+      },
+      "obligations": {
+        "title": "3. User Obligations",
+        "content1": "By using our services, you agree to:",
+        "rule1": "Provide accurate and up-to-date information during registration",
+        "rule2": "Maintain the security of your account and password",
+        "rule3": "Not use the service for illegal or unauthorized activities",
+        "rule4": "Respect intellectual property rights",
+        "rule5": "Not attempt to compromise the security or functionality of the platform"
+      },
+      "intellectual": {
+        "title": "4. Intellectual Property",
+        "content1": "All content, design, source code and functionalities of ASP.NET Stack are our property and are protected by intellectual property laws.",
+        "content2": "You receive a limited and non-exclusive license to use our services as permitted by these terms."
+      },
+      "liability": {
+        "title": "5. Limitation of Liability",
+        "content1": "Our services are provided 'as is' without warranties of any kind. We do not guarantee that the service will be uninterrupted or error-free.",
+        "content2": "Under no circumstances shall we be liable for indirect, incidental, special or consequential damages arising from the use of our services."
+      },
+      "termination": {
+        "title": "6. Account Termination",
+        "content1": "You may terminate your account at any time through profile settings or by contacting us.",
+        "content2": "We reserve the right to suspend or terminate accounts that violate these terms of service or our acceptable use policy."
+      },
+      "changes": {
+        "title": "7. Changes to Terms",
+        "content1": "We may update these Terms of Service periodically. When we make significant changes, we will notify you by email or through the platform.",
+        "content2": "Continued use of our services after changes will constitute your acceptance of the new terms."
+      },
+      "contact": {
+        "title": "8. Contact Information",
+        "content1": "If you have questions about these Terms of Service, please contact us:",
+        "responseTime": "Response time: 24-48 hours"
+      }
+    },
+    "footer": {
+      "effective": "Effective since",
+      "home": "Home",
+      "privacy": "Privacy Policy",
+      "dashboard": "Dashboard"
+    }
+  }
+}

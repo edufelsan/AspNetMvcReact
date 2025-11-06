@@ -1,0 +1,63 @@
+# =========================
+# ASP.NET Core + React + Vite Project
+# Optimized for AspNetMvcReact
+# =========================
+
+# Build outputs
+bin/
+obj/
+wwwroot/build/
+frontend/dist/
+frontend/build/
+publish/
+publish-linux/
+
+# Documentation (project-specific)
+Doc/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+*.tsbuildinfo
+
+# Environment & Configuration
+.env*
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.Development.json
+appsettings.json
+secrets.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Vite cache
+frontend/.vite/
+frontend/node_modules/.cache/
+
+# OS files
+Thumbs.db
+.DS_Store
+*.tmp
+
+# IDE files
+.idea/
+*.sln.iml
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# Temporary files
+clear-all-cache.bat
+dev-start.bat

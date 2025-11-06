@@ -1,0 +1,32 @@
+Confirme seu Email
+
+Olá, {{UserName}}!
+
+Obrigado por se registrar! Para concluir o processo de criação da sua conta, precisamos verificar seu endereço de email.
+
+POR QUE CONFIRMAR?
+A confirmação do email é importante para:
+- Garantir a segurança da sua conta
+- Permitir recuperação de senha quando necessário
+- Receber notificações importantes
+- Ativar todos os recursos da plataforma
+
+Para confirmar seu email, acesse este link:
+{{ConfirmationUrl}}
+
+PRÓXIMOS PASSOS:
+1. Clique no link de confirmação acima
+2. Você será redirecionado para uma página de confirmação
+3. Faça login e explore todas as funcionalidades!
+
+LINK TEMPORÁRIO:
+Este link de confirmação é válido por 48 horas. Após este período, você precisará solicitar um novo link de confirmação.
+
+Se você não criou uma conta conosco, pode ignorar este email com segurança.
+
+Atenciosamente,
+Equipe de Desenvolvimento
+
+---
+© 2024 Sua Empresa. Todos os direitos reservados.
+Este é um email automático, por favor não responda.

@@ -1,0 +1,25 @@
+Bem-vindo ao Sistema!
+
+Olá, {{UserName}}!
+
+É com grande prazer que damos as boas-vindas ao nosso sistema! Agora você faz parte da nossa comunidade.
+
+O que você pode fazer agora:
+- Explorar todas as funcionalidades disponíveis
+- Personalizar seu perfil
+- Conectar-se com outros usuários
+- Acessar recursos exclusivos
+
+Para começar, confirme sua conta acessando o link abaixo:
+{{ConfirmationUrl}}
+
+Se você tiver dúvidas ou precisar de ajuda, não hesite em entrar em contato com nossa equipe de suporte.
+
+Mais uma vez, seja bem-vindo!
+
+Atenciosamente,
+Equipe de Desenvolvimento
+
+---
+© 2024 Sua Empresa. Todos os direitos reservados.
+Se você não solicitou esta conta, pode ignorar este email.

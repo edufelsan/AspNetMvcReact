@@ -1,0 +1,22 @@
+﻿@model dynamic
+@using InertiaCore
+@using AspNetMvcReact.Extensions
+@{
+    ViewData["Title"] = "Laravel";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title inertia="title">Laravel</title>
+    
+    @Html.ViteCss("src/main.tsx")
+</head>
+<body>
+    @await Inertia.Html(Model)
+    
+    @Html.ViteAsset("src/main.tsx")
+</body>
+</html>

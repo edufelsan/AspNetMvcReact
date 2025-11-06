@@ -1,0 +1,425 @@
+{
+  "welcome": {
+    "title": "ASP.NET Stack",
+    "subtitle": "Modern Web Development",
+    "hero": {
+      "badge": "Template Completo para Desenvolvimento Moderno",
+      "title": "ASP.NET Core 8 + React + Shadcn/ui",
+      "description": "Template completo com ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS e todos os 56 componentes shadcn/ui. Comece seu próximo projeto em minutos, não em horas.",
+      "startNow": "Começar Agora",
+      "viewDashboard": "Ver Dashboard"
+    },
+    "features": {
+      "title": "Tudo que você precisa, já configurado",
+      "subtitle": "Stack moderna e completa para desenvolvimento web profissional",
+      "aspnet": {
+        "title": "ASP.NET Core 8",
+        "description": "Backend robusto e performático com a última versão do .NET"
+      },
+      "inertia": {
+        "title": "Inertia.js",
+        "description": "SPA moderno sem APIs - conecta diretamente controllers com React"
+      },
+      "shadcn": {
+        "title": "Shadcn/ui + Tailwind",
+        "description": "56+ componentes modernos com design system profissional"
+      },
+      "auth": {
+        "title": "Autenticação Completa",
+        "description": "Sistema de login, registro e recuperação de senha integrado"
+      },
+      "ef": {
+        "title": "Entity Framework",
+        "description": "ORM integrado para fácil gerenciamento de banco de dados"
+      },
+      "production": {
+        "title": "Pronto para Produção",
+        "description": "Template configurado e otimizado para projetos reais"
+      },
+      "tanstack": {
+        "title": "TanStack Table",
+        "description": "Tabelas de dados poderosas com sorting, filtering, paginação e seleção de linhas para aplicações modernas"
+      }
+    },
+    "stats": {
+      "components": "Componentes shadcn/ui",
+      "typescript": "TypeScript",
+      "noApis": "APIs necessárias",
+      "setup": "Setup completo"
+    },
+    "cta": {
+      "title": "Pronto para começar?",
+      "description": "Crie sua conta e comece a desenvolver com o melhor template ASP.NET Core + React disponível.",
+      "startNow": "Começar Agora",
+      "viewDashboard": "Ver Dashboard"
+    },
+    "footer": {
+      "description": "Template completo para desenvolvimento moderno com ASP.NET Core 8, Inertia.js, React e shadcn/ui.",
+      "copyright": "© 2025 ASP.NET Stack Template. Desenvolvido com ❤️ para a comunidade."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "welcome": "Bem-vindo de volta",
+      "description": "Entre na sua conta para continuar",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
+      "rememberMe": "Lembrar de mim",
+      "signIn": "Entrar",
+      "forgotPassword": "Esqueceu sua senha?",
+      "noAccount": "Não tem uma conta?",
+      "register": "Registrar-se",
+      "backToHome": "Voltar ao início"
+    },
+    "register": {
+      "title": "Criar Conta",
+      "welcome": "Criar nova conta",
+      "description": "Comece sua jornada conosco hoje",
+      "fullName": "Nome completo",
+      "fullNamePlaceholder": "Seu nome completo",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
+      "confirmPassword": "Confirmar senha",
+      "confirmPasswordPlaceholder": "Confirme sua senha",
+      "terms": "Concordo com os",
+      "termsLink": "Termos de Serviço",
+      "and": "e",
+      "privacyLink": "Política de Privacidade",
+      "createAccount": "Criar conta",
+      "alreadyHaveAccount": "Já tem uma conta?",
+      "login": "Fazer login",
+      "backToHome": "Voltar ao início"
+    },
+    "forgotPassword": {
+      "title": "Esqueceu a senha?",
+      "description": "Não se preocupe! Digite seu email e enviaremos instruções para redefinir sua senha.",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "sendInstructions": "Enviar instruções",
+      "sending": "Enviando...",
+      "backToLogin": "Voltar ao login",
+      "rememberedPassword": "Lembrou da senha?",
+      "signIn": "Fazer login",
+      "emailNotReceived": "Não recebeu o email? Verifique sua caixa de spam ou tente novamente."
+    },
+    "resetPassword": {
+      "title": "Redefinir Senha",
+      "description": "Digite sua nova senha para a conta",
+      "password": "Nova senha",
+      "passwordPlaceholder": "Digite sua nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "confirmPasswordPlaceholder": "Confirme sua nova senha",
+      "resetPassword": "Redefinir senha",
+      "resetting": "Redefinindo...",
+      "backToLogin": "Voltar ao login",
+      "passwordRequirements": "Requisitos da senha:",
+      "minCharacters": "Mínimo de 6 caracteres",
+      "upperCase": "Pelo menos uma letra maiúscula",
+      "lowerCase": "Pelo menos uma letra minúscula",
+      "number": "Pelo menos um número",
+      "rememberedPassword": "Lembrou da senha?",
+      "signIn": "Fazer login",
+      "securityNote": "Por segurança, você será automaticamente desconectado de outros dispositivos."
+    },
+    "emailConfirmationResult": {
+      "success": {
+        "title": "Email Confirmado!",
+        "description": "Sua conta foi verificada com sucesso",
+        "congratulations": "🎉 Parabéns!",
+        "accountActivated": "Sua conta está totalmente ativada",
+        "accessResources": "Você pode acessar todos os recursos",
+        "dataSecure": "Seus dados estão seguros",
+        "signIn": "Fazer Login",
+        "enjoyPlatform": "Agora você pode aproveitar todos os recursos da nossa plataforma."
+      },
+      "error": {
+        "title": "Erro na Confirmação",
+        "description": "Não foi possível confirmar seu email",
+        "possibleCauses": "❓ Possíveis causas:",
+        "linkExpired": "O link de confirmação expirou",
+        "linkUsed": "O link já foi usado anteriormente",
+        "linkCorrupted": "O link foi corrompido ou modificado",
+        "resendEmail": "Reenviar Email de Confirmação",
+        "signInAnyway": "Fazer Login Mesmo Assim",
+        "persistentProblem": "Se o problema persistir, entre em contato com nosso suporte."
+      },
+      "common": {
+        "email": "Email:",
+        "needHelp": "Precisa de ajuda?",
+        "contact": "Entre em contato",
+        "or": "Ou",
+        "backToHome": "volte ao início",
+        "resendSuccess": "Email de confirmação reenviado com sucesso!",
+        "resendError": "Erro ao reenviar email:",
+        "resendErrorGeneric": "Erro ao reenviar email de confirmação."
+      }
+    },
+    "resetPasswordConfirmation": {
+      "title": "Senha Redefinida!",
+      "description": "Sua senha foi alterada com sucesso",
+      "changeCompleted": "Alteração realizada",
+      "passwordChanged": "A senha da conta {email} foi redefinida com sucesso.",
+      "emailNotification": "Notificação por email",
+      "emailSent": "Um email de confirmação foi enviado para você com detalhes da alteração.",
+      "securityTips": "Por segurança:",
+      "loggedOutDevices": "Você foi automaticamente desconectado de outros dispositivos",
+      "keepSecure": "Mantenha sua nova senha em local seguro",
+      "dontShare": "Não compartilhe sua senha com ninguém",
+      "signInNow": "Fazer Login",
+      "needHelp": "Precisa de ajuda?",
+      "contact": "Entre em contato",
+      "or": "Ou",
+      "backToHome": "volte ao início",
+      "securityAlert": "Se você não fez esta alteração, entre em contato conosco imediatamente."
+    },
+    "emailConfirmation": {
+      "successTitle": "Email Confirmado",
+      "errorTitle": "Erro na Confirmação",
+      "successMessage": "Email confirmado com sucesso!",
+      "accountActivated": "Conta ativada",
+      "accountReady": "Sua conta foi ativada com sucesso. Agora você pode acessar todos os recursos da plataforma.",
+      "welcomeMessage": "Bem-vindo à nossa plataforma!",
+      "getStarted": "Começar a usar",
+      "errorOccurred": "Ocorreu um erro",
+      "tryAgain": "Tente novamente",
+      "resendConfirmation": "Reenviar confirmação",
+      "backToHome": "Voltar ao início"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "appName": "AspNet Stack",
+    "appSubtitle": "Painel de Controle",
+    "welcome": "Bem-vindo",
+    "overview": "Visão Geral",
+    "search": "Pesquisar...",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "newProject": "Novo Projeto",
+    "nav": {
+      "main": "Principal",
+      "tools": "Ferramentas",
+      "settings": "Configurações",
+      "overview": "Visão Geral",
+      "analytics": "Análises",
+      "users": "Usuários",
+      "finances": "Financeiro",
+      "revenue": "Receita",
+      "expenses": "Despesas",
+      "reports": "Relatórios",
+      "calendar": "Calendário",
+      "messages": "Mensagens",
+      "notifications": "Notificações",
+      "profile": "Perfil",
+      "security": "Segurança",
+      "preferences": "Preferências"
+    },
+    "user": {
+      "defaultName": "Usuário",
+      "defaultEmail": "usuario@email.com",
+      "profile": "Perfil",
+      "settings": "Configurações",
+      "language": "Idioma",
+      "theme": "Tema",
+      "logout": "Sair"
+    },
+    "theme": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Sistema"
+    },
+    "stats": {
+      "totalUsers": "Total de Usuários",
+      "monthlyRevenue": "Receita Mensal",
+      "conversionRate": "Taxa de Conversão",
+      "monthlyActivity": "Atividade Mensal"
+    },
+    "recentActivity": {
+      "title": "Atividade Recente",
+      "viewAll": "Ver todas",
+      "newUser": "Novo usuário registrado",
+      "userRegistered": "criou uma conta",
+      "paymentProcessed": "Pagamento processado",
+      "paymentApproved": "Pagamento aprovado",
+      "newOrder": "Novo pedido",
+      "orderPlaced": "Pedido realizado",
+      "systemUpdate": "Atualização do sistema",
+      "systemUpdated": "Sistema atualizado para versão",
+      "minutesAgo": "minutos atrás",
+      "hoursAgo": "horas atrás"
+    },
+    "quickActions": {
+      "title": "Ações Rápidas",
+      "description": "Acesse as funcionalidades mais usadas",
+      "createUser": "Criar Usuário",
+      "generateReport": "Gerar Relatório",
+      "viewAnalytics": "Ver Analytics",
+      "manageSettings": "Gerenciar Configurações",
+      "scheduleTask": "Agendar Tarefa"
+    },
+    "previousMonth": "vs mês anterior"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "view": "Visualizar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "close": "Fechar",
+    "yes": "Sim",
+    "no": "Não",
+    "confirm": "Confirmar",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "backToHome": "Voltar ao início",
+    "lastUpdated": "Última atualização: 23 de outubro de 2024",
+    "introduction": "Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais quando você usa nosso serviço. Estamos comprometidos em proteger sua privacidade e garantir a transparência sobre nossas práticas de dados.",
+    "dataCollection": {
+      "title": "Coleta de Dados",
+      "description": "Coletamos informações que você nos fornece diretamente e dados gerados automaticamente durante o uso de nossos serviços:",
+      "personalInfo": "Informações pessoais como nome, e-mail e telefone",
+      "accountInfo": "Dados da conta incluindo preferências e configurações",
+      "usageData": "Informações sobre como você usa nosso serviço",
+      "technicalData": "Dados técnicos como endereço IP e tipo de navegador"
+    },
+    "dataUsage": {
+      "title": "Uso dos Dados",
+      "description": "Utilizamos suas informações para os seguintes propósitos:",
+      "provideServices": "Fornecer e manter nossos serviços",
+      "improveServices": "Melhorar e personalizar sua experiência",
+      "communicate": "Comunicar-nos com você sobre atualizações e suporte",
+      "security": "Garantir a segurança e prevenir fraudes"
+    },
+    "dataProtection": {
+      "title": "Proteção de Dados",
+      "description": "Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações:",
+      "encryption": "Criptografia de dados em trânsito e em repouso",
+      "accessControl": "Controle de acesso rigoroso aos seus dados",
+      "regularAudits": "Auditorias regulares de segurança",
+      "secureStorage": "Armazenamento seguro em servidores protegidos"
+    },
+    "dataSharing": {
+      "title": "Compartilhamento de Dados",
+      "description": "Não vendemos suas informações pessoais. Compartilhamos dados apenas nas seguintes situações:",
+      "consent": "Com seu consentimento explícito",
+      "legal": "Quando exigido por lei ou processo legal",
+      "serviceProviders": "Com prestadores de serviços terceirizados sob contratos rígidos"
+    },
+    "yourRights": {
+      "title": "Seus Direitos",
+      "description": "Você tem os seguintes direitos sobre seus dados pessoais:",
+      "access": "Direito de acessar suas informações pessoais",
+      "rectification": "Direito de corrigir dados incorretos",
+      "erasure": "Direito de solicitar a exclusão de seus dados",
+      "portability": "Direito à portabilidade de dados",
+      "objection": "Direito de se opor ao processamento"
+    },
+    "contact": {
+      "title": "Entre em Contato",
+      "description": "Se você tiver dúvidas sobre esta política ou quiser exercer seus direitos, entre em contato conosco:",
+      "email": "E-mail:"
+    },
+    "footer": {
+      "terms": "Termos de Serviço",
+      "backToRegister": "Voltar ao Cadastro",
+      "backToLogin": "Voltar ao Login"
+    }
+  },
+  "currency": {
+    "never": "Nunca",
+    "justNow": "Agora mesmo",
+    "minutesAgo": "{{count}} min atrás",
+    "hoursAgo": "{{count}}h atrás",
+    "status": {
+      "title": "Status do Câmbio",
+      "refresh": "Atualizar",
+      "connection": "Conexão",
+      "online": "Online",
+      "offline": "Offline",
+      "lastUpdate": "Última Atualização",
+      "currentRate": "Taxa Atual",
+      "offlineWarning": "Modo offline: usando taxas em cache ou estáticas.",
+      "loading": "Atualizando taxas de câmbio..."
+    }
+  },
+  "terms": {
+    "title": "Termos de Serviço",
+    "description": "Leia atentamente nossos termos e condições de uso do serviço.",
+    "lastUpdated": "25 de outubro de 2024",
+    "header": {
+      "backHome": "Voltar ao Início",
+      "lastUpdated": "Última atualização"
+    },
+    "sections": {
+      "introduction": {
+        "title": "1. Introdução",
+        "content1": "Bem-vindo ao ASP.NET Stack. Estes Termos de Serviço regem o uso de nossa plataforma e serviços. Ao acessar ou usar nosso serviço, você concorda em cumprir estes termos.",
+        "content2": "Se você não concordar com qualquer parte destes termos, não poderá acessar ou usar nossos serviços."
+      },
+      "service": {
+        "title": "2. Descrição do Serviço",
+        "content1": "O ASP.NET Stack é uma plataforma de desenvolvimento que oferece:",
+        "feature1": "Template completo para desenvolvimento web moderno",
+        "feature2": "Integração com ASP.NET Core, React e TypeScript",
+        "feature3": "Componentes shadcn/ui pré-configurados",
+        "feature4": "Sistema de autenticação e gerenciamento de usuários"
+      },
+      "obligations": {
+        "title": "3. Obrigações do Usuário",
+        "content1": "Ao usar nossos serviços, você concorda em:",
+        "rule1": "Fornecer informações precisas e atualizadas durante o registro",
+        "rule2": "Manter a segurança de sua conta e senha",
+        "rule3": "Não usar o serviço para atividades ilegais ou não autorizadas",
+        "rule4": "Respeitar os direitos de propriedade intelectual",
+        "rule5": "Não tentar comprometer a segurança ou funcionalidade da plataforma"
+      },
+      "intellectual": {
+        "title": "4. Propriedade Intelectual",
+        "content1": "Todo o conteúdo, design, código-fonte e funcionalidades do ASP.NET Stack são propriedade nossa e são protegidos por leis de propriedade intelectual.",
+        "content2": "Você recebe uma licença limitada e não exclusiva para usar nossos serviços conforme permitido por estes termos."
+      },
+      "liability": {
+        "title": "5. Limitação de Responsabilidade",
+        "content1": "Nossos serviços são fornecidos 'como estão' sem garantias de qualquer tipo. Não garantimos que o serviço será ininterrupto ou livre de erros.",
+        "content2": "Em nenhuma circunstância seremos responsáveis por danos indiretos, incidentais, especiais ou consequenciais decorrentes do uso de nossos serviços."
+      },
+      "termination": {
+        "title": "6. Rescisão da Conta",
+        "content1": "Você pode encerrar sua conta a qualquer momento através das configurações de perfil ou entrando em contato conosco.",
+        "content2": "Reservamo-nos o direito de suspender ou encerrar contas que violem estes termos de serviço ou nossa política de uso aceitável."
+      },
+      "changes": {
+        "title": "7. Alterações nos Termos",
+        "content1": "Podemos atualizar estes Termos de Serviço periodicamente. Quando fizermos alterações significativas, notificaremos você por email ou através da plataforma.",
+        "content2": "O uso continuado de nossos serviços após as alterações constituirá sua aceitação dos novos termos."
+      },
+      "contact": {
+        "title": "8. Informações de Contato",
+        "content1": "Se você tiver dúvidas sobre estes Termos de Serviço, entre em contato conosco:",
+        "responseTime": "Tempo de resposta: 24-48 horas"
+      }
+    },
+    "footer": {
+      "effective": "Vigente desde",
+      "home": "Início",
+      "privacy": "Política de Privacidade",
+      "dashboard": "Dashboard"
+    }
+  }
+}
