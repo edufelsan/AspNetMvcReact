@@ -61,3 +61,6 @@ Thumbs.db
 # Temporary files
 clear-all-cache.bat
 dev-start.bat
+
+# Deployment files (private)
+Deploy.md
