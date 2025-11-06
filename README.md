@@ -1,4 +1,4 @@
-# ASP.NET Core + React SPA Template
+# ASP.NET Core + Inertia.js + React
 
 Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, and ASP.NET Core Identity.
 
