@@ -2,7 +2,11 @@
 
 Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, and ASP.NET Core Identity.
 
-## �️ Prerequisites
+## 🌐 Live Demo
+
+**🚀 [View Live Example](https://aspnetreact.dotforge.net/)** - See the template in action!
+
+## 🛠️ Prerequisites
 
 Before running this project, make sure you have the following installed:
 
