@@ -7,7 +7,8 @@
       "title": "ASP.NET Core 8 + React + Shadcn/ui",
       "description": "Complete template with ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS and all 56 Shadcn/ui components. Start your next project in minutes, not hours.",
       "startNow": "Get Started",
-      "viewDashboard": "View Dashboard"
+      "viewDashboard": "View Dashboard",
+      "viewComponents": "View Components"
     },
     "features": {
       "title": "Everything you need, already configured",
@@ -420,6 +421,172 @@
       "home": "Home",
       "privacy": "Privacy Policy",
       "dashboard": "Dashboard"
+    }
+  },
+  "components": {
+    "title": "shadcn/ui Components",
+    "description": "Explore and test all available shadcn/ui components with practical examples and ASP.NET Core 8 integration.",
+    "card": {
+      "title": "Card",
+      "description": "Displays a card with header, content, and footer.",
+      "basicCard": {
+        "title": "Basic Card",
+        "projectTitle": "Create project",
+        "projectDescription": "Deploy your new project in one-click.",
+        "projectContent": "You can create a new project by clicking the button below.",
+        "cancel": "Cancel",
+        "deploy": "Deploy"
+      },
+      "userProfile": {
+        "title": "User Profile Card",
+        "name": "Sarah Johnson",
+        "username": "sarah_dev",
+        "bio": "Full-stack developer passionate about creating amazing user experiences.",
+        "joinDate": "Joined March 2022",
+        "follow": "Follow"
+      },
+      "statistics": {
+        "title": "Statistics Cards",
+        "totalRevenue": "Total Revenue",
+        "activeUsers": "Active Users",
+        "revenueValue": "$45,231.89",
+        "revenueChange": "+20.1% from last month",
+        "usersValue": "+2,350",
+        "usersChange": "+180.1% from last month"
+      }
+    },
+    "button": {
+      "title": "Button",
+      "description": "Displays a button or a component that looks like a button.",
+      "variants": {
+        "title": "Variants",
+        "default": "Default",
+        "destructive": "Destructive",
+        "outline": "Outline",
+        "secondary": "Secondary",
+        "ghost": "Ghost",
+        "link": "Link"
+      },
+      "sizes": {
+        "title": "Sizes",
+        "default": "Default",
+        "small": "Small",
+        "large": "Large",
+        "icon": "Icon"
+      },
+      "withIcon": {
+        "title": "With Icon",
+        "loginWithEmail": "Login with Email"
+      },
+      "loading": {
+        "title": "Loading",
+        "pleaseWait": "Please wait..."
+      },
+      "asChild": {
+        "title": "As Child",
+        "loginText": "Login"
+      },
+      "buttonGroup": {
+        "title": "Button Group",
+        "bold": "Bold",
+        "italic": "Italic",
+        "underline": "Underline"
+      }
+    },
+    "alert": {
+      "title": "Alert",
+      "description": "Displays a callout for user attention.",
+      "basicTypes": {
+        "title": "Basic Alert Types",
+        "description": "Different alert types for various message contexts",
+        "defaultTitle": "Default Alert",
+        "defaultMessage": "This is a default alert message with some additional information.",
+        "destructiveTitle": "Error",
+        "destructiveMessage": "Your session has expired. Please log in again.",
+        "warningTitle": "Warning",
+        "warningMessage": "This action cannot be undone. This will permanently delete your account.",
+        "infoTitle": "Heads up!",
+        "infoMessage": "You can add components to your app using the cli."
+      },
+      "success": {
+        "title": "Success Alerts",
+        "description": "Positive confirmation messages",
+        "profileUpdated": "Profile updated successfully! Your changes have been saved.",
+        "dataExported": "Data exported successfully. Check your downloads folder.",
+        "paymentProcessed": "Payment processed successfully. You'll receive a confirmation email shortly."
+      },
+      "warning": {
+        "title": "Warning Alerts",
+        "description": "Caution and validation messages",
+        "storageAlmostFull": "Your storage is almost full. Consider upgrading your plan.",
+        "unsavedChanges": "You have unsaved changes. Save your work before continuing.",
+        "weekPassword": "Your password is weak. Use at least 8 characters with numbers and symbols."
+      },
+      "error": {
+        "title": "Error Alerts",
+        "description": "Error and failure messages",
+        "saveError": "Failed to save changes. Please check your connection and try again.",
+        "authError": "Authentication failed. Invalid username or password."
+      },
+      "info": {
+        "title": "Info Alerts",
+        "description": "Informational messages and tips",
+        "newFeatures": "New features are available in this update. Check out the changelog for details.",
+        "keyboardTip": "Use keyboard shortcuts to navigate faster: Ctrl+K to open search.",
+        "information": "Information",
+        "tip": "Tip"
+      },
+      "dismissible": {
+        "title": "Dismissible Alerts",
+        "description": "Alerts that users can close or dismiss",
+        "welcomeMessage": "Welcome! Your account has been created successfully.",
+        "emailVerification": "Don't forget to verify your email address to unlock all features.",
+        "temporaryAlert": "This alert will disappear in 3 seconds automatically.",
+        "showTemporary": "Show Temporary Alert"
+      }
+    }
+  },
+  "sidebar": {
+    "title": "Components",
+    "description": "Interactive examples and documentation",
+    "overview": {
+      "name": "Overview",
+      "description": "Introduction and getting started"
+    },
+    "button": {
+      "name": "Button",
+      "description": "Clickable button elements"
+    },
+    "alert": {
+      "name": "Alert",
+      "description": "Alert notifications and messages"
+    },
+    "card": {
+      "name": "Card",
+      "description": "Container for content and actions"
+    },
+    "stats": {
+      "totalComponents": "Total Components:",
+      "examples": "Examples:"
+    }
+  },
+  "overview": {
+    "title": "Components Library",
+    "description": "Comprehensive collection of 40+ modern UI components built with Radix UI and Tailwind CSS.",
+    "features": {
+      "title": "Advanced Features",
+      "description": "Fully accessible components with theme support, smooth animations, and responsive design."
+    },
+    "integration": {
+      "title": "ASP.NET Integration",
+      "description": "Practical examples showing how to use each component with ASP.NET Core 8 and Inertia.js."
+    },
+    "gettingStarted": {
+      "title": "Getting Started",
+      "step1": "• Navigate through components using the sidebar",
+      "step2": "• Each component page includes multiple examples and use cases",
+      "step3": "• All examples are fully integrated with ASP.NET Core 8 and Inertia.js",
+      "step4": "• Copy code snippets to use in your own projects"
     }
   }
 }

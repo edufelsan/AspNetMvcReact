@@ -7,7 +7,8 @@
       "title": "ASP.NET Core 8 + React + Shadcn/ui",
       "description": "Template completo com ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS e todos os 56 componentes shadcn/ui. Comece seu próximo projeto em minutos, não em horas.",
       "startNow": "Começar Agora",
-      "viewDashboard": "Ver Dashboard"
+      "viewDashboard": "Ver Dashboard",
+      "viewComponents": "Ver Componentes"
     },
     "features": {
       "title": "Tudo que você precisa, já configurado",
@@ -416,10 +417,176 @@
       }
     },
     "footer": {
-      "effective": "Vigente desde",
+      "effective": "Efetivo desde",
       "home": "Início",
       "privacy": "Política de Privacidade",
       "dashboard": "Dashboard"
+    }
+  },
+  "components": {
+    "title": "Componentes shadcn/ui",
+    "description": "Explore e teste todos os componentes shadcn/ui disponíveis com exemplos práticos e integração com ASP.NET Core 8.",
+    "card": {
+      "title": "Card",
+      "description": "Exibe um cartão com cabeçalho, conteúdo e rodapé.",
+      "basicCard": {
+        "title": "Card Básico",
+        "projectTitle": "Criar projeto",
+        "projectDescription": "Faça deploy do seu novo projeto com um clique.",
+        "projectContent": "Você pode criar um novo projeto clicando no botão abaixo.",
+        "cancel": "Cancelar",
+        "deploy": "Deploy"
+      },
+      "userProfile": {
+        "title": "Card de Perfil de Usuário",
+        "name": "Sarah Johnson",
+        "username": "sarah_dev",
+        "bio": "Desenvolvedora full-stack apaixonada por criar experiências incríveis de usuário.",
+        "joinDate": "Entrou em Março de 2022",
+        "follow": "Seguir"
+      },
+      "statistics": {
+        "title": "Cards de Estatísticas",
+        "totalRevenue": "Receita Total",
+        "activeUsers": "Usuários Ativos",
+        "revenueValue": "$45.231,89",
+        "revenueChange": "+20,1% do mês passado",
+        "usersValue": "+2.350",
+        "usersChange": "+180,1% do mês passado"
+      }
+    },
+    "button": {
+      "title": "Button",
+      "description": "Exibe um botão ou um componente que parece um botão.",
+      "variants": {
+        "title": "Variantes",
+        "default": "Padrão",
+        "destructive": "Destrutivo",
+        "outline": "Contorno",
+        "secondary": "Secundário",
+        "ghost": "Fantasma",
+        "link": "Link"
+      },
+      "sizes": {
+        "title": "Tamanhos",
+        "default": "Padrão",
+        "small": "Pequeno",
+        "large": "Grande",
+        "icon": "Ícone"
+      },
+      "withIcon": {
+        "title": "Com Ícone",
+        "loginWithEmail": "Entrar com Email"
+      },
+      "loading": {
+        "title": "Carregando",
+        "pleaseWait": "Aguarde..."
+      },
+      "asChild": {
+        "title": "Como Child",
+        "loginText": "Entrar"
+      },
+      "buttonGroup": {
+        "title": "Grupo de Botões",
+        "bold": "Negrito",
+        "italic": "Itálico",
+        "underline": "Sublinhado"
+      }
+    },
+    "alert": {
+      "title": "Alert",
+      "description": "Exibe uma mensagem de alerta destacada para o usuário.",
+      "basicTypes": {
+        "title": "Tipos Básicos de Alerta",
+        "description": "Diferentes tipos de alerta para vários contextos de mensagem",
+        "defaultTitle": "Alerta Padrão",
+        "defaultMessage": "Esta é uma mensagem de alerta padrão com algumas informações adicionais.",
+        "destructiveTitle": "Erro",
+        "destructiveMessage": "Sua sessão expirou. Por favor, faça login novamente.",
+        "warningTitle": "Atenção",
+        "warningMessage": "Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta.",
+        "infoTitle": "Cabeças!",
+        "infoMessage": "Você pode adicionar componentes à sua aplicação usando a CLI."
+      },
+      "success": {
+        "title": "Alertas de Sucesso",
+        "description": "Mensagens positivas de confirmação",
+        "profileUpdated": "Perfil atualizado com sucesso! Suas alterações foram salvas.",
+        "dataExported": "Dados exportados com sucesso. Verifique sua pasta de downloads.",
+        "paymentProcessed": "Pagamento processado com sucesso. Você receberá um email de confirmação em breve."
+      },
+      "warning": {
+        "title": "Alertas de Aviso",
+        "description": "Mensagens de cautela e validação",
+        "storageAlmostFull": "Seu armazenamento está quase cheio. Considere fazer upgrade do seu plano.",
+        "unsavedChanges": "Você tem alterações não salvas. Salve seu trabalho antes de continuar.",
+        "weekPassword": "Sua senha é fraca. Use pelo menos 8 caracteres com números e símbolos."
+      },
+      "error": {
+        "title": "Alertas de Erro",
+        "description": "Mensagens de erro e falha",
+        "saveError": "Falha ao salvar alterações. Verifique sua conexão e tente novamente.",
+        "authError": "Falha na autenticação. Nome de usuário ou senha inválidos."
+      },
+      "info": {
+        "title": "Alertas de Informação",
+        "description": "Mensagens informativas e dicas",
+        "newFeatures": "Novos recursos estão disponíveis nesta atualização. Confira o changelog para detalhes.",
+        "keyboardTip": "Use atalhos do teclado para navegar mais rápido: Ctrl+K para abrir a pesquisa.",
+        "information": "Informação",
+        "tip": "Dica"
+      },
+      "dismissible": {
+        "title": "Alertas Dispensáveis",
+        "description": "Alertas que os usuários podem fechar ou dispensar",
+        "welcomeMessage": "Bem-vindo! Sua conta foi criada com sucesso.",
+        "emailVerification": "Não se esqueça de verificar seu endereço de email para desbloquear todos os recursos.",
+        "temporaryAlert": "Este alerta desaparecerá em 3 segundos automaticamente.",
+        "showTemporary": "Mostrar Alerta Temporário"
+      }
+    }
+  },
+  "sidebar": {
+    "title": "Componentes",
+    "description": "Exemplos interativos e documentação",
+    "overview": {
+      "name": "Visão Geral",
+      "description": "Introdução e primeiros passos"
+    },
+    "button": {
+      "name": "Botão",
+      "description": "Elementos de botão clicáveis"
+    },
+    "alert": {
+      "name": "Alerta",
+      "description": "Notificações e mensagens de alerta"
+    },
+    "card": {
+      "name": "Cartão",
+      "description": "Container para conteúdo e ações"
+    },
+    "stats": {
+      "totalComponents": "Total de Componentes:",
+      "examples": "Exemplos:"
+    }
+  },
+  "overview": {
+    "title": "Biblioteca de Componentes",
+    "description": "Coleção abrangente de mais de 40 componentes de UI modernos construídos com Radix UI e Tailwind CSS.",
+    "features": {
+      "title": "Recursos Avançados",
+      "description": "Componentes totalmente acessíveis com suporte a temas, animações suaves e design responsivo."
+    },
+    "integration": {
+      "title": "Integração ASP.NET",
+      "description": "Exemplos práticos mostrando como usar cada componente com ASP.NET Core 8 e Inertia.js."
+    },
+    "gettingStarted": {
+      "title": "Começando",
+      "step1": "• Navegue pelos componentes usando a barra lateral",
+      "step2": "• Cada página de componente inclui múltiplos exemplos e casos de uso",
+      "step3": "• Todos os exemplos são totalmente integrados com ASP.NET Core 8 e Inertia.js",
+      "step4": "• Copie trechos de código para usar em seus próprios projetos"
     }
   }
 }
