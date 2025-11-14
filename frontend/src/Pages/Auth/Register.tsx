@@ -1,4 +1,4 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { FormEventHandler } from 'react';
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, User, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react';
 import { useState } from 'react';
-import LanguageSelector from '@/components/LanguageSelector';
+import { AuthLayout } from '@/components/layout';
 
 export default function Register() {
     const { t } = useTranslation();
@@ -32,21 +32,8 @@ export default function Register() {
     };
 
     return (
-        <>
-            <Head title={t('auth.register.title')} />
-            
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-violet-50 dark:from-gray-900 dark:via-background dark:to-gray-900 flex items-center justify-center p-4">
-                <div className="w-full max-w-md space-y-6">
-                    {/* Language Selector & Back to Home */}
-                    <div className="flex justify-between items-center">
-                        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            {t('auth.register.backToHome')}
-                        </Link>
-                        <LanguageSelector />
-                    </div>
-
-                    {/* Register Card */}
+        <AuthLayout title={t('auth.register.title')}>
+            {/* Register Card */}
                     <Card className="border-0 shadow-xl">
                         <CardHeader className="space-y-4 text-center pb-8">
                             <div className="h-12 w-12 mx-auto rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 flex items-center justify-center shadow-lg">
@@ -207,8 +194,6 @@ export default function Register() {
                     <div className="text-center text-xs text-muted-foreground">
                         © 2025 ASP.NET Stack Template. Todos os direitos reservados.
                     </div>
-                </div>
-            </div>
-        </>
+        </AuthLayout>
     );
 }

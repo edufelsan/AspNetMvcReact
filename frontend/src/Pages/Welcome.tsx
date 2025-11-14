@@ -1,18 +1,10 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ArrowRight, Code, Database, Zap, Shield, Palette, Rocket, BarChart3, Star, Sun, Moon, Monitor, Table } from 'lucide-react';
-import LanguageSelector from '@/components/LanguageSelector';
-import I18nInitializer from '@/components/I18nInitializer';
-import { useTheme } from '@/hooks/use-theme';
+import { ArrowRight, Code, Database, Zap, Shield, Palette, Rocket, Star, Table, BarChart3 } from 'lucide-react';
+import { AppLayout } from '@/components/layout';
 import { useTranslation } from 'react-i18next';
 
 interface AuthData {
@@ -27,50 +19,9 @@ interface AuthData {
 }
 
 export default function Welcome() {
-    const { t } = useTranslation(); // Usando hook com override que força inglês
+    const { t } = useTranslation();
     const page = usePage();
     const auth = (page.props as any).auth as AuthData;
-    const { theme, setTheme } = useTheme();
-
-    const ThemeSelector = () => {
-        const themes = [
-            { value: 'light' as const, label: 'dashboard.theme.light', icon: Sun },
-            { value: 'dark' as const, label: 'dashboard.theme.dark', icon: Moon },
-            { value: 'system' as const, label: 'dashboard.theme.system', icon: Monitor },
-        ];
-
-        const currentTheme = themes.find(t => t.value === theme) || themes[2]; // default to system
-        const Icon = currentTheme.icon;
-
-        return (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-9 w-9 px-0">
-                        <Icon className="h-4 w-4" />
-                        <span className="sr-only">{t('dashboard.user.theme')}</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {themes.map((themeOption) => {
-                        const ThemeIcon = themeOption.icon;
-                        return (
-                            <DropdownMenuItem
-                                key={themeOption.value}
-                                onClick={() => setTheme(themeOption.value)}
-                                className="flex items-center gap-2"
-                            >
-                                <ThemeIcon className="h-4 w-4" />
-                                {t(themeOption.label)}
-                                {theme === themeOption.value && (
-                                    <span className="ml-auto">✓</span>
-                                )}
-                            </DropdownMenuItem>
-                        );
-                    })}
-                </DropdownMenuContent>
-            </DropdownMenu>
-        );
-    };
     
 
     const features = [
@@ -119,45 +70,7 @@ export default function Welcome() {
     ];
 
     return (
-        <>
-            <Head title={t('welcome.title')} />
-            <I18nInitializer />
-            
-            {/* Header */}
-            <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-                <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 flex items-center justify-center shadow-lg">
-                            <span className="text-white font-bold text-lg">A</span>
-                        </div>
-                        <div>
-                            <h1 className="font-bold text-xl">{t('welcome.title')}</h1>
-                            <p className="text-xs text-muted-foreground">{t('welcome.subtitle')}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <ThemeSelector />
-                        <LanguageSelector />
-                        {(auth?.isAuthenticated === true) ? (
-                            <Link href="/Dashboard">
-                                <Button>
-                                    <BarChart3 className="mr-2 h-4 w-4" />
-                                    {t('dashboard.title')}
-                                </Button>
-                            </Link>
-                        ) : (
-                            <>
-                                <Link href="/Auth/Login">
-                                    <Button variant="outline" className="hidden sm:inline-flex">{t('auth.login.title')}</Button>
-                                </Link>
-                                <Link href="/Auth/Register">
-                                    <Button>{t('welcome.hero.startNow')}</Button>
-                                </Link>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </header>
+        <AppLayout title={t('welcome.title')}>
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-background to-violet-50 dark:from-gray-900 dark:via-background dark:to-gray-900">
@@ -189,6 +102,12 @@ export default function Welcome() {
                                 <Button variant="outline" size="lg" className="h-12 px-8 text-base">
                                     <BarChart3 className="mr-2 h-5 w-5" />
                                     {t('welcome.hero.viewDashboard')}
+                                </Button>
+                            </Link>
+                            <Link href="/components/demo">
+                                <Button variant="secondary" size="lg" className="h-12 px-8 text-base">
+                                    <Palette className="mr-2 h-5 w-5" />
+                                    {t('welcome.hero.viewComponents')}
                                 </Button>
                             </Link>
                         </div>
@@ -298,26 +217,6 @@ export default function Welcome() {
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="border-t bg-muted/50 backdrop-blur">
-                <div className="container mx-auto px-4 py-12">
-                    <div className="text-center space-y-4">
-                        <div className="flex items-center justify-center space-x-3 mb-4">
-                            <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">A</span>
-                            </div>
-                            <span className="font-bold text-lg">{t('welcome.title')} Template</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                            {t('welcome.footer.description')}
-                        </p>
-                        <Separator className="w-20 mx-auto" />
-                        <p className="text-xs text-muted-foreground">
-                            {t('welcome.footer.copyright')}
-                        </p>
-                    </div>
-                </div>
-            </footer>
-        </>
+        </AppLayout>
     );
 }

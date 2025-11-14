@@ -1,4 +1,4 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { FormEventHandler } from 'react';
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
-import LanguageSelector from '@/components/LanguageSelector';
+import { AuthLayout } from '@/components/layout';
 
 interface LoginProps {
     status?: string;
@@ -34,19 +34,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <>
-            <Head title={t('auth.login.title')} />
-            
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-violet-50 dark:from-gray-900 dark:via-background dark:to-gray-900 flex items-center justify-center p-4">
-                <div className="w-full max-w-md space-y-6">
-                    {/* Language Selector & Back to Home */}
-                    <div className="flex justify-between items-center">
-                        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            {t('auth.login.backToHome')}
-                        </Link>
-                        <LanguageSelector />
-                    </div>
+        <AuthLayout title={t('auth.login.title')}>
 
                     {/* Login Card */}
                     <Card className="border-0 shadow-xl">
@@ -161,11 +149,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         </CardContent>
                     </Card>
 
-                    <div className="text-center text-xs text-muted-foreground">
-                        © 2025 ASP.NET Stack Template. Todos os direitos reservados.
-                    </div>
-                </div>
-            </div>
-        </>
+                    {/* Footer */}
+                    <footer className="text-center space-y-4">
+                        <p className="text-xs text-muted-foreground">
+                            {t('welcome.footer.copyright')}
+                        </p>
+                    </footer>
+        </AuthLayout>
     );
 }
