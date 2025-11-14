@@ -162,6 +162,12 @@ app.Use(async (context, next) =>
     await next(context);
 });
 
+// Components demo route
+app.MapControllerRoute(
+    name: "components",
+    pattern: "components/demo",
+    defaults: new { controller = "Components", action = "Demo" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
