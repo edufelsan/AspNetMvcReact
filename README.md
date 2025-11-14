@@ -1,6 +1,6 @@
 # ASP.NET Core + Inertia.js + React
 
-Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, and ASP.NET Core Identity.
+Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, and **multilingual support** (Portuguese, English, Spanish).
 
 ## 🌐 Live Demo
 
@@ -137,8 +137,10 @@ npm run type-check           # TypeScript type checking
 - **Inertia.js** for SPA without APIs
 - **Vite** as bundler
 - **Tailwind CSS** for styling
-- **shadcn/ui** - 44+ modern components
+- **shadcn/ui** - 56+ modern components with interactive examples
 - **Lucide React** for icons
+- **React i18next** - Multilingual support (PT/EN/ES)
+- **Interactive component showcase** with live examples
 
 ### ✅ Backend
 - **ASP.NET Core 8**
@@ -148,10 +150,23 @@ npm run type-check           # TypeScript type checking
 - **InertiaCore** for integration
 
 ### ✅ Implemented Pages
-- **Welcome** - Modern landing page
+- **Welcome** - Modern multilingual landing page
 - **Login** - Authentication with Identity
 - **Register** - User registration
 - **Dashboard** - Administrative panel
+- **Components Showcase** - Interactive component examples
+  - **Button Examples** - 8 variants and states
+  - **Alert Examples** - 6 types with dismissible options
+  - **Card Examples** - 7 layouts and styles
+  - **Overview** - Getting started guide
+
+### ✅ Multilingual Support
+- **3 Languages** - Portuguese (default), English, Spanish
+- **React i18next** integration
+- **Dynamic language switching**
+- **Fully translated UI** including component examples
+- **Hierarchical translation structure**
+- **SEO-friendly** language detection
 
 ### ✅ Authentication
 - **Login/Logout** functionality
@@ -159,6 +174,47 @@ npm run type-check           # TypeScript type checking
 - **Form validation**
 - **Route protection**
 - **Session management**
+
+## 🎨 Component Showcase Features
+
+### 📋 Component Examples Available
+
+#### **Button Component** (8 Examples)
+- **Variants**: Default, Secondary, Destructive, Outline, Ghost, Link
+- **Sizes**: Small, Medium, Large
+- **States**: Normal, Loading, Disabled
+- **Interactive demos** with live code examples
+
+#### **Alert Component** (6 Types)
+- **Success Alerts**: Confirmation messages
+- **Warning Alerts**: Cautionary notifications  
+- **Error Alerts**: Failure and validation messages
+- **Info Alerts**: Informational tips and updates
+- **Dismissible Alerts**: User-closable notifications
+- **Temporary Alerts**: Auto-disappearing messages
+
+#### **Card Component** (7 Layouts)
+- **Basic Cards**: Simple content containers
+- **Header Cards**: With titles and descriptions
+- **Footer Cards**: Action buttons and links
+- **Image Cards**: Media integration
+- **Interactive Cards**: Hover states and animations
+
+### 🌐 Translation System Features
+
+- **Complete UI Translation**: All interface elements
+- **Component Examples**: Fully translated examples
+- **Dynamic Language Switching**: Real-time language change
+- **Persistent Language**: Remembers user preference
+- **SEO Optimized**: Proper language metadata
+
+### 🔧 Interactive Features
+
+- **Live Code Examples**: View source code for each component
+- **Copy to Clipboard**: Easy code copying
+- **Responsive Design**: Mobile-friendly showcase
+- **Navigation Sidebar**: Quick component access
+- **Search & Filter**: Find components quickly
 
 ## 🛠️ Useful Commands
 
@@ -192,6 +248,12 @@ npm run build
 
 # Add shadcn/ui component
 npx shadcn-ui@latest add [component-name]
+
+# Translation management
+# Edit translation files in src/locales/
+# - pt.json (Portuguese - default)
+# - en.json (English)
+# - es.json (Spanish)
 ```
 
 ## 📁 Project Structure
@@ -199,12 +261,25 @@ npx shadcn-ui@latest add [component-name]
 ```
 AspNetMvcReact/
 ├── Controllers/          # MVC Controllers
+│   ├── AuthController.cs
+│   ├── ComponentsController.cs  # Components showcase
+│   └── HomeController.cs
 ├── Data/                 # EF Core Context
 ├── Models/               # Identity Models
 ├── frontend/             # React Application
 │   ├── src/
 │   │   ├── components/   # shadcn/ui Components
+│   │   │   ├── examples/ # Component examples
+│   │   │   │   ├── AlertExamples.tsx
+│   │   │   │   ├── ButtonExamples.tsx
+│   │   │   │   └── CardExamples.tsx
+│   │   │   └── ui/       # shadcn/ui base components
+│   │   ├── locales/      # Translation files
+│   │   │   ├── pt.json   # Portuguese
+│   │   │   ├── en.json   # English
+│   │   │   └── es.json   # Spanish
 │   │   ├── Pages/        # Inertia Pages
+│   │   ├── i18n.ts       # i18n configuration
 │   │   └── main.tsx      # Entry point
 │   ├── package.json
 │   └── vite.config.ts
@@ -253,6 +328,17 @@ AspNetMvcReact/
 **4. TypeScript compilation errors**
 - Delete `node_modules` and run `npm install` again
 - Check if Node.js version is 18 or later
+
+**5. Translation not working / Text not changing**
+- Verify translation files exist in `frontend/src/locales/`
+- Check browser console for i18next errors
+- Ensure `useTranslation` hook is imported correctly
+- Clear browser cache and localStorage
+
+**6. Component examples not displaying**
+- Navigate to `/components` route
+- Check if all shadcn/ui components are installed
+- Verify `ComponentsController.cs` is properly configured
 
 ### Reset Everything
 
@@ -310,10 +396,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- ASP.NET Core team for the amazing framework
-- Inertia.js for seamless SPA experience
-- shadcn/ui for beautiful components
-- React and TypeScript communities
+- **ASP.NET Core team** for the amazing framework
+- **Inertia.js** for seamless SPA experience
+- **shadcn/ui** for beautiful and accessible components
+- **React i18next** for robust internationalization
+- **Tailwind CSS** for utility-first styling
+- **Lucide Icons** for consistent iconography
+- **React and TypeScript communities** for continuous innovation
 
 ---
 
