@@ -1,0 +1,150 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { 
+    MousePointer2, 
+    AlertTriangle, 
+    CreditCard,
+    Home,
+    ChevronRight
+} from 'lucide-react';
+
+interface ComponentsSidebarProps {
+    selectedComponent: string;
+    onSelectComponent: (component: string) => void;
+}
+
+interface ComponentItem {
+    id: string;
+    name: string;
+    icon: React.ComponentType<{ className?: string }>;
+    description: string;
+    examples: number;
+}
+
+
+
+export function ComponentsSidebar({ selectedComponent, onSelectComponent }: ComponentsSidebarProps) {
+    const { t } = useTranslation();
+    
+    const components: ComponentItem[] = [
+        {
+            id: 'overview',
+            name: 'Overview',
+            icon: Home,
+            description: t('sidebar.overview.description'),
+            examples: 0
+        },
+        {
+            id: 'button',
+            name: 'Button',
+            icon: MousePointer2,
+            description: t('sidebar.button.description'),
+            examples: 8
+        },
+        {
+            id: 'alert',
+            name: 'Alert',
+            icon: AlertTriangle,
+            description: t('sidebar.alert.description'),
+            examples: 6
+        },
+        {
+            id: 'card',
+            name: 'Card',
+            icon: CreditCard,
+            description: t('sidebar.card.description'),
+            examples: 7
+        }
+    ];
+
+    return (
+        <div className="h-full flex flex-col">
+            <div className="p-4">
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t('sidebar.title')}
+                </h2>
+                <p className="text-xs text-muted-foreground mt-1">
+                    {t('sidebar.description')}
+                </p>
+            </div>
+            
+            <Separator />
+            
+            <ScrollArea className="flex-1 px-2">
+                <div className="space-y-1 p-2">
+                    {components.map((component) => {
+                        const Icon = component.icon;
+                        const isSelected = selectedComponent === component.id;
+                        
+                        return (
+                            <Button
+                                key={component.id}
+                                variant={isSelected ? 'secondary' : 'ghost'}
+                                className={cn(
+                                    'w-full justify-start h-auto p-3 relative group',
+                                    isSelected && 'bg-secondary border-l-2 border-l-primary'
+                                )}
+                                onClick={() => onSelectComponent(component.id)}
+                            >
+                                <div className="flex items-start space-x-3 flex-1">
+                                    <Icon className={cn(
+                                        'h-4 w-4 mt-0.5 flex-shrink-0',
+                                        isSelected ? 'text-primary' : 'text-muted-foreground'
+                                    )} />
+                                    <div className="flex-1 text-left space-y-1">
+                                        <div className="flex items-center justify-between">
+                                            <span className={cn(
+                                                'text-sm font-medium',
+                                                isSelected ? 'text-foreground' : 'text-foreground'
+                                            )}>
+                                                {component.name}
+                                            </span>
+                                            {component.examples > 0 && (
+                                                <Badge 
+                                                    variant="outline" 
+                                                    className="text-xs px-1.5 py-0.5 h-5"
+                                                >
+                                                    {component.examples}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground leading-tight">
+                                            {component.description}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <ChevronRight className={cn(
+                                    'h-3 w-3 flex-shrink-0 transition-transform',
+                                    isSelected ? 'text-primary rotate-90' : 'text-transparent group-hover:text-muted-foreground'
+                                )} />
+                            </Button>
+                        );
+                    })}
+                </div>
+            </ScrollArea>
+            
+            <Separator />
+            
+            <div className="p-4 space-y-2">
+                <div className="text-xs text-muted-foreground">
+                    <div className="flex justify-between">
+                        <span>{t('sidebar.stats.totalComponents')}</span>
+                        <span className="font-medium">{components.length - 1}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span>{t('sidebar.stats.examples')}</span>
+                        <span className="font-medium">
+                            {components.reduce((acc, comp) => acc + comp.examples, 0)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
