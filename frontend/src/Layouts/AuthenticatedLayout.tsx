@@ -56,7 +56,7 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href="/account/profile">Profile</Dropdown.Link>
+                                        <Dropdown.Link href="/Profile">Profile</Dropdown.Link>
                                         <Dropdown.Link href="/account/logout" method="post" as="button">
                                             Log Out
                                         </Dropdown.Link>
@@ -107,7 +107,7 @@ export default function Authenticated({ user, header, children }: PropsWithChild
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href="/account/profile">Profile</ResponsiveNavLink>
+                            <ResponsiveNavLink href="/Profile">Profile</ResponsiveNavLink>
                             <ResponsiveNavLink method="post" href="/account/logout" as="button">
                                 Log Out
                             </ResponsiveNavLink>

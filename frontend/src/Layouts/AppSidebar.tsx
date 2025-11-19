@@ -11,7 +11,6 @@ import {
   DollarSign,
   Calendar,
   Mail,
-  Shield,
   LogOut,
   User,
   Globe,
@@ -113,11 +112,6 @@ const navigationData = {
       icon: BarChart3,
     },
     {
-      title: "dashboard.nav.users",
-      url: "/dashboard/users",
-      icon: Users,
-    },
-    {
       title: "dashboard.nav.finances",
       url: "/dashboard/finances",
       icon: DollarSign,
@@ -156,19 +150,9 @@ const navigationData = {
   ],
   settings: [
     {
-      title: "dashboard.nav.profile",
-      url: "/dashboard/profile",
-      icon: User,
-    },
-    {
-      title: "dashboard.nav.security",
-      url: "/dashboard/security",
-      icon: Shield,
-    },
-    {
-      title: "dashboard.nav.preferences",
-      url: "/dashboard/preferences",
-      icon: Settings,
+      title: "dashboard.nav.users",
+      url: "/dashboard/users",
+      icon: Users,
     },
   ],
 };
@@ -367,7 +351,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 
-                <DropdownMenuItem onClick={() => navigateTo('/dashboard/profile')}>
+                <DropdownMenuItem onClick={() => navigateTo('/Profile')}>
                   <User className="mr-2 h-4 w-4" />
                   {t('dashboard.user.profile')}
                 </DropdownMenuItem>
