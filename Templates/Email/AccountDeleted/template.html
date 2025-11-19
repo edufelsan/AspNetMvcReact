@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conta Excluída</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .title {
+            color: #dc2626;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 10px 0 0 0;
+        }
+        .content {
+            margin: 30px 0;
+        }
+        .alert {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .alert-icon {
+            color: #dc2626;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .info-box {
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .thank-you {
+            background-color: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .thank-you h3 {
+            color: #0284c7;
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+        .thank-you p {
+            margin: 0;
+            color: #0369a1;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .data-info {
+            background-color: #fef7cd;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .data-info h3 {
+            color: #d97706;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .data-info ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #92400e;
+        }
+        .data-info li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">👋</div>
+            <h1 class="title">Conta Excluída</h1>
+            <p class="subtitle">Confirmação de exclusão de conta</p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                <span class="alert-icon">⚠️</span>
+                <strong>Olá, {{UserName}}!</strong><br>
+                Confirmamos que sua conta foi excluída permanentemente em {{DateTime}}.
+            </div>
+
+            <div class="info-box">
+                <h3>📋 Detalhes da Exclusão</h3>
+                <p><strong>Data/Hora:</strong> {{DateTime}}</p>
+                <p><strong>Ação:</strong> Exclusão permanente de conta</p>
+                <p><strong>Status:</strong> Concluída</p>
+            </div>
+
+            <div class="data-info">
+                <h3>📦 Seus Dados</h3>
+                <ul>
+                    <li>Todos os seus dados pessoais foram removidos permanentemente</li>
+                    <li>Não mantemos backup dos dados de contas excluídas</li>
+                    <li>Este processo é irreversível</li>
+                    <li>Todas as sessões ativas foram encerradas</li>
+                </ul>
+            </div>
+
+            <div class="thank-you">
+                <h3>💙 Obrigado por ter estado conosco!</h3>
+                <p>Esperamos que sua experiência tenha sido positiva. Se decidir voltar no futuro, será sempre bem-vindo para criar uma nova conta.</p>
+            </div>
+
+            <p>Lamentamos ver você partir, mas respeitamos sua decisão. Se você excluiu sua conta por engano ou mudou de ideia nos próximos dias, entre em contato conosco - podemos ter uma janela de recuperação limitada.</p>
+
+            <p>Se você tem feedback sobre como podemos melhorar nossos serviços, ficaríamos gratos em ouvir suas sugestões.</p>
+        </div>
+
+        <div class="footer">
+            <p>Este é um email automático de confirmação. Por favor, não responda.</p>
+            <p>Para contato ou feedback, utilize nossos canais oficiais de suporte.</p>
+            <p>&copy; 2025 AspNetMvcReact. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

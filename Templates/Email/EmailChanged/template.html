@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Alterado na Sua Conta</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .title {
+            color: #d97706;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 10px 0 0 0;
+        }
+        .content {
+            margin: 30px 0;
+        }
+        .alert {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .alert-icon {
+            color: #d97706;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .info-box {
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .email-change {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .email-change h3 {
+            color: #1d4ed8;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .email-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #f8fafc;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .email-item strong {
+            color: #374151;
+        }
+        .email-item span {
+            color: #6b7280;
+            font-family: monospace;
+            background-color: #e5e7eb;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .security-warning {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .security-warning h3 {
+            color: #dc2626;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .security-warning p {
+            margin: 0;
+            color: #991b1b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📧</div>
+            <h1 class="title">Email Alterado</h1>
+            <p class="subtitle">Notificação de segurança da sua conta</p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                <span class="alert-icon">⚠️</span>
+                <strong>Olá, {{UserName}}!</strong><br>
+                Informamos que o email da sua conta foi alterado em {{DateTime}}.
+            </div>
+
+            <div class="email-change">
+                <h3>📋 Detalhes da Alteração</h3>
+                <div class="email-item">
+                    <strong>Email Anterior:</strong>
+                    <span>{{OldEmail}}</span>
+                </div>
+                <div class="email-item">
+                    <strong>Novo Email:</strong>
+                    <span>{{NewEmail}}</span>
+                </div>
+                <div class="email-item">
+                    <strong>Data/Hora:</strong>
+                    <span>{{DateTime}}</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>ℹ️ Próximos Passos</h3>
+                <p>• O novo email precisará ser confirmado antes de ser totalmente ativo</p>
+                <p>• Verifique a caixa de entrada do novo email para o link de confirmação</p>
+                <p>• Esta notificação foi enviada para o email anterior como medida de segurança</p>
+            </div>
+
+            <div class="security-warning">
+                <h3>🔒 Não foi você?</h3>
+                <p>Se você não fez esta alteração, sua conta pode ter sido comprometida. Entre em contato com nosso suporte imediatamente para proteger sua conta e restaurar o acesso.</p>
+            </div>
+
+            <p>Esta é uma notificação automática para manter você informado sobre alterações importantes na sua conta.</p>
+        </div>
+
+        <div class="footer">
+            <p>Este é um email automático de segurança. Por favor, não responda.</p>
+            <p>Para suporte, entre em contato através dos nossos canais oficiais.</p>
+            <p>&copy; 2025 AspNetMvcReact. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

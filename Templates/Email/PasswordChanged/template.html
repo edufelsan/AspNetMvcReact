@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senha Alterada com Sucesso</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .title {
+            color: #059669;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 10px 0 0 0;
+        }
+        .content {
+            margin: 30px 0;
+        }
+        .alert {
+            background-color: #d1fae5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .alert-icon {
+            color: #059669;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .info-box {
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .security-tips {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .security-tips h3 {
+            color: #d97706;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .security-tips ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #92400e;
+        }
+        .security-tips li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">✓</div>
+            <h1 class="title">Senha Alterada com Sucesso</h1>
+            <p class="subtitle">Confirmação de segurança da sua conta</p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                <span class="alert-icon">🔒</span>
+                <strong>Olá, {{UserName}}!</strong><br>
+                Confirmamos que sua senha foi alterada com sucesso em {{DateTime}}.
+            </div>
+
+            <div class="info-box">
+                <h3>Detalhes da Alteração</h3>
+                <p><strong>Data/Hora:</strong> {{DateTime}}</p>
+                <p><strong>Ação:</strong> Alteração de senha</p>
+                <p><strong>Status:</strong> Concluída com sucesso</p>
+            </div>
+
+            <p>Se você fez esta alteração, pode ignorar este email. Sua conta está segura e protegida.</p>
+            
+            <p><strong>Não foi você?</strong> Se você não alterou sua senha, entre em contato conosco imediatamente para proteger sua conta.</p>
+
+            <div class="security-tips">
+                <h3>⚡ Dicas de Segurança</h3>
+                <ul>
+                    <li>Use senhas únicas e complexas</li>
+                    <li>Altere suas senhas regularmente</li>
+                    <li>Nunca compartilhe suas credenciais</li>
+                    <li>Mantenha seu email seguro</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="{{LoginUrl}}" class="button">Fazer Login</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Este é um email automático de segurança. Por favor, não responda.</p>
+            <p>Se você tem dúvidas, entre em contato com nosso suporte.</p>
+            <p>&copy; 2025 AspNetMvcReact. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
