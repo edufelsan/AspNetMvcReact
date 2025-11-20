@@ -14,6 +14,7 @@ import {
     Shield, 
     CheckCircle2, 
     AlertCircle, 
+    AlertTriangle,
     Settings,
     Trash2,
     Eye,
@@ -44,10 +45,12 @@ interface User {
 interface ProfileProps {
     user: User;
     success?: string;
+    error?: string;
+    warning?: string;
     errors?: Record<string, string[]>;
 }
 
-export default function ProfileIndex({ user, success, errors }: ProfileProps) {
+export default function ProfileIndex({ user, success, error, warning, errors }: ProfileProps) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'security'>('profile');
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -113,18 +116,19 @@ export default function ProfileIndex({ user, success, errors }: ProfileProps) {
         });
     };
 
+    // Form para reenviar confirmação de email
+    const resendForm = useForm({});
+
     const resendConfirmationEmail = () => {
-        fetch('/Profile/ResendEmailConfirmation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+        resendForm.post('/Profile/ResendEmailConfirmation', {
+            onSuccess: () => {
+                // O controller já redireciona com a mensagem apropriada
+                // Não precisamos fazer nada aqui
+            },
+            onError: (errors: any) => {
+                console.error('Erro ao reenviar confirmação:', errors);
+                // O controller já trata os erros e redireciona adequadamente
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle response - você pode adicionar um toast notification aqui
-            console.log(data.message);
         });
     };
 
@@ -149,12 +153,30 @@ export default function ProfileIndex({ user, success, errors }: ProfileProps) {
             breadcrumbs={breadcrumbs}
         >
             <div className="space-y-6">
-                {/* Success Message */}
+                {/* Messages */}
                 {success && (
                     <Alert className="border-green-200 bg-green-50 text-green-800">
                         <CheckCircle2 className="h-4 w-4 text-green-600" />
                         <AlertDescription className="text-green-700">
                             {success}
+                        </AlertDescription>
+                    </Alert>
+                )}
+
+                {error && (
+                    <Alert className="border-red-200 bg-red-50 text-red-800">
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                        <AlertDescription className="text-red-700">
+                            {error}
+                        </AlertDescription>
+                    </Alert>
+                )}
+
+                {warning && (
+                    <Alert className="border-yellow-200 bg-yellow-50 text-yellow-800">
+                        <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        <AlertDescription className="text-yellow-700">
+                            {warning}
                         </AlertDescription>
                     </Alert>
                 )}
