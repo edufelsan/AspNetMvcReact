@@ -276,6 +276,9 @@ public class AuthController : Controller
         // Por segurança, sempre retornamos sucesso mesmo se o email não existir
         // Isso evita que atacantes descubram quais emails estão registrados
         
+        bool emailSentSuccessfully = false;
+        string? emailError = null;
+
         if (user != null)
         {
             try
@@ -297,21 +300,34 @@ public class AuthController : Controller
                 if (emailResult.IsSuccess)
                 {
                     _logger.LogInformation("Password reset email sent successfully to {Email}", user.Email);
+                    emailSentSuccessfully = true;
                 }
                 else
                 {
                     _logger.LogError("Failed to send password reset email to {Email}: {Error}", 
                         user.Email, emailResult.ErrorMessage);
+                    emailError = emailResult.ErrorMessage;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending password reset email to {Email}", user.Email);
+                emailError = ex.Message;
             }
         }
         else
         {
             _logger.LogInformation("Password reset requested for non-existent email: {Email}", email);
+            // Para emails não existentes, simulamos sucesso por segurança
+            emailSentSuccessfully = true;
+        }
+
+        // Se houve erro no envio do email (para usuário válido), informamos o problema
+        if (user != null && !emailSentSuccessfully)
+        {
+            return Inertia.Render("Auth/ForgotPassword", new {
+                error = "Ocorreu um problema técnico ao enviar o email. Tente novamente em alguns minutos."
+            });
         }
 
         return Inertia.Render("Auth/ForgotPassword", new {
