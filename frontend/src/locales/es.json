@@ -2,6 +2,10 @@
   "welcome": {
     "title": "ASP.NET Stack",
     "subtitle": "Desarrollo Web Moderno",
+    "meta": {
+      "description": "Plantilla moderna de desarrollo full-stack con ASP.NET Core 8, React, Inertia.js, shadcn/ui y Tailwind CSS. Comience en 5 minutos con autenticación, soporte multiidioma y despliegue listo para producción.",
+      "keywords": "ASP.NET Core 8, React, Inertia.js, shadcn/ui, Tailwind CSS, TypeScript, Entity Framework, Identity, Autenticación, Multiidioma, i18n, Plantilla, Starter Kit, Full Stack, Desarrollo Web Moderno"
+    },
     "hero": {
       "badge": "Plantilla Completa para Desarrollo Moderno",
       "title": "ASP.NET Core 8 + React + Shadcn/ui",

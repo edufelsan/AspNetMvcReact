@@ -2,6 +2,10 @@
   "welcome": {
     "title": "ASP.NET Stack",
     "subtitle": "Modern Web Development",
+    "meta": {
+      "description": "Modern full-stack development template with ASP.NET Core 8, React, Inertia.js, shadcn/ui, and Tailwind CSS. Get started in 5 minutes with authentication, multilingual support, and production-ready deployment.",
+      "keywords": "ASP.NET Core 8, React, Inertia.js, shadcn/ui, Tailwind CSS, TypeScript, Entity Framework, Identity, Authentication, Multilingual, i18n, Template, Starter Kit, Full Stack, Modern Web Development"
+    },
     "hero": {
       "badge": "Complete Template for Modern Development",
       "title": "ASP.NET Core 8 + React + Shadcn/ui",
