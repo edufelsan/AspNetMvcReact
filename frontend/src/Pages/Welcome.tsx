@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, Head } from '@inertiajs/react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +71,23 @@ export default function Welcome() {
 
     return (
         <AppLayout title={t('welcome.title')}>
+            <Head>
+                <title>{t('welcome.title')} - ASP.NET Core + React + Inertia.js</title>
+                <meta name="description" content={t('welcome.meta.description', 'Modern full-stack development template with ASP.NET Core 8, React, Inertia.js, shadcn/ui, and Tailwind CSS. Get started in 5 minutes with authentication, multilingual support, and production-ready deployment.')} />
+                <meta name="keywords" content={t('welcome.meta.keywords', 'ASP.NET Core 8, React, Inertia.js, shadcn/ui, Tailwind CSS, TypeScript, Entity Framework, Identity, Authentication, Multilingual, i18n, Template, Starter Kit, Full Stack, Modern Web Development')} />
+                
+                {/* Open Graph tags for social sharing */}
+                <meta property="og:title" content={`${t('welcome.title')} - ASP.NET Core + React + Inertia.js`} />
+                <meta property="og:description" content={t('welcome.meta.description', 'Modern full-stack development template with ASP.NET Core 8, React, Inertia.js, shadcn/ui, and Tailwind CSS. Get started in 5 minutes with authentication, multilingual support, and production-ready deployment.')} />
+                <meta property="og:type" content="website" />
+                
+                {/* Twitter Card tags */}
+                <meta name="twitter:title" content={`${t('welcome.title')} - ASP.NET Core + React + Inertia.js`} />
+                <meta name="twitter:description" content={t('welcome.meta.description', 'Modern full-stack development template with ASP.NET Core 8, React, Inertia.js, shadcn/ui, and Tailwind CSS. Get started in 5 minutes with authentication, multilingual support, and production-ready deployment.')} />
+                
+                {/* Canonical URL */}
+                <link rel="canonical" href={window.location.origin} />
+            </Head>
 
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-background to-violet-50 dark:from-gray-900 dark:via-background dark:to-gray-900">
