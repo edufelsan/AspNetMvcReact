@@ -15,6 +15,7 @@
     @Html.ViteCss("src/main.tsx")
 </head>
 <body>
+    @Html.AntiForgeryToken()
     @await Inertia.Html(Model)
     
     @Html.ViteAsset("src/main.tsx")
