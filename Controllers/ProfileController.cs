@@ -29,7 +29,7 @@ public class ProfileController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? success = null)
+    public async Task<IActionResult> Index(string? success = null, string? error = null, string? warning = null)
     {
         var user = await _userManager.GetUserAsync(User);
         
@@ -53,6 +53,8 @@ public class ProfileController : Controller
         return Inertia.Render("Profile/Index", new { 
             user = userData,
             success = success,
+            error = error,
+            warning = warning,
             errors = TempData.ContainsKey("Errors") ? TempData["Errors"] : null
         });
     }
@@ -105,17 +107,17 @@ public class ProfileController : Controller
             });
         }
 
-        var emailChanged = user.Email != request.Email;
+        var emailChanged = !string.Equals(user.Email, request?.Email, StringComparison.OrdinalIgnoreCase);
         var oldEmail = user.Email;
 
         // Atualizar dados do usuário
-        user.FirstName = request.FirstName.Trim();
-        user.LastName = request.LastName.Trim();
+        user.FirstName = request?.FirstName?.Trim();
+        user.LastName = request?.LastName?.Trim();
         
         if (emailChanged)
         {
-            user.Email = request.Email.Trim();
-            user.UserName = request.Email.Trim();
+            user.Email = request?.Email?.Trim();
+            user.UserName = request?.Email?.Trim();
             user.EmailConfirmed = false; // Requer nova confirmação
         }
 
@@ -134,11 +136,19 @@ public class ProfileController : Controller
                     var confirmationUrl = Url.Action("ConfirmEmail", "Auth", 
                         new { userId = user.Id, token = confirmationToken }, Request.Scheme);
 
-                    await _emailService.SendEmailConfirmationAsync(
+                    var emailResult = await _emailService.SendEmailConfirmationAsync(
                         user.Email!, 
                         user.FirstName ?? "Usuário", 
                         confirmationUrl!
                     );
+
+                    if (!emailResult.IsSuccess)
+                    {
+                        _logger.LogError("Failed to send email confirmation: {Error}", emailResult.ErrorMessage);
+                        return RedirectToAction("Index", new { 
+                            error = "Perfil atualizado, mas ocorreu um erro ao enviar o email de confirmação. Tente reenviar mais tarde."
+                        });
+                    }
 
                     // Notificar no email antigo sobre a mudança (se possível)
                     if (!string.IsNullOrEmpty(oldEmail))
@@ -151,12 +161,17 @@ public class ProfileController : Controller
                             { "DateTime", DateTime.Now.ToString("dd/MM/yyyy HH:mm") }
                         };
 
-                        await _emailService.SendTemplatedEmailAsync(
+                        var notificationResult = await _emailService.SendTemplatedEmailAsync(
                             "EmailChanged",
                             oldEmail,
                             "Email alterado na sua conta",
                             variables
                         );
+
+                        if (!notificationResult.IsSuccess)
+                        {
+                            _logger.LogWarning("Failed to send email change notification to old email: {Error}", notificationResult.ErrorMessage);
+                        }
                     }
 
                     return RedirectToAction("Index", new { 
@@ -265,17 +280,29 @@ public class ProfileController : Controller
                     { "LoginUrl", Url.Action("Login", "Auth", null, Request.Scheme) ?? "/" }
                 };
 
-                await _emailService.SendTemplatedEmailAsync(
+                var emailResult = await _emailService.SendTemplatedEmailAsync(
                     "PasswordChanged",
                     user.Email!,
                     "Senha alterada com sucesso",
                     variables
                 );
+
+                if (!emailResult.IsSuccess)
+                {
+                    _logger.LogError("Failed to send password change notification: {Error}", emailResult.ErrorMessage);
+                    return RedirectToAction("Index", new { 
+                        success = "Senha alterada com sucesso!",
+                        warning = "Não foi possível enviar a notificação por email."
+                    });
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending password change confirmation email");
-                // Não falhar a operação por causa do email
+                return RedirectToAction("Index", new { 
+                    success = "Senha alterada com sucesso!",
+                    warning = "Não foi possível enviar a notificação por email."
+                });
             }
 
             return RedirectToAction("Index", new { 
@@ -305,6 +332,7 @@ public class ProfileController : Controller
     [HttpPost]
     public async Task<IActionResult> ResendEmailConfirmation()
     {
+        _logger.LogInformation("ResendEmailConfirmation called");
         var user = await _userManager.GetUserAsync(User);
         
         if (user == null)
@@ -314,7 +342,9 @@ public class ProfileController : Controller
 
         if (await _userManager.IsEmailConfirmedAsync(user))
         {
-            return Json(new { success = false, message = "Seu email já foi confirmado." });
+            return RedirectToAction("Index", new { 
+                warning = "Seu email já foi confirmado." 
+            });
         }
 
         try
@@ -332,18 +362,24 @@ public class ProfileController : Controller
             if (emailResult.IsSuccess)
             {
                 _logger.LogInformation("Email confirmation resent for user {UserId}", user.Id);
-                return Json(new { success = true, message = "Email de confirmação enviado novamente." });
+                return RedirectToAction("Index", new { 
+                    success = "Email de confirmação reenviado com sucesso!" 
+                });
             }
             else
             {
                 _logger.LogError("Failed to resend email confirmation: {Error}", emailResult.ErrorMessage);
-                return Json(new { success = false, message = "Erro ao enviar email. Tente novamente." });
+                return RedirectToAction("Index", new { 
+                    error = "Erro ao enviar email de confirmação. Tente novamente mais tarde." 
+                });
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error resending email confirmation for user {UserId}", user.Id);
-            return Json(new { success = false, message = "Erro ao enviar email. Tente novamente." });
+            return RedirectToAction("Index", new { 
+                error = "Erro ao enviar email de confirmação. Tente novamente." 
+            });
         }
     }
 
@@ -371,19 +407,24 @@ public class ProfileController : Controller
 
         try
         {
-            // Enviar email de confirmação antes de excluir
+            // Enviar email de confirmação da exclusão
             var variables = new Dictionary<string, object>
             {
                 { "UserName", user.FirstName ?? "Usuário" },
                 { "DateTime", DateTime.Now.ToString("dd/MM/yyyy HH:mm") }
             };
 
-            await _emailService.SendTemplatedEmailAsync(
+            var emailResult = await _emailService.SendTemplatedEmailAsync(
                 "AccountDeleted",
                 user.Email!,
                 "Conta excluída",
                 variables
             );
+
+            if (!emailResult.IsSuccess)
+            {
+                _logger.LogWarning("Failed to send account deletion confirmation email: {Error}", emailResult.ErrorMessage);
+            }
 
             // Excluir usuário
             var result = await _userManager.DeleteAsync(user);
