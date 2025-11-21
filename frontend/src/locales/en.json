@@ -430,6 +430,55 @@
   "components": {
     "title": "shadcn/ui Components",
     "description": "Explore and test all available shadcn/ui components with practical examples and ASP.NET Core 8 integration.",
+    "accordion": {
+      "title": "Accordion",
+      "description": "A vertically stacked set of expandable and collapsible content sections.",
+      "basic": {
+        "title": "Basic Accordion",
+        "question1": "What is React?",
+        "answer1": "React is a popular JavaScript library for building user interfaces. It was created by Facebook and allows you to build reusable components for modern web applications.",
+        "question2": "What is TypeScript?",
+        "answer2": "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. It adds optional static types and advanced object-oriented programming features to JavaScript.",
+        "question3": "What is Tailwind CSS?",
+        "answer3": "Tailwind CSS is a utility-first CSS framework that provides low-level utility classes to build custom designs without leaving your HTML."
+      },
+      "features": {
+        "title": "Features Accordion",
+        "item1": {
+          "title": "🚀 Performance",
+          "description": "Fast and optimized application",
+          "content": "Our application is built with performance best practices, ensuring fast loading times and smooth user experience."
+        },
+        "item2": {
+          "title": "🔒 Security",
+          "description": "Robust data protection",
+          "content": "We implement enterprise-grade security standards, including encryption, secure authentication, and regular security audits."
+        },
+        "item3": {
+          "title": "📱 Responsive Design",
+          "description": "Works seamlessly across all devices",
+          "content": "Our interface is fully responsive and adapts perfectly to any screen size, from smartphones to desktop monitors."
+        }
+      },
+      "multiple": {
+        "title": "Multiple Open Accordion",
+        "item1": {
+          "title": "Account Information",
+          "description": "Manage your account data",
+          "content": "Update your name, email, password, and other personal information. You can also manage your notification preferences and privacy settings."
+        },
+        "item2": {
+          "title": "Billing Settings",
+          "description": "Configure payments and subscriptions",
+          "content": "View your billing history, update payment methods, and manage your active subscriptions. All payments are processed securely."
+        },
+        "item3": {
+          "title": "Support & Help",
+          "description": "Get help when you need it",
+          "content": "Access our comprehensive knowledge base, contact support, or schedule a live demo with our team."
+        }
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Displays a card with header, content, and footer.",
@@ -457,6 +506,87 @@
         "revenueChange": "+20.1% from last month",
         "usersValue": "+2,350",
         "usersChange": "+180.1% from last month"
+      },
+      "product": {
+        "title": "Product Card",
+        "productName": "Premium Product",
+        "badge": "New",
+        "description": "High-quality product with amazing features for your needs.",
+        "price": "$299.99",
+        "addToCart": "Add to Cart"
+      },
+      "notification": {
+        "title": "Notification Card",
+        "cardTitle": "Notifications",
+        "count": "3",
+        "message1": {
+          "title": "John Doe commented on your post",
+          "content": "Great work! Keep it up.",
+          "time": "2 hours ago"
+        },
+        "message2": {
+          "title": "Sarah Miller liked your project",
+          "content": "Your project received a new like.",
+          "time": "5 hours ago"
+        },
+        "markAllRead": "Mark all as read"
+      },
+      "pricing": {
+        "title": "Pricing Card",
+        "planName": "Pro Plan",
+        "planDescription": "For professional teams",
+        "price": "$49",
+        "feature1": "Unlimited projects",
+        "feature2": "24/7 priority support",
+        "feature3": "Advanced analytics",
+        "feature4": "100GB storage",
+        "subscribe": "Subscribe Now"
+      },
+      "settings": {
+        "title": "Settings Card",
+        "cardTitle": "Preferences",
+        "description": "Manage your account preferences",
+        "notifications": {
+          "title": "Email Notifications",
+          "description": "Receive emails about account updates"
+        },
+        "marketing": {
+          "title": "Marketing Emails",
+          "description": "Receive emails about new features and offers"
+        },
+        "security": {
+          "title": "Two-Factor Authentication",
+          "description": "Keep your account secure with 2FA"
+        },
+        "save": "Save Preferences"
+      }
+    },
+    "alertDialog": {
+      "title": "Alert Dialog",
+      "description": "A modal dialog that interrupts the user with important content and expects a response.",
+      "basic": {
+        "title": "Basic Dialog",
+        "trigger": "Show Dialog",
+        "dialogTitle": "Are you absolutely sure?",
+        "dialogDescription": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+        "cancel": "Cancel",
+        "continue": "Continue"
+      },
+      "delete": {
+        "title": "Delete Confirmation",
+        "trigger": "Delete Item",
+        "dialogTitle": "Delete Item",
+        "dialogDescription": "Are you sure you want to delete this item? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "logout": {
+        "title": "Logout Confirmation",
+        "trigger": "Logout",
+        "dialogTitle": "Confirm Logout",
+        "dialogDescription": "Are you sure you want to logout? You will need to login again to access your account.",
+        "cancel": "Cancel",
+        "confirm": "Logout"
       }
     },
     "button": {
@@ -609,6 +739,10 @@
       "name": "Overview",
       "description": "Introduction and getting started"
     },
+    "accordion": {
+      "name": "Accordion",
+      "description": "Expandable and collapsible content sections"
+    },
     "button": {
       "name": "Button",
       "description": "Clickable button elements"
@@ -620,6 +754,10 @@
     "card": {
       "name": "Card",
       "description": "Container for content and actions"
+    },
+    "alertDialog": {
+      "name": "Alert Dialog",
+      "description": "Modal dialogs for important confirmations"
     },
     "stats": {
       "totalComponents": "Total Components:",

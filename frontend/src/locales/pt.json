@@ -430,6 +430,55 @@
   "components": {
     "title": "Componentes shadcn/ui",
     "description": "Explore e teste todos os componentes shadcn/ui disponíveis com exemplos práticos e integração com ASP.NET Core 8.",
+    "accordion": {
+      "title": "Accordion",
+      "description": "Um componente de acordeão expansível e recolhível verticalmente.",
+      "basic": {
+        "title": "Accordion Básico",
+        "question1": "O que é React?",
+        "answer1": "React é uma biblioteca JavaScript popular para construir interfaces de usuário. Foi criada pelo Facebook e permite criar componentes reutilizáveis para aplicações web modernas.",
+        "question2": "O que é TypeScript?",
+        "answer2": "TypeScript é um superconjunto tipado de JavaScript que compila para JavaScript puro. Adiciona tipos estáticos opcionais e recursos avançados de programação orientada a objetos ao JavaScript.",
+        "question3": "O que é Tailwind CSS?",
+        "answer3": "Tailwind CSS é um framework CSS utility-first que fornece classes de baixo nível para construir designs personalizados sem sair do HTML."
+      },
+      "features": {
+        "title": "Accordion de Recursos",
+        "item1": {
+          "title": "🚀 Desempenho",
+          "description": "Aplicação otimizada e rápida",
+          "content": "Nossa aplicação é construída com as melhores práticas de desempenho, garantindo tempos de carregamento rápidos e experiência de usuário suave."
+        },
+        "item2": {
+          "title": "🔒 Segurança",
+          "description": "Proteção robusta de dados",
+          "content": "Implementamos padrões de segurança de nível empresarial, incluindo criptografia, autenticação segura e auditorias regulares de segurança."
+        },
+        "item3": {
+          "title": "📱 Design Responsivo",
+          "description": "Funciona perfeitamente em todos os dispositivos",
+          "content": "Nossa interface é totalmente responsiva e se adapta perfeitamente a qualquer tamanho de tela, de smartphones a monitores de desktop."
+        }
+      },
+      "multiple": {
+        "title": "Accordion de Abertura Múltipla",
+        "item1": {
+          "title": "Informações da Conta",
+          "description": "Gerencie seus dados de conta",
+          "content": "Atualize seu nome, email, senha e outras informações pessoais. Você também pode gerenciar suas preferências de notificação e privacidade."
+        },
+        "item2": {
+          "title": "Configurações de Faturamento",
+          "description": "Configure pagamentos e assinaturas",
+          "content": "Visualize seu histórico de faturamento, atualize métodos de pagamento e gerencie suas assinaturas ativas. Todos os pagamentos são processados de forma segura."
+        },
+        "item3": {
+          "title": "Suporte e Ajuda",
+          "description": "Obtenha ajuda quando precisar",
+          "content": "Acesse nossa base de conhecimento abrangente, entre em contato com o suporte ou agende uma demonstração ao vivo com nossa equipe."
+        }
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Exibe um cartão com cabeçalho, conteúdo e rodapé.",
@@ -457,6 +506,87 @@
         "revenueChange": "+20,1% do mês passado",
         "usersValue": "+2.350",
         "usersChange": "+180,1% do mês passado"
+      },
+      "product": {
+        "title": "Card de Produto",
+        "productName": "Produto Premium",
+        "badge": "Novo",
+        "description": "Produto de alta qualidade com recursos incríveis para suas necessidades.",
+        "price": "$299,99",
+        "addToCart": "Adicionar ao Carrinho"
+      },
+      "notification": {
+        "title": "Card de Notificações",
+        "cardTitle": "Notificações",
+        "count": "3",
+        "message1": {
+          "title": "John Doe comentou em sua postagem",
+          "content": "Ótimo trabalho! Continue assim.",
+          "time": "há 2 horas"
+        },
+        "message2": {
+          "title": "Sarah Miller curtiu seu projeto",
+          "content": "Seu projeto recebeu uma nova curtida.",
+          "time": "há 5 horas"
+        },
+        "markAllRead": "Marcar todas como lidas"
+      },
+      "pricing": {
+        "title": "Card de Preços",
+        "planName": "Plano Pro",
+        "planDescription": "Para equipes profissionais",
+        "price": "$49",
+        "feature1": "Projetos ilimitados",
+        "feature2": "Suporte prioritário 24/7",
+        "feature3": "Análises avançadas",
+        "feature4": "Armazenamento de 100GB",
+        "subscribe": "Assinar Agora"
+      },
+      "settings": {
+        "title": "Card de Configurações",
+        "cardTitle": "Preferências",
+        "description": "Gerencie as preferências da sua conta",
+        "notifications": {
+          "title": "Notificações por Email",
+          "description": "Receba emails sobre atualizações da conta"
+        },
+        "marketing": {
+          "title": "Emails de Marketing",
+          "description": "Receba emails sobre novos recursos e ofertas"
+        },
+        "security": {
+          "title": "Autenticação de Dois Fatores",
+          "description": "Mantenha sua conta segura com 2FA"
+        },
+        "save": "Salvar Preferências"
+      }
+    },
+    "alertDialog": {
+      "title": "Alert Dialog",
+      "description": "Um diálogo modal que interrompe o usuário com conteúdo importante e espera uma resposta.",
+      "basic": {
+        "title": "Diálogo Básico",
+        "trigger": "Mostrar Diálogo",
+        "dialogTitle": "Você tem certeza absoluta?",
+        "dialogDescription": "Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta e removerá seus dados de nossos servidores.",
+        "cancel": "Cancelar",
+        "continue": "Continuar"
+      },
+      "delete": {
+        "title": "Confirmação de Exclusão",
+        "trigger": "Excluir Item",
+        "dialogTitle": "Excluir Item",
+        "dialogDescription": "Tem certeza de que deseja excluir este item? Esta ação não pode ser desfeita.",
+        "cancel": "Cancelar",
+        "confirm": "Excluir"
+      },
+      "logout": {
+        "title": "Confirmação de Logout",
+        "trigger": "Sair",
+        "dialogTitle": "Confirmar Logout",
+        "dialogDescription": "Tem certeza de que deseja sair? Você precisará fazer login novamente para acessar sua conta.",
+        "cancel": "Cancelar",
+        "confirm": "Sair"
       }
     },
     "button": {
@@ -557,6 +687,10 @@
       "name": "Visão Geral",
       "description": "Introdução e primeiros passos"
     },
+    "accordion": {
+      "name": "Acordeão",
+      "description": "Seções de conteúdo expansíveis e recolhíveis"
+    },
     "button": {
       "name": "Botão",
       "description": "Elementos de botão clicáveis"
@@ -568,6 +702,10 @@
     "card": {
       "name": "Cartão",
       "description": "Container para conteúdo e ações"
+    },
+    "alertDialog": {
+      "name": "Diálogo de Alerta",
+      "description": "Diálogos modais para confirmações importantes"
     },
     "stats": {
       "totalComponents": "Total de Componentes:",

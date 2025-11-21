@@ -463,6 +463,55 @@
   "components": {
     "title": "Componentes shadcn/ui",
     "description": "Explora y prueba todos los componentes shadcn/ui disponibles con ejemplos prácticos e integración con ASP.NET Core 8.",
+    "accordion": {
+      "title": "Acordeón",
+      "description": "Un conjunto de secciones de contenido expandibles y colapsables apiladas verticalmente.",
+      "basic": {
+        "title": "Acordeón Básico",
+        "question1": "¿Qué es React?",
+        "answer1": "React es una popular biblioteca de JavaScript para construir interfaces de usuario. Fue creada por Facebook y permite crear componentes reutilizables para aplicaciones web modernas.",
+        "question2": "¿Qué es TypeScript?",
+        "answer2": "TypeScript es un superconjunto tipado de JavaScript que compila a JavaScript puro. Agrega tipos estáticos opcionales y características avanzadas de programación orientada a objetos a JavaScript.",
+        "question3": "¿Qué es Tailwind CSS?",
+        "answer3": "Tailwind CSS es un framework CSS utility-first que proporciona clases de utilidad de bajo nivel para construir diseños personalizados sin salir de tu HTML."
+      },
+      "features": {
+        "title": "Acordeón de Características",
+        "item1": {
+          "title": "🚀 Rendimiento",
+          "description": "Aplicación rápida y optimizada",
+          "content": "Nuestra aplicación está construida con las mejores prácticas de rendimiento, garantizando tiempos de carga rápidos y una experiencia de usuario fluida."
+        },
+        "item2": {
+          "title": "🔒 Seguridad",
+          "description": "Protección robusta de datos",
+          "content": "Implementamos estándares de seguridad de nivel empresarial, incluyendo encriptación, autenticación segura y auditorías de seguridad regulares."
+        },
+        "item3": {
+          "title": "📱 Diseño Responsivo",
+          "description": "Funciona perfectamente en todos los dispositivos",
+          "content": "Nuestra interfaz es totalmente responsiva y se adapta perfectamente a cualquier tamaño de pantalla, desde smartphones hasta monitores de escritorio."
+        }
+      },
+      "multiple": {
+        "title": "Acordeón de Apertura Múltiple",
+        "item1": {
+          "title": "Información de la Cuenta",
+          "description": "Gestiona los datos de tu cuenta",
+          "content": "Actualiza tu nombre, correo electrónico, contraseña y otra información personal. También puedes gestionar tus preferencias de notificación y configuración de privacidad."
+        },
+        "item2": {
+          "title": "Configuración de Facturación",
+          "description": "Configura pagos y suscripciones",
+          "content": "Visualiza tu historial de facturación, actualiza métodos de pago y gestiona tus suscripciones activas. Todos los pagos se procesan de forma segura."
+        },
+        "item3": {
+          "title": "Soporte y Ayuda",
+          "description": "Obtén ayuda cuando la necesites",
+          "content": "Accede a nuestra completa base de conocimientos, contacta con soporte o agenda una demostración en vivo con nuestro equipo."
+        }
+      }
+    },
     "card": {
       "title": "Tarjeta",
       "description": "Muestra una tarjeta con encabezado, contenido y pie de página.",
@@ -490,6 +539,87 @@
         "revenueChange": "+20,1% del mes pasado",
         "usersValue": "+2.350",
         "usersChange": "+180,1% del mes pasado"
+      },
+      "product": {
+        "title": "Tarjeta de Producto",
+        "productName": "Producto Premium",
+        "badge": "Nuevo",
+        "description": "Producto de alta calidad con características increíbles para tus necesidades.",
+        "price": "$299,99",
+        "addToCart": "Añadir al Carrito"
+      },
+      "notification": {
+        "title": "Tarjeta de Notificaciones",
+        "cardTitle": "Notificaciones",
+        "count": "3",
+        "message1": {
+          "title": "John Doe comentó en tu publicación",
+          "content": "¡Buen trabajo! Sigue así.",
+          "time": "hace 2 horas"
+        },
+        "message2": {
+          "title": "Sarah Miller le gustó tu proyecto",
+          "content": "Tu proyecto recibió un nuevo me gusta.",
+          "time": "hace 5 horas"
+        },
+        "markAllRead": "Marcar todas como leídas"
+      },
+      "pricing": {
+        "title": "Tarjeta de Precios",
+        "planName": "Plan Pro",
+        "planDescription": "Para equipos profesionales",
+        "price": "$49",
+        "feature1": "Proyectos ilimitados",
+        "feature2": "Soporte prioritario 24/7",
+        "feature3": "Análisis avanzados",
+        "feature4": "Almacenamiento de 100GB",
+        "subscribe": "Suscribirse Ahora"
+      },
+      "settings": {
+        "title": "Tarjeta de Configuración",
+        "cardTitle": "Preferencias",
+        "description": "Gestiona las preferencias de tu cuenta",
+        "notifications": {
+          "title": "Notificaciones por Email",
+          "description": "Recibe emails sobre actualizaciones de la cuenta"
+        },
+        "marketing": {
+          "title": "Emails de Marketing",
+          "description": "Recibe emails sobre nuevas características y ofertas"
+        },
+        "security": {
+          "title": "Autenticación de Dos Factores",
+          "description": "Mantén tu cuenta segura con 2FA"
+        },
+        "save": "Guardar Preferencias"
+      }
+    },
+    "alertDialog": {
+      "title": "Diálogo de Alerta",
+      "description": "Un diálogo modal que interrumpe al usuario con contenido importante y espera una respuesta.",
+      "basic": {
+        "title": "Diálogo Básico",
+        "trigger": "Mostrar Diálogo",
+        "dialogTitle": "¿Estás absolutamente seguro?",
+        "dialogDescription": "Esta acción no se puede deshacer. Esto eliminará permanentemente tu cuenta y eliminará tus datos de nuestros servidores.",
+        "cancel": "Cancelar",
+        "continue": "Continuar"
+      },
+      "delete": {
+        "title": "Confirmación de Eliminación",
+        "trigger": "Eliminar Elemento",
+        "dialogTitle": "Eliminar Elemento",
+        "dialogDescription": "¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      },
+      "logout": {
+        "title": "Confirmación de Cierre de Sesión",
+        "trigger": "Cerrar Sesión",
+        "dialogTitle": "Confirmar Cierre de Sesión",
+        "dialogDescription": "¿Estás seguro de que quieres cerrar sesión? Necesitarás iniciar sesión nuevamente para acceder a tu cuenta.",
+        "cancel": "Cancelar",
+        "confirm": "Cerrar Sesión"
       }
     },
     "button": {
@@ -590,6 +720,10 @@
       "name": "Resumen",
       "description": "Introducción y primeros pasos"
     },
+    "accordion": {
+      "name": "Acordeón",
+      "description": "Secciones de contenido expandibles y colapsables"
+    },
     "button": {
       "name": "Botón",
       "description": "Elementos de botón clicables"
@@ -601,6 +735,10 @@
     "card": {
       "name": "Tarjeta",
       "description": "Contenedor para contenido y acciones"
+    },
+    "alertDialog": {
+      "name": "Diálogo de Alerta",
+      "description": "Diálogos modales para confirmaciones importantes"
     },
     "stats": {
       "totalComponents": "Total de Componentes:",
