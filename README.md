@@ -1,6 +1,6 @@
 # ASP.NET Core + Inertia.js + React
 
-Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, and **multilingual support** (Portuguese, English, Spanish).
+Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, **multilingual support** (Portuguese, English, Spanish), **SEO optimization**, and **PWA ready**.
 
 ## 🌐 Live Demo
 
@@ -141,6 +141,9 @@ npm run type-check           # TypeScript type checking
 - **Lucide React** for icons
 - **React i18next** - Multilingual support (PT/EN/ES)
 - **Interactive component showcase** with live examples
+- **SEO Optimized** - Meta tags, Open Graph, Twitter Cards
+- **PWA Ready** - Web App Manifest, themed icons
+- **Custom Favicons** - Multi-format support (SVG, ICO, Apple Touch)
 
 ### ✅ Backend
 - **ASP.NET Core 8**
@@ -150,13 +153,16 @@ npm run type-check           # TypeScript type checking
 - **InertiaCore** for integration
 
 ### ✅ Implemented Pages
-- **Welcome** - Modern multilingual landing page
+- **Welcome** - Modern multilingual landing page with SEO optimization
 - **Login** - Authentication with Identity
 - **Register** - User registration
 - **Dashboard** - Administrative panel
+- **Profile** - User profile management
 - **Components Showcase** - Interactive component examples
-  - **Button Examples** - 8 variants and states
+  - **Accordion Examples** - 3 collapsible content patterns
   - **Alert Examples** - 6 types with dismissible options
+  - **Alert Dialog Examples** - 3 modal confirmation dialogs
+  - **Button Examples** - 8 variants and states
   - **Card Examples** - 7 layouts and styles
   - **Overview** - Getting started guide
 
@@ -175,15 +181,25 @@ npm run type-check           # TypeScript type checking
 - **Route protection**
 - **Session management**
 
+### ✅ SEO & PWA Features
+- **Complete Meta Tags**: Title, description, keywords for all pages
+- **Open Graph Tags**: Optimized for social media sharing (Facebook, LinkedIn)
+- **Twitter Cards**: Rich previews for Twitter/X
+- **Structured Data**: JSON-LD for search engines
+- **PWA Manifest**: Web app installation support
+- **Multi-format Favicons**: SVG, ICO, Apple Touch Icon
+- **Theme Colors**: Consistent branding across platforms
+- **Multilingual SEO**: Localized metadata for PT/EN/ES
+
 ## 🎨 Component Showcase Features
 
 ### 📋 Component Examples Available
 
-#### **Button Component** (8 Examples)
-- **Variants**: Default, Secondary, Destructive, Outline, Ghost, Link
-- **Sizes**: Small, Medium, Large
-- **States**: Normal, Loading, Disabled
-- **Interactive demos** with live code examples
+#### **Accordion Component** (3 Examples)
+- **Basic Accordion**: Single collapsible FAQ sections
+- **Features Accordion**: Dynamic content with icons and descriptions
+- **Multiple Open Accordion**: Allow multiple sections open simultaneously
+- **Fully translated** in PT/EN/ES
 
 #### **Alert Component** (6 Types)
 - **Success Alerts**: Confirmation messages
@@ -193,12 +209,26 @@ npm run type-check           # TypeScript type checking
 - **Dismissible Alerts**: User-closable notifications
 - **Temporary Alerts**: Auto-disappearing messages
 
+#### **Alert Dialog Component** (3 Examples)
+- **Basic Dialog**: Simple confirmation modal
+- **Delete Confirmation**: Destructive action with state management
+- **Logout Confirmation**: Session termination dialog
+- **Functional callbacks** for user actions
+
+#### **Button Component** (8 Examples)
+- **Variants**: Default, Secondary, Destructive, Outline, Ghost, Link
+- **Sizes**: Small, Medium, Large
+- **States**: Normal, Loading, Disabled
+- **Interactive demos** with live code examples
+
 #### **Card Component** (7 Layouts)
 - **Basic Cards**: Simple content containers
-- **Header Cards**: With titles and descriptions
-- **Footer Cards**: Action buttons and links
-- **Image Cards**: Media integration
-- **Interactive Cards**: Hover states and animations
+- **User Profile Cards**: Avatar and bio information
+- **Statistics Cards**: Metrics with trend indicators
+- **Product Cards**: E-commerce with pricing and badges
+- **Notification Cards**: Activity feed with avatars
+- **Pricing Cards**: Subscription plans with features
+- **Settings Cards**: Toggle switches and preferences
 
 ### 🌐 Translation System Features
 
@@ -263,27 +293,46 @@ AspNetMvcReact/
 ├── Controllers/          # MVC Controllers
 │   ├── AuthController.cs
 │   ├── ComponentsController.cs  # Components showcase
-│   └── HomeController.cs
+│   ├── DashboardController.cs
+│   ├── HomeController.cs
+│   └── ProfileController.cs
 ├── Data/                 # EF Core Context
 ├── Models/               # Identity Models
 ├── frontend/             # React Application
 │   ├── src/
 │   │   ├── components/   # shadcn/ui Components
 │   │   │   ├── examples/ # Component examples
+│   │   │   │   ├── AccordionExamples.tsx
+│   │   │   │   ├── AlertDialogExamples.tsx
 │   │   │   │   ├── AlertExamples.tsx
 │   │   │   │   ├── ButtonExamples.tsx
 │   │   │   │   └── CardExamples.tsx
+│   │   │   ├── layout/   # Layout components
+│   │   │   │   ├── AppLayout.tsx
+│   │   │   │   └── Footer.tsx
 │   │   │   └── ui/       # shadcn/ui base components
 │   │   ├── locales/      # Translation files
-│   │   │   ├── pt.json   # Portuguese
+│   │   │   ├── pt.json   # Portuguese (default)
 │   │   │   ├── en.json   # English
 │   │   │   └── es.json   # Spanish
 │   │   ├── Pages/        # Inertia Pages
+│   │   │   ├── Auth/     # Authentication pages
+│   │   │   ├── ComponentsDemo.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── Profile.tsx
+│   │   │   └── Welcome.tsx
 │   │   ├── i18n.ts       # i18n configuration
 │   │   └── main.tsx      # Entry point
 │   ├── package.json
 │   └── vite.config.ts
 ├── wwwroot/              # Static Assets
+│   ├── favicon.svg       # SVG favicon
+│   ├── favicon.ico       # ICO favicon
+│   ├── apple-touch-icon.svg
+│   ├── manifest.json     # PWA manifest
+│   └── build/            # Vite build output
+├── Views/
+│   └── App.cshtml        # Main layout with SEO tags
 ├── appsettings.json      # Configuration
 └── Program.cs            # Application Configuration
 ```
