@@ -1,7 +1,9 @@
 import { Link } from '@inertiajs/react';
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
+    const { t } = useTranslation();
     return (
         <footer className="border-t bg-muted/50 backdrop-blur">
             <div className="container mx-auto px-4 py-12">
@@ -23,7 +25,7 @@ export default function Footer() {
                     {/* Descrição do Template */}
                     <div className="space-y-2">
                         <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-                            Template completo para desenvolvimento moderno com ASP.NET Core 8, Inertia.js, React e shadcn/ui.
+                            {t('welcome.footer.description')}
                         </p>
                     </div>
 
@@ -31,9 +33,7 @@ export default function Footer() {
 
                     {/* Copyright com coração */}
                     <p className="text-sm text-muted-foreground">
-                        © 2025 ASP.NET Stack Template. Desenvolvido com{' '}
-                        <span className="text-red-500 mx-1">❤</span>
-                        para a comunidade.
+                        {t('welcome.footer.copyright').replace('❤️', '❤')}
                     </p>
                 </div>
             </div>
