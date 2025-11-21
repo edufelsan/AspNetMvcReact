@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CalendarDays } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { CalendarDays, ShoppingCart, Star, Bell, Check, Settings as SettingsIcon } from 'lucide-react';
 import { CodeExample } from '../CodeExample';
 
 const CardExamples: React.FC = () => {
@@ -345,6 +347,495 @@ public class DashboardController : Controller
           code={{
             frontend: frontendCode3,
             backend: backendCode3
+          }}
+        />
+      </div>
+
+      {/* Product Card */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold">{t('components.card.product.title')}</h3>
+        <div className="flex flex-wrap gap-4">
+          <Card className="w-[300px]">
+            <CardHeader className="p-0">
+              <div className="aspect-video bg-gradient-to-br from-purple-500 to-pink-500 rounded-t-lg flex items-center justify-center">
+                <ShoppingCart className="h-16 w-16 text-white" />
+              </div>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-lg">{t('components.card.product.productName')}</CardTitle>
+                <Badge>{t('components.card.product.badge')}</Badge>
+              </div>
+              <CardDescription className="mb-3">
+                {t('components.card.product.description')}
+              </CardDescription>
+              <div className="flex items-center space-x-1 mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+                <span className="text-sm text-muted-foreground ml-2">(4.8)</span>
+              </div>
+              <div className="text-2xl font-bold">{t('components.card.product.price')}</div>
+            </CardContent>
+            <CardFooter className="flex gap-2">
+              <Button className="flex-1">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                {t('components.card.product.addToCart')}
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <CodeExample
+          code={{
+            frontend: `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ShoppingCart, Star } from 'lucide-react';
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  rating: number;
+  badge: string;
+}
+
+export function ProductCard({ product }: { product: Product }) {
+  return (
+    <Card className="w-[300px]">
+      <CardHeader className="p-0">
+        <div className="aspect-video bg-gradient-to-br from-purple-500 to-pink-500 rounded-t-lg flex items-center justify-center">
+          <ShoppingCart className="h-16 w-16 text-white" />
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4">
+        <div className="flex items-center justify-between mb-2">
+          <CardTitle className="text-lg">{product.name}</CardTitle>
+          <Badge>{product.badge}</Badge>
+        </div>
+        <CardDescription className="mb-3">{product.description}</CardDescription>
+        <div className="flex items-center space-x-1 mb-2">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+          ))}
+          <span className="text-sm text-muted-foreground ml-2">({product.rating})</span>
+        </div>
+        <div className="text-2xl font-bold">{product.price}</div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}`,
+            backend: `// Models/Product.cs
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal Price { get; set; }
+    public double Rating { get; set; }
+    public string Badge { get; set; } = "";
+    public string ImageUrl { get; set; } = "";
+}
+
+// Controllers/ProductsController.cs
+public class ProductsController : Controller
+{
+    private readonly IProductService _productService;
+
+    public ProductsController(IProductService productService)
+    {
+        _productService = productService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var products = _productService.GetFeaturedProducts();
+        return Inertia.Render("Products/Index", new { products });
+    }
+
+    [HttpPost]
+    public IActionResult AddToCart(int productId)
+    {
+        _productService.AddToCart(User.Identity.Name, productId);
+        return Inertia.Back().With("success", "Product added to cart!");
+    }
+}`
+          }}
+        />
+      </div>
+
+      {/* Notification Card */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold">{t('components.card.notification.title')}</h3>
+        <div className="flex flex-wrap gap-4">
+          <Card className="w-[380px]">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Bell className="h-5 w-5" />
+                  <CardTitle className="text-base">{t('components.card.notification.cardTitle')}</CardTitle>
+                </div>
+                <Badge variant="secondary">{t('components.card.notification.count')}</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start space-x-4 rounded-lg border p-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium">{t('components.card.notification.message1.title')}</p>
+                  <p className="text-sm text-muted-foreground">{t('components.card.notification.message1.content')}</p>
+                  <p className="text-xs text-muted-foreground">{t('components.card.notification.message1.time')}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4 rounded-lg border p-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarFallback>SM</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium">{t('components.card.notification.message2.title')}</p>
+                  <p className="text-sm text-muted-foreground">{t('components.card.notification.message2.content')}</p>
+                  <p className="text-xs text-muted-foreground">{t('components.card.notification.message2.time')}</p>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="ghost" className="w-full">{t('components.card.notification.markAllRead')}</Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <CodeExample
+          code={{
+            frontend: `import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Bell } from 'lucide-react';
+
+interface Notification {
+  id: number;
+  user: string;
+  initials: string;
+  title: string;
+  content: string;
+  time: string;
+  read: boolean;
+}
+
+export function NotificationCard({ notifications }: { notifications: Notification[] }) {
+  return (
+    <Card className="w-[380px]">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Bell className="h-5 w-5" />
+            <CardTitle className="text-base">Notifications</CardTitle>
+          </div>
+          <Badge variant="secondary">{notifications.length}</Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {notifications.map((notification) => (
+          <div key={notification.id} className="flex items-start space-x-4 rounded-lg border p-3">
+            <Avatar className="h-9 w-9">
+              <AvatarFallback>{notification.initials}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium">{notification.title}</p>
+              <p className="text-sm text-muted-foreground">{notification.content}</p>
+              <p className="text-xs text-muted-foreground">{notification.time}</p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+      <CardFooter>
+        <Button variant="ghost" className="w-full">Mark all as read</Button>
+      </CardFooter>
+    </Card>
+  );
+}`,
+            backend: `// Models/Notification.cs
+public class Notification
+{
+    public int Id { get; set; }
+    public string User { get; set; } = "";
+    public string Initials { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Content { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public bool Read { get; set; }
+}
+
+// Controllers/NotificationsController.cs
+public class NotificationsController : Controller
+{
+    private readonly INotificationService _notificationService;
+
+    public NotificationsController(INotificationService notificationService)
+    {
+        _notificationService = notificationService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var notifications = _notificationService.GetUserNotifications(User.Identity.Name);
+        return Inertia.Render("Notifications/Index", new { notifications });
+    }
+
+    [HttpPost]
+    public IActionResult MarkAllAsRead()
+    {
+        _notificationService.MarkAllAsRead(User.Identity.Name);
+        return Inertia.Back().With("success", "All notifications marked as read!");
+    }
+}`
+          }}
+        />
+      </div>
+
+      {/* Pricing Card */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold">{t('components.card.pricing.title')}</h3>
+        <div className="flex flex-wrap gap-4">
+          <Card className="w-[300px]">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-lg">{t('components.card.pricing.planName')}</CardTitle>
+              <CardDescription>{t('components.card.pricing.planDescription')}</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <div className="space-y-2">
+                <div className="text-4xl font-bold">{t('components.card.pricing.price')}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>{t('components.card.pricing.feature1')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>{t('components.card.pricing.feature2')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>{t('components.card.pricing.feature3')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>{t('components.card.pricing.feature4')}</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">{t('components.card.pricing.subscribe')}</Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <CodeExample
+          code={{
+            frontend: `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
+
+interface PricingPlan {
+  name: string;
+  description: string;
+  price: string;
+  features: string[];
+}
+
+export function PricingCard({ plan }: { plan: PricingPlan }) {
+  return (
+    <Card className="w-[300px]">
+      <CardHeader className="text-center pb-2">
+        <CardTitle className="text-lg">{plan.name}</CardTitle>
+        <CardDescription>{plan.description}</CardDescription>
+      </CardHeader>
+      <CardContent className="text-center space-y-4">
+        <div className="space-y-2">
+          <div className="text-4xl font-bold">
+            {plan.price}
+            <span className="text-lg font-normal text-muted-foreground">/mo</span>
+          </div>
+        </div>
+        <div className="space-y-2 text-sm">
+          {plan.features.map((feature, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-600" />
+              <span>{feature}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">Subscribe</Button>
+      </CardFooter>
+    </Card>
+  );
+}`,
+            backend: `// Models/PricingPlan.cs
+public class PricingPlan
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal Price { get; set; }
+    public List<string> Features { get; set; } = new();
+    public string BillingCycle { get; set; } = "monthly";
+}
+
+// Controllers/SubscriptionController.cs
+public class SubscriptionController : Controller
+{
+    private readonly ISubscriptionService _subscriptionService;
+
+    public SubscriptionController(ISubscriptionService subscriptionService)
+    {
+        _subscriptionService = subscriptionService;
+    }
+
+    [HttpGet]
+    public IActionResult Pricing()
+    {
+        var plans = _subscriptionService.GetAvailablePlans();
+        return Inertia.Render("Subscription/Pricing", new { plans });
+    }
+
+    [HttpPost]
+    public IActionResult Subscribe(int planId)
+    {
+        _subscriptionService.CreateSubscription(User.Identity.Name, planId);
+        return Inertia.Render("Subscription/Success")
+                     .With("success", "Subscription created successfully!");
+    }
+}`
+          }}
+        />
+      </div>
+
+      {/* Settings Card */}
+      <div className="space-y-4">
+        <h3 className="text-xl font-semibold">{t('components.card.settings.title')}</h3>
+        <div className="flex flex-wrap gap-4">
+          <Card className="w-[380px]">
+            <CardHeader>
+              <div className="flex items-center space-x-2">
+                <SettingsIcon className="h-5 w-5" />
+                <CardTitle>{t('components.card.settings.cardTitle')}</CardTitle>
+              </div>
+              <CardDescription>{t('components.card.settings.description')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between space-x-2">
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium">{t('components.card.settings.notifications.title')}</p>
+                  <p className="text-sm text-muted-foreground">{t('components.card.settings.notifications.description')}</p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between space-x-2">
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium">{t('components.card.settings.marketing.title')}</p>
+                  <p className="text-sm text-muted-foreground">{t('components.card.settings.marketing.description')}</p>
+                </div>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between space-x-2">
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium">{t('components.card.settings.security.title')}</p>
+                  <p className="text-sm text-muted-foreground">{t('components.card.settings.security.description')}</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">{t('components.card.settings.save')}</Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <CodeExample
+          code={{
+            frontend: `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Settings as SettingsIcon } from 'lucide-react';
+
+interface Setting {
+  id: string;
+  title: string;
+  description: string;
+  enabled: boolean;
+}
+
+export function SettingsCard({ settings }: { settings: Setting[] }) {
+  return (
+    <Card className="w-[380px]">
+      <CardHeader>
+        <div className="flex items-center space-x-2">
+          <SettingsIcon className="h-5 w-5" />
+          <CardTitle>Preferences</CardTitle>
+        </div>
+        <CardDescription>Manage your account preferences</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {settings.map((setting) => (
+          <div key={setting.id} className="flex items-center justify-between space-x-2">
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium">{setting.title}</p>
+              <p className="text-sm text-muted-foreground">{setting.description}</p>
+            </div>
+            <Switch defaultChecked={setting.enabled} />
+          </div>
+        ))}
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">Save Preferences</Button>
+      </CardFooter>
+    </Card>
+  );
+}`,
+            backend: `// Models/UserSettings.cs
+public class UserSettings
+{
+    public string UserId { get; set; } = "";
+    public bool EmailNotifications { get; set; } = true;
+    public bool MarketingEmails { get; set; } = false;
+    public bool TwoFactorEnabled { get; set; } = true;
+}
+
+// Controllers/SettingsController.cs
+public class SettingsController : Controller
+{
+    private readonly IUserSettingsService _settingsService;
+
+    public SettingsController(IUserSettingsService settingsService)
+    {
+        _settingsService = settingsService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var settings = _settingsService.GetUserSettings(User.Identity.Name);
+        return Inertia.Render("Settings/Index", new { settings });
+    }
+
+    [HttpPost]
+    public IActionResult Update([FromForm] UserSettings settings)
+    {
+        _settingsService.UpdateUserSettings(User.Identity.Name, settings);
+        return Inertia.Back().With("success", "Settings updated successfully!");
+    }
+}`
           }}
         />
       </div>
