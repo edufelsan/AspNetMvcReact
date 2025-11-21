@@ -10,7 +10,9 @@ import {
     AlertTriangle, 
     CreditCard,
     Home,
-    ChevronRight
+    ChevronRight,
+    MessageSquare,
+    ChevronDown
 } from 'lucide-react';
 
 interface ComponentsSidebarProps {
@@ -40,11 +42,11 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             examples: 0
         },
         {
-            id: 'button',
-            name: 'Button',
-            icon: MousePointer2,
-            description: t('sidebar.button.description'),
-            examples: 8
+            id: 'accordion',
+            name: 'Accordion',
+            icon: ChevronDown,
+            description: t('sidebar.accordion.description'),
+            examples: 3
         },
         {
             id: 'alert',
@@ -52,6 +54,20 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             icon: AlertTriangle,
             description: t('sidebar.alert.description'),
             examples: 6
+        },
+        {
+            id: 'alertDialog',
+            name: 'Alert Dialog',
+            icon: MessageSquare,
+            description: t('sidebar.alertDialog.description'),
+            examples: 3
+        },
+        {
+            id: 'button',
+            name: 'Button',
+            icon: MousePointer2,
+            description: t('sidebar.button.description'),
+            examples: 8
         },
         {
             id: 'card',
