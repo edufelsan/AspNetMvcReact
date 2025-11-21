@@ -5,6 +5,8 @@ import { ComponentsSidebar } from '@/components/ComponentsSidebar';
 import { ButtonExamples } from '@/components/examples/ButtonExamples';
 import { AlertExamples } from '@/components/examples/AlertExamples';
 import CardExamples from '@/components/examples/CardExamples';
+import AlertDialogExamples from '@/components/examples/AlertDialogExamples';
+import AccordionExamples from '@/components/examples/AccordionExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, Palette, Zap } from 'lucide-react';
@@ -15,10 +17,14 @@ export default function ComponentsDemo() {
 
     const renderContent = () => {
         switch (selectedComponent) {
-            case 'button':
-                return <ButtonExamples />;
+            case 'accordion':
+                return <AccordionExamples />;
             case 'alert':
                 return <AlertExamples />;
+            case 'alertDialog':
+                return <AlertDialogExamples />;
+            case 'button':
+                return <ButtonExamples />;
             case 'card':
                 return <CardExamples />;
             case 'overview':
