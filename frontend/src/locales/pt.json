@@ -479,6 +479,82 @@
         }
       }
     },
+    "aspectRatio": {
+      "title": "Aspect Ratio",
+      "description": "Exibe conteúdo mantendo uma proporção de aspecto específica.",
+      "imageRatio": {
+        "title": "Imagem 16:9",
+        "description": "Proporção widescreen padrão para imagens e vídeos modernos.",
+        "alt": "Foto por Javier Allegue Barros"
+      },
+      "videoRatio": {
+        "title": "Vídeo 4:3",
+        "description": "Proporção clássica de tela, ideal para conteúdo de vídeo tradicional."
+      },
+      "comparison": {
+        "title": "Comparação de Proporções",
+        "description": "Visualização lado a lado de diferentes proporções de aspecto.",
+        "square": "1:1 Quadrado",
+        "widescreen": "16:9 Widescreen",
+        "ultrawide": "21:9 Ultrawide"
+      }
+    },
+    "avatar": {
+      "title": "Avatar",
+      "description": "Uma imagem que representa um usuário ou organização.",
+      "basic": {
+        "title": "Avatar Básico",
+        "description": "Exemplo simples de avatar com imagem e fallback para iniciais."
+      },
+      "sizes": {
+        "title": "Tamanhos de Avatar",
+        "description": "Avatares em diferentes tamanhos para vários contextos de uso.",
+        "small": "Pequeno",
+        "medium": "Médio",
+        "large": "Grande",
+        "extraLarge": "Extra Grande"
+      },
+      "group": {
+        "title": "Grupo de Avatares com Status",
+        "description": "Múltiplos avatares empilhados com indicadores de status online.",
+        "online": "Online",
+        "away": "Ausente",
+        "offline": "Offline"
+      }
+    },
+    "badge": {
+      "title": "Badge",
+      "description": "Exibe um emblema ou etiqueta para categorizar ou destacar informações.",
+      "variants": {
+        "title": "Variantes de Badge",
+        "description": "Diferentes estilos de badge para vários contextos de uso.",
+        "default": "Padrão",
+        "secondary": "Secundário",
+        "destructive": "Destrutivo",
+        "outline": "Contorno"
+      },
+      "status": {
+        "title": "Badges de Status com Ícones",
+        "description": "Badges indicando status com ícones para melhor visualização.",
+        "active": "Ativo",
+        "pending": "Pendente",
+        "warning": "Aviso",
+        "inactive": "Inativo"
+      },
+      "product": {
+        "title": "Badges de Produto",
+        "description": "Badges combinados para destacar características de produtos.",
+        "productName": "Fones de Ouvido Premium Sem Fio",
+        "productName2": "Smart Watch Pro",
+        "new": "Novo",
+        "tag1": "Eletrônicos",
+        "tag2": "Áudio",
+        "tag3": "Sem Fio",
+        "tag4": "Wearable",
+        "tag5": "Fitness",
+        "fastShipping": "Entrega Rápida"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Exibe um cartão com cabeçalho, conteúdo e rodapé.",
@@ -706,6 +782,18 @@
     "alertDialog": {
       "name": "Diálogo de Alerta",
       "description": "Diálogos modais para confirmações importantes"
+    },
+    "aspectRatio": {
+      "name": "Aspect Ratio",
+      "description": "Exibe conteúdo em uma proporção de aspecto específica"
+    },
+    "avatar": {
+      "name": "Avatar",
+      "description": "Imagem de perfil de usuário com fallback para iniciais"
+    },
+    "badge": {
+      "name": "Badge",
+      "description": "Etiquetas pequenas para categorias, status ou contadores"
     },
     "stats": {
       "totalComponents": "Total de Componentes:",

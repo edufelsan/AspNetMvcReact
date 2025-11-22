@@ -479,6 +479,82 @@
         }
       }
     },
+    "aspectRatio": {
+      "title": "Aspect Ratio",
+      "description": "Displays content while maintaining a specified aspect ratio.",
+      "imageRatio": {
+        "title": "Image 16:9",
+        "description": "Standard widescreen ratio for modern images and videos.",
+        "alt": "Photo by Javier Allegue Barros"
+      },
+      "videoRatio": {
+        "title": "Video 4:3",
+        "description": "Classic screen ratio, ideal for traditional video content."
+      },
+      "comparison": {
+        "title": "Aspect Ratio Comparison",
+        "description": "Side-by-side visualization of different aspect ratios.",
+        "square": "1:1 Square",
+        "widescreen": "16:9 Widescreen",
+        "ultrawide": "21:9 Ultrawide"
+      }
+    },
+    "avatar": {
+      "title": "Avatar",
+      "description": "An image element that represents a user or organization.",
+      "basic": {
+        "title": "Basic Avatar",
+        "description": "Simple avatar example with image and fallback to initials."
+      },
+      "sizes": {
+        "title": "Avatar Sizes",
+        "description": "Avatars in different sizes for various use contexts.",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large",
+        "extraLarge": "Extra Large"
+      },
+      "group": {
+        "title": "Avatar Group with Status",
+        "description": "Multiple stacked avatars with online status indicators.",
+        "online": "Online",
+        "away": "Away",
+        "offline": "Offline"
+      }
+    },
+    "badge": {
+      "title": "Badge",
+      "description": "Displays a badge or label to categorize or highlight information.",
+      "variants": {
+        "title": "Badge Variants",
+        "description": "Different badge styles for various use contexts.",
+        "default": "Default",
+        "secondary": "Secondary",
+        "destructive": "Destructive",
+        "outline": "Outline"
+      },
+      "status": {
+        "title": "Status Badges with Icons",
+        "description": "Badges indicating status with icons for better visualization.",
+        "active": "Active",
+        "pending": "Pending",
+        "warning": "Warning",
+        "inactive": "Inactive"
+      },
+      "product": {
+        "title": "Product Badges",
+        "description": "Combined badges to highlight product features.",
+        "productName": "Premium Wireless Headphones",
+        "productName2": "Smart Watch Pro",
+        "new": "New",
+        "tag1": "Electronics",
+        "tag2": "Audio",
+        "tag3": "Wireless",
+        "tag4": "Wearable",
+        "tag5": "Fitness",
+        "fastShipping": "Fast Shipping"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Displays a card with header, content, and footer.",
@@ -758,6 +834,18 @@
     "alertDialog": {
       "name": "Alert Dialog",
       "description": "Modal dialogs for important confirmations"
+    },
+    "aspectRatio": {
+      "name": "Aspect Ratio",
+      "description": "Displays content at a specified aspect ratio"
+    },
+    "avatar": {
+      "name": "Avatar",
+      "description": "User profile image with fallback to initials"
+    },
+    "badge": {
+      "name": "Badge",
+      "description": "Small labels for categories, status or counters"
     },
     "stats": {
       "totalComponents": "Total Components:",

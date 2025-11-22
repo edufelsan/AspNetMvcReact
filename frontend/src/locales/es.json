@@ -512,6 +512,82 @@
         }
       }
     },
+    "aspectRatio": {
+      "title": "Aspect Ratio",
+      "description": "Muestra contenido manteniendo una relación de aspecto específica.",
+      "imageRatio": {
+        "title": "Imagen 16:9",
+        "description": "Relación widescreen estándar para imágenes y videos modernos.",
+        "alt": "Foto por Javier Allegue Barros"
+      },
+      "videoRatio": {
+        "title": "Video 4:3",
+        "description": "Relación de pantalla clásica, ideal para contenido de video tradicional."
+      },
+      "comparison": {
+        "title": "Comparación de Relaciones de Aspecto",
+        "description": "Visualización lado a lado de diferentes relaciones de aspecto.",
+        "square": "1:1 Cuadrado",
+        "widescreen": "16:9 Widescreen",
+        "ultrawide": "21:9 Ultrawide"
+      }
+    },
+    "avatar": {
+      "title": "Avatar",
+      "description": "Un elemento de imagen que representa a un usuario u organización.",
+      "basic": {
+        "title": "Avatar Básico",
+        "description": "Ejemplo simple de avatar con imagen y respaldo a iniciales."
+      },
+      "sizes": {
+        "title": "Tamaños de Avatar",
+        "description": "Avatares en diferentes tamaños para varios contextos de uso.",
+        "small": "Pequeño",
+        "medium": "Mediano",
+        "large": "Grande",
+        "extraLarge": "Extra Grande"
+      },
+      "group": {
+        "title": "Grupo de Avatares con Estado",
+        "description": "Múltiples avatares apilados con indicadores de estado en línea.",
+        "online": "En línea",
+        "away": "Ausente",
+        "offline": "Desconectado"
+      }
+    },
+    "badge": {
+      "title": "Badge",
+      "description": "Muestra una insignia o etiqueta para categorizar o destacar información.",
+      "variants": {
+        "title": "Variantes de Badge",
+        "description": "Diferentes estilos de badge para varios contextos de uso.",
+        "default": "Predeterminado",
+        "secondary": "Secundario",
+        "destructive": "Destructivo",
+        "outline": "Contorno"
+      },
+      "status": {
+        "title": "Badges de Estado con Iconos",
+        "description": "Badges indicando estado con iconos para mejor visualización.",
+        "active": "Activo",
+        "pending": "Pendiente",
+        "warning": "Advertencia",
+        "inactive": "Inactivo"
+      },
+      "product": {
+        "title": "Badges de Producto",
+        "description": "Badges combinados para destacar características de productos.",
+        "productName": "Auriculares Premium Inalámbricos",
+        "productName2": "Smart Watch Pro",
+        "new": "Nuevo",
+        "tag1": "Electrónica",
+        "tag2": "Audio",
+        "tag3": "Inalámbrico",
+        "tag4": "Wearable",
+        "tag5": "Fitness",
+        "fastShipping": "Envío Rápido"
+      }
+    },
     "card": {
       "title": "Tarjeta",
       "description": "Muestra una tarjeta con encabezado, contenido y pie de página.",
@@ -739,6 +815,18 @@
     "alertDialog": {
       "name": "Diálogo de Alerta",
       "description": "Diálogos modales para confirmaciones importantes"
+    },
+    "aspectRatio": {
+      "name": "Aspect Ratio",
+      "description": "Muestra contenido en una relación de aspecto específica"
+    },
+    "avatar": {
+      "name": "Avatar",
+      "description": "Imagen de perfil de usuario con respaldo a iniciales"
+    },
+    "badge": {
+      "name": "Badge",
+      "description": "Etiquetas pequeñas para categorías, estado o contadores"
     },
     "stats": {
       "totalComponents": "Total de Componentes:",
