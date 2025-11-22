@@ -7,6 +7,9 @@ import { AlertExamples } from '@/components/examples/AlertExamples';
 import CardExamples from '@/components/examples/CardExamples';
 import AlertDialogExamples from '@/components/examples/AlertDialogExamples';
 import AccordionExamples from '@/components/examples/AccordionExamples';
+import AspectRatioExamples from '@/components/examples/AspectRatioExamples';
+import AvatarExamples from '@/components/examples/AvatarExamples';
+import BadgeExamples from '@/components/examples/BadgeExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, Palette, Zap } from 'lucide-react';
@@ -23,6 +26,12 @@ export default function ComponentsDemo() {
                 return <AlertExamples />;
             case 'alertDialog':
                 return <AlertDialogExamples />;
+            case 'aspectRatio':
+                return <AspectRatioExamples />;
+            case 'avatar':
+                return <AvatarExamples />;
+            case 'badge':
+                return <BadgeExamples />;
             case 'button':
                 return <ButtonExamples />;
             case 'card':
