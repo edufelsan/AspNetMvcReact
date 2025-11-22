@@ -12,7 +12,10 @@ import {
     Home,
     ChevronRight,
     MessageSquare,
-    ChevronDown
+    ChevronDown,
+    RectangleHorizontal,
+    User,
+    Tag
 } from 'lucide-react';
 
 interface ComponentsSidebarProps {
@@ -60,6 +63,27 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             name: 'Alert Dialog',
             icon: MessageSquare,
             description: t('sidebar.alertDialog.description'),
+            examples: 3
+        },
+        {
+            id: 'aspectRatio',
+            name: 'Aspect Ratio',
+            icon: RectangleHorizontal,
+            description: t('sidebar.aspectRatio.description'),
+            examples: 3
+        },
+        {
+            id: 'avatar',
+            name: 'Avatar',
+            icon: User,
+            description: t('sidebar.avatar.description'),
+            examples: 3
+        },
+        {
+            id: 'badge',
+            name: 'Badge',
+            icon: Tag,
+            description: t('sidebar.badge.description'),
             examples: 3
         },
         {
