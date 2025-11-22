@@ -162,6 +162,9 @@ npm run type-check           # TypeScript type checking
   - **Accordion Examples** - 3 collapsible content patterns
   - **Alert Examples** - 6 types with dismissible options
   - **Alert Dialog Examples** - 3 modal confirmation dialogs
+  - **Aspect Ratio Examples** - 3 responsive ratio containers
+  - **Avatar Examples** - 3 user profile image variations
+  - **Badge Examples** - 3 label and status indicators
   - **Button Examples** - 8 variants and states
   - **Card Examples** - 7 layouts and styles
   - **Overview** - Getting started guide
@@ -214,6 +217,24 @@ npm run type-check           # TypeScript type checking
 - **Delete Confirmation**: Destructive action with state management
 - **Logout Confirmation**: Session termination dialog
 - **Functional callbacks** for user actions
+
+#### **Aspect Ratio Component** (3 Examples)
+- **Image 16:9**: Widescreen ratio for modern images
+- **Video 4:3**: Classic ratio for traditional content
+- **Comparison Grid**: Side-by-side 1:1, 16:9, and 21:9 ratios
+- **Responsive containers** maintaining proportions
+
+#### **Avatar Component** (3 Examples)
+- **Basic Avatar**: Profile images with initials fallback
+- **Avatar Sizes**: 4 size variations (Small to Extra Large)
+- **Avatar Group**: Stacked avatars with online status indicators
+- **Status badges** (Online, Away, Offline)
+
+#### **Badge Component** (3 Examples)
+- **Badge Variants**: Default, Secondary, Destructive, Outline styles
+- **Status Badges**: With icons (Active, Pending, Warning, Inactive)
+- **Product Badges**: Combined tags, ratings, and promotional labels
+- **Icon integration** with Lucide React
 
 #### **Button Component** (8 Examples)
 - **Variants**: Default, Secondary, Destructive, Outline, Ghost, Link
