@@ -555,6 +555,339 @@
         "fastShipping": "Entrega Rápida"
       }
     },
+    "breadcrumb": {
+      "title": "Breadcrumb",
+      "description": "Exibe o caminho de navegação hierárquica da localização atual do usuário.",
+      "basic": {
+        "title": "Breadcrumb Básico",
+        "description": "Navegação simples de trilha mostrando a hierarquia de páginas.",
+        "home": "Início",
+        "products": "Produtos",
+        "electronics": "Eletrônicos"
+      },
+      "withIcons": {
+        "title": "Breadcrumb com Ícones",
+        "description": "Trilha de navegação aprimorada com ícones para melhor reconhecimento visual.",
+        "home": "Início",
+        "dashboard": "Dashboard",
+        "settings": "Configurações",
+        "profile": "Perfil"
+      },
+      "customSeparator": {
+        "title": "Breadcrumb com Separador Personalizado",
+        "description": "Trilha de navegação usando separadores personalizados entre itens.",
+        "home": "Início",
+        "documentation": "Documentação",
+        "components": "Componentes",
+        "breadcrumb": "Breadcrumb"
+      }
+    },
+    "buttonGroup": {
+      "title": "Button Group",
+      "description": "Agrupa botões relacionados em um componente coeso e visual.",
+      "basic": {
+        "title": "Grupo de Botões Básico",
+        "description": "Grupo simples de botões com ícones para formatação de texto.",
+        "bold": "Negrito",
+        "italic": "Itálico",
+        "underline": "Sublinhado"
+      },
+      "withState": {
+        "title": "Grupo com Estado",
+        "description": "Grupo de botões com gerenciamento de estado para controle de alinhamento.",
+        "left": "Esquerda",
+        "center": "Centro",
+        "right": "Direita",
+        "currentAlignment": "Alinhamento atual"
+      },
+      "withLabels": {
+        "title": "Grupo com Labels",
+        "description": "Botões com ícones e texto para ações comuns.",
+        "copy": "Copiar",
+        "download": "Baixar",
+        "share": "Compartilhar"
+      }
+    },
+    "calendar": {
+      "title": "Calendar",
+      "description": "Componente de calendário para seleção de datas com suporte a múltiplos modos.",
+      "basic": {
+        "title": "Calendário Básico",
+        "description": "Seletor de data simples para escolher uma única data.",
+        "selectedDate": "Data selecionada"
+      },
+      "multiple": {
+        "title": "Múltiplas Datas",
+        "description": "Permite selecionar múltiplas datas de forma independente.",
+        "selectedDates": "Datas selecionadas"
+      },
+      "range": {
+        "title": "Intervalo de Datas",
+        "description": "Selecione um período com data inicial e final.",
+        "from": "De",
+        "to": "Até",
+        "totalDays": "Total de dias",
+        "days": "dias"
+      }
+    },
+    "carousel": {
+      "title": "Carousel",
+      "description": "Componente de carrossel para exibir conteúdo em slides navegáveis.",
+      "basic": {
+        "title": "Carousel Básico",
+        "description": "Carrossel simples com itens numerados e navegação."
+      },
+      "images": {
+        "title": "Carousel de Imagens",
+        "description": "Galeria de imagens navegável com controles de navegação.",
+        "image": "Imagem"
+      },
+      "products": {
+        "title": "Carousel de Produtos",
+        "description": "Grade de produtos em carrossel com múltiplos itens visíveis.",
+        "product": "Produto",
+        "price": "Preço",
+        "addToCart": "Adicionar ao Carrinho"
+      }
+    },
+    "chart": {
+      "title": "Chart",
+      "description": "Componentes de gráficos para visualização de dados interativa.",
+      "bar": {
+        "title": "Gráfico de Barras",
+        "description": "Visualização de dados em barras verticais para comparação.",
+        "chartTitle": "Vendas Mensais",
+        "chartDescription": "Comparação de vendas por mês",
+        "months": {
+          "jan": "Jan",
+          "feb": "Fev",
+          "mar": "Mar",
+          "apr": "Abr",
+          "may": "Mai",
+          "jun": "Jun"
+        }
+      },
+      "line": {
+        "title": "Gráfico de Linha",
+        "description": "Gráfico de linha para visualizar tendências ao longo do tempo.",
+        "chartTitle": "Atividade de Usuários",
+        "chartDescription": "Usuários ativos por dia da semana",
+        "days": {
+          "mon": "Seg",
+          "tue": "Ter",
+          "wed": "Qua",
+          "thu": "Qui",
+          "fri": "Sex",
+          "sat": "Sáb",
+          "sun": "Dom"
+        }
+      },
+      "pie": {
+        "title": "Gráfico de Pizza",
+        "description": "Gráfico circular para mostrar distribuição proporcional.",
+        "chartTitle": "Distribuição por Categoria",
+        "chartDescription": "Vendas divididas por categoria de produto",
+        "categories": {
+          "electronics": "Eletrônicos",
+          "clothing": "Roupas",
+          "food": "Alimentos",
+          "books": "Livros"
+        }
+      }
+    },
+    "checkbox": {
+      "title": "Checkbox",
+      "description": "Caixas de seleção para escolhas únicas ou múltiplas.",
+      "basic": {
+        "title": "Checkbox Básico",
+        "description": "Checkbox simples para aceitar termos ou condições.",
+        "label": "Aceito os termos e condições"
+      },
+      "notifications": {
+        "title": "Preferências de Notificação",
+        "description": "Gerenciar múltiplas preferências com checkboxes.",
+        "subtitle": "Escolha como deseja receber notificações",
+        "email": "Notificações por Email",
+        "push": "Notificações Push",
+        "sms": "Notificações por SMS"
+      },
+      "multiple": {
+        "title": "Seleção Múltipla",
+        "description": "Selecionar múltiplos itens com controle de selecionar todos.",
+        "subtitle": "Selecione os itens",
+        "item1": "Item 1 - Opção padrão",
+        "item2": "Item 2 - Opção premium",
+        "item3": "Item 3 - Opção avançada",
+        "item4": "Item 4 - Opção personalizada",
+        "selectAll": "Selecionar Todos",
+        "deselectAll": "Desmarcar Todos",
+        "selected": "Selecionados"
+      }
+    },
+    "collapsible": {
+      "title": "Collapsible",
+      "description": "Componente para expandir e colapsar seções de conteúdo.",
+      "basic": {
+        "title": "Collapsible Básico",
+        "description": "Conteúdo colapsável simples com botão de alternância.",
+        "heading": "@peduarte starred 3 repositories",
+        "toggle": "Alternar",
+        "visibleContent": "@radix-ui/primitives",
+        "hiddenContent1": "@radix-ui/colors",
+        "hiddenContent2": "@stitches/react"
+      },
+      "faq": {
+        "title": "FAQ Collapsible",
+        "description": "Perguntas frequentes com respostas colapsáveis.",
+        "question1": "Como começar a usar a plataforma?",
+        "answer1": "Para começar, crie uma conta gratuita e siga o tutorial de boas-vindas. Você terá acesso a todos os recursos básicos.",
+        "question2": "Quais são os planos disponíveis?",
+        "answer2": "Oferecemos planos Free, Pro e Enterprise. Cada plano tem recursos específicos para diferentes necessidades.",
+        "question3": "Como integrar com APIs externas?",
+        "answer3": "Você pode usar nossa documentação de API completa para integrar com serviços externos. Oferecemos SDKs para várias linguagens."
+      },
+      "sections": {
+        "title": "Seções Múltiplas",
+        "description": "Menu de navegação colapsável com múltiplas seções.",
+        "section1Title": "Configurações Gerais",
+        "section1Item1": "Perfil do usuário",
+        "section1Item2": "Configurações da conta",
+        "section2Title": "Preferências",
+        "section2Item1": "Notificações",
+        "section2Item2": "Privacidade",
+        "section3Title": "Ajuda",
+        "section3Item1": "Perguntas frequentes",
+        "section3Item2": "Contatar suporte"
+      }
+    },
+    "combobox": {
+      "title": "Combobox",
+      "description": "Seletor de opções com busca e autocomplete.",
+      "basic": {
+        "title": "Combobox Básico",
+        "description": "Seletor simples de frameworks com busca.",
+        "selectFramework": "Selecionar framework...",
+        "searchPlaceholder": "Buscar framework...",
+        "noFramework": "Nenhum framework encontrado."
+      },
+      "searchable": {
+        "title": "Combobox de Países",
+        "description": "Seletor de países com busca avançada.",
+        "selectCountry": "Selecionar país...",
+        "searchPlaceholder": "Buscar país...",
+        "noCountry": "Nenhum país encontrado."
+      },
+      "multiple": {
+        "title": "Seleção Múltipla",
+        "description": "Permite selecionar múltiplas linguagens de programação.",
+        "selectLanguages": "Selecionar linguagens...",
+        "searchPlaceholder": "Buscar linguagem...",
+        "noLanguage": "Nenhuma linguagem encontrada.",
+        "selectedCount": "{{count}} linguagem(ns) selecionada(s)",
+        "selectedLabel": "Selecionados"
+      },
+      "countries": {
+        "us": "Estados Unidos",
+        "ca": "Canadá",
+        "mx": "México",
+        "br": "Brasil",
+        "ar": "Argentina",
+        "uk": "Reino Unido",
+        "de": "Alemanha",
+        "fr": "França"
+      }
+    },
+    "command": {
+      "title": "Command",
+      "description": "Paleta de comandos com busca rápida e atalhos.",
+      "basic": {
+        "title": "Command Básico",
+        "description": "Paleta de comandos simples com sugestões.",
+        "placeholder": "Digite um comando ou busque...",
+        "noResults": "Nenhum resultado encontrado.",
+        "suggestions": "Sugestões",
+        "settings": "Configurações",
+        "calendar": "Calendário",
+        "emoji": "Buscar Emoji",
+        "calculator": "Calculadora",
+        "profile": "Perfil",
+        "billing": "Cobrança",
+        "settingsItem": "Configurações"
+      },
+      "groups": {
+        "title": "Command com Grupos",
+        "description": "Paleta de comandos organizada em grupos.",
+        "openButton": "Abrir Menu de Comandos",
+        "placeholder": "Digite um comando ou busque...",
+        "noResults": "Nenhum resultado encontrado.",
+        "actions": "Ações",
+        "user": "Usuário",
+        "search": "Buscar",
+        "newDocument": "Novo Documento",
+        "sendEmail": "Enviar Email",
+        "profileSettings": "Configurações de Perfil",
+        "preferences": "Preferências"
+      },
+      "shortcuts": {
+        "title": "Command com Atalhos",
+        "description": "Paleta de comandos com atalhos de teclado.",
+        "openButton": "Abrir Comandos",
+        "placeholder": "Digite um comando ou busque...",
+        "noResults": "Nenhum resultado encontrado.",
+        "commands": "Comandos",
+        "calendar": "Calendário",
+        "profile": "Perfil",
+        "calculator": "Calculadora",
+        "settings": "Configurações",
+        "pressKey": "Pressione",
+        "toOpen": "para abrir"
+      }
+    },
+    "contextMenu": {
+      "title": "Context Menu",
+      "description": "Menu contextual acionado por clique direito.",
+      "basic": {
+        "title": "Context Menu Básico",
+        "description": "Menu contextual simples com opções básicas.",
+        "rightClick": "Clique com o botão direito aqui",
+        "profile": "Perfil",
+        "settings": "Configurações",
+        "logout": "Sair"
+      },
+      "submenu": {
+        "title": "Context Menu com Submenus",
+        "description": "Menu contextual com opções hierárquicas.",
+        "rightClick": "Clique com o botão direito aqui",
+        "profile": "Perfil",
+        "billing": "Cobrança",
+        "settings": "Configurações",
+        "inviteUsers": "Convidar usuários",
+        "email": "Email",
+        "message": "Mensagem",
+        "more": "Mais...",
+        "create": "Criar",
+        "repository": "Repositório",
+        "team": "Equipe",
+        "support": "Suporte",
+        "api": "API",
+        "logout": "Sair"
+      },
+      "shortcuts": {
+        "title": "Context Menu com Atalhos",
+        "description": "Menu contextual com atalhos de teclado e preferências.",
+        "rightClick": "Clique com o botão direito aqui",
+        "profile": "Perfil",
+        "settings": "Configurações",
+        "keyboardShortcuts": "Atalhos do teclado",
+        "showBookmarks": "Mostrar Barra de Favoritos",
+        "showFullUrls": "Mostrar URLs Completas",
+        "viewMode": "Modo de Visualização",
+        "compact": "Compacto",
+        "comfortable": "Confortável",
+        "spacious": "Espaçoso",
+        "logout": "Sair"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Exibe um cartão com cabeçalho, conteúdo e rodapé.",
@@ -771,6 +1104,33 @@
       "name": "Botão",
       "description": "Elementos de botão clicáveis"
     },
+    "buttonGroup": {
+      "description": "Agrupa botões relacionados visualmente"
+    },
+    "calendar": {
+      "description": "Seletor de datas interativo com múltiplos modos"
+    },
+    "carousel": {
+      "description": "Exibe conteúdo em slides navegáveis"
+    },
+    "chart": {
+      "description": "Gráficos interativos para visualização de dados"
+    },
+    "checkbox": {
+      "description": "Caixas de seleção para escolhas múltiplas"
+    },
+    "collapsible": {
+      "description": "Expande e colapsa seções de conteúdo"
+    },
+    "combobox": {
+      "description": "Seletor de opções com busca e autocomplete"
+    },
+    "command": {
+      "description": "Paleta de comandos com atalhos de teclado"
+    },
+    "contextMenu": {
+      "description": "Menu contextual acionado por clique direito"
+    },
     "alert": {
       "name": "Alerta",
       "description": "Notificações e mensagens de alerta"
@@ -794,6 +1154,10 @@
     "badge": {
       "name": "Badge",
       "description": "Etiquetas pequenas para categorias, status ou contadores"
+    },
+    "breadcrumb": {
+      "name": "Breadcrumb",
+      "description": "Navegação hierárquica mostrando o caminho atual"
     },
     "stats": {
       "totalComponents": "Total de Componentes:",

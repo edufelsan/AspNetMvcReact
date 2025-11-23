@@ -555,6 +555,339 @@
         "fastShipping": "Fast Shipping"
       }
     },
+    "breadcrumb": {
+      "title": "Breadcrumb",
+      "description": "Displays the hierarchical navigation path of the user's current location.",
+      "basic": {
+        "title": "Basic Breadcrumb",
+        "description": "Simple breadcrumb navigation showing page hierarchy.",
+        "home": "Home",
+        "products": "Products",
+        "electronics": "Electronics"
+      },
+      "withIcons": {
+        "title": "Breadcrumb with Icons",
+        "description": "Enhanced breadcrumb trail with icons for better visual recognition.",
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "profile": "Profile"
+      },
+      "customSeparator": {
+        "title": "Breadcrumb with Custom Separator",
+        "description": "Breadcrumb trail using custom separators between items.",
+        "home": "Home",
+        "documentation": "Documentation",
+        "components": "Components",
+        "breadcrumb": "Breadcrumb"
+      }
+    },
+    "buttonGroup": {
+      "title": "Button Group",
+      "description": "Groups related buttons into a cohesive visual component.",
+      "basic": {
+        "title": "Basic Button Group",
+        "description": "Simple button group with icons for text formatting.",
+        "bold": "Bold",
+        "italic": "Italic",
+        "underline": "Underline"
+      },
+      "withState": {
+        "title": "Group with State",
+        "description": "Button group with state management for alignment control.",
+        "left": "Left",
+        "center": "Center",
+        "right": "Right",
+        "currentAlignment": "Current alignment"
+      },
+      "withLabels": {
+        "title": "Group with Labels",
+        "description": "Buttons with icons and text for common actions.",
+        "copy": "Copy",
+        "download": "Download",
+        "share": "Share"
+      }
+    },
+    "calendar": {
+      "title": "Calendar",
+      "description": "Calendar component for date selection with support for multiple modes.",
+      "basic": {
+        "title": "Basic Calendar",
+        "description": "Simple date picker for selecting a single date.",
+        "selectedDate": "Selected date"
+      },
+      "multiple": {
+        "title": "Multiple Dates",
+        "description": "Allows selecting multiple dates independently.",
+        "selectedDates": "Selected dates"
+      },
+      "range": {
+        "title": "Date Range",
+        "description": "Select a period with start and end dates.",
+        "from": "From",
+        "to": "To",
+        "totalDays": "Total days",
+        "days": "days"
+      }
+    },
+    "carousel": {
+      "title": "Carousel",
+      "description": "Carousel component for displaying content in navigable slides.",
+      "basic": {
+        "title": "Basic Carousel",
+        "description": "Simple carousel with numbered items and navigation."
+      },
+      "images": {
+        "title": "Image Carousel",
+        "description": "Navigable image gallery with navigation controls.",
+        "image": "Image"
+      },
+      "products": {
+        "title": "Product Carousel",
+        "description": "Product grid in carousel with multiple visible items.",
+        "product": "Product",
+        "price": "Price",
+        "addToCart": "Add to Cart"
+      }
+    },
+    "chart": {
+      "title": "Chart",
+      "description": "Chart components for interactive data visualization.",
+      "bar": {
+        "title": "Bar Chart",
+        "description": "Vertical bar visualization for data comparison.",
+        "chartTitle": "Monthly Sales",
+        "chartDescription": "Sales comparison by month",
+        "months": {
+          "jan": "Jan",
+          "feb": "Feb",
+          "mar": "Mar",
+          "apr": "Apr",
+          "may": "May",
+          "jun": "Jun"
+        }
+      },
+      "line": {
+        "title": "Line Chart",
+        "description": "Line chart to visualize trends over time.",
+        "chartTitle": "User Activity",
+        "chartDescription": "Active users by day of the week",
+        "days": {
+          "mon": "Mon",
+          "tue": "Tue",
+          "wed": "Wed",
+          "thu": "Thu",
+          "fri": "Fri",
+          "sat": "Sat",
+          "sun": "Sun"
+        }
+      },
+      "pie": {
+        "title": "Pie Chart",
+        "description": "Circular chart to show proportional distribution.",
+        "chartTitle": "Distribution by Category",
+        "chartDescription": "Sales divided by product category",
+        "categories": {
+          "electronics": "Electronics",
+          "clothing": "Clothing",
+          "food": "Food",
+          "books": "Books"
+        }
+      }
+    },
+    "checkbox": {
+      "title": "Checkbox",
+      "description": "Checkboxes for single or multiple selections.",
+      "basic": {
+        "title": "Basic Checkbox",
+        "description": "Simple checkbox to accept terms or conditions.",
+        "label": "I accept the terms and conditions"
+      },
+      "notifications": {
+        "title": "Notification Preferences",
+        "description": "Manage multiple preferences with checkboxes.",
+        "subtitle": "Choose how you want to receive notifications",
+        "email": "Email Notifications",
+        "push": "Push Notifications",
+        "sms": "SMS Notifications"
+      },
+      "multiple": {
+        "title": "Multiple Selection",
+        "description": "Select multiple items with select all control.",
+        "subtitle": "Select items",
+        "item1": "Item 1 - Standard option",
+        "item2": "Item 2 - Premium option",
+        "item3": "Item 3 - Advanced option",
+        "item4": "Item 4 - Custom option",
+        "selectAll": "Select All",
+        "deselectAll": "Deselect All",
+        "selected": "Selected"
+      }
+    },
+    "collapsible": {
+      "title": "Collapsible",
+      "description": "Component to expand and collapse content sections.",
+      "basic": {
+        "title": "Basic Collapsible",
+        "description": "Simple collapsible content with toggle button.",
+        "heading": "@peduarte starred 3 repositories",
+        "toggle": "Toggle",
+        "visibleContent": "@radix-ui/primitives",
+        "hiddenContent1": "@radix-ui/colors",
+        "hiddenContent2": "@stitches/react"
+      },
+      "faq": {
+        "title": "FAQ Collapsible",
+        "description": "Frequently asked questions with collapsible answers.",
+        "question1": "How do I get started with the platform?",
+        "answer1": "To get started, create a free account and follow the welcome tutorial. You'll have access to all basic features.",
+        "question2": "What plans are available?",
+        "answer2": "We offer Free, Pro, and Enterprise plans. Each plan has specific features for different needs.",
+        "question3": "How do I integrate with external APIs?",
+        "answer3": "You can use our complete API documentation to integrate with external services. We offer SDKs for multiple languages."
+      },
+      "sections": {
+        "title": "Multiple Sections",
+        "description": "Collapsible navigation menu with multiple sections.",
+        "section1Title": "General Settings",
+        "section1Item1": "User profile",
+        "section1Item2": "Account settings",
+        "section2Title": "Preferences",
+        "section2Item1": "Notifications",
+        "section2Item2": "Privacy",
+        "section3Title": "Help",
+        "section3Item1": "Frequently asked questions",
+        "section3Item2": "Contact support"
+      }
+    },
+    "combobox": {
+      "title": "Combobox",
+      "description": "Option selector with search and autocomplete.",
+      "basic": {
+        "title": "Basic Combobox",
+        "description": "Simple framework selector with search.",
+        "selectFramework": "Select framework...",
+        "searchPlaceholder": "Search framework...",
+        "noFramework": "No framework found."
+      },
+      "searchable": {
+        "title": "Country Combobox",
+        "description": "Country selector with advanced search.",
+        "selectCountry": "Select country...",
+        "searchPlaceholder": "Search country...",
+        "noCountry": "No country found."
+      },
+      "multiple": {
+        "title": "Multiple Selection",
+        "description": "Allows selecting multiple programming languages.",
+        "selectLanguages": "Select languages...",
+        "searchPlaceholder": "Search language...",
+        "noLanguage": "No language found.",
+        "selectedCount": "{{count}} language(s) selected",
+        "selectedLabel": "Selected"
+      },
+      "countries": {
+        "us": "United States",
+        "ca": "Canada",
+        "mx": "Mexico",
+        "br": "Brazil",
+        "ar": "Argentina",
+        "uk": "United Kingdom",
+        "de": "Germany",
+        "fr": "France"
+      }
+    },
+    "command": {
+      "title": "Command",
+      "description": "Command palette with quick search and shortcuts.",
+      "basic": {
+        "title": "Basic Command",
+        "description": "Simple command palette with suggestions.",
+        "placeholder": "Type a command or search...",
+        "noResults": "No results found.",
+        "suggestions": "Suggestions",
+        "settings": "Settings",
+        "calendar": "Calendar",
+        "emoji": "Search Emoji",
+        "calculator": "Calculator",
+        "profile": "Profile",
+        "billing": "Billing",
+        "settingsItem": "Settings"
+      },
+      "groups": {
+        "title": "Command with Groups",
+        "description": "Command palette organized in groups.",
+        "openButton": "Open Command Menu",
+        "placeholder": "Type a command or search...",
+        "noResults": "No results found.",
+        "actions": "Actions",
+        "user": "User",
+        "search": "Search",
+        "newDocument": "New Document",
+        "sendEmail": "Send Email",
+        "profileSettings": "Profile Settings",
+        "preferences": "Preferences"
+      },
+      "shortcuts": {
+        "title": "Command with Shortcuts",
+        "description": "Command palette with keyboard shortcuts.",
+        "openButton": "Open Commands",
+        "placeholder": "Type a command or search...",
+        "noResults": "No results found.",
+        "commands": "Commands",
+        "calendar": "Calendar",
+        "profile": "Profile",
+        "calculator": "Calculator",
+        "settings": "Settings",
+        "pressKey": "Press",
+        "toOpen": "to open"
+      }
+    },
+    "contextMenu": {
+      "title": "Context Menu",
+      "description": "Context menu triggered by right-click.",
+      "basic": {
+        "title": "Basic Context Menu",
+        "description": "Simple context menu with basic options.",
+        "rightClick": "Right click here",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Log out"
+      },
+      "submenu": {
+        "title": "Context Menu with Submenus",
+        "description": "Context menu with hierarchical options.",
+        "rightClick": "Right click here",
+        "profile": "Profile",
+        "billing": "Billing",
+        "settings": "Settings",
+        "inviteUsers": "Invite users",
+        "email": "Email",
+        "message": "Message",
+        "more": "More...",
+        "create": "Create",
+        "repository": "Repository",
+        "team": "Team",
+        "support": "Support",
+        "api": "API",
+        "logout": "Log out"
+      },
+      "shortcuts": {
+        "title": "Context Menu with Shortcuts",
+        "description": "Context menu with keyboard shortcuts and preferences.",
+        "rightClick": "Right click here",
+        "profile": "Profile",
+        "settings": "Settings",
+        "keyboardShortcuts": "Keyboard shortcuts",
+        "showBookmarks": "Show Bookmarks Bar",
+        "showFullUrls": "Show Full URLs",
+        "viewMode": "View Mode",
+        "compact": "Compact",
+        "comfortable": "Comfortable",
+        "spacious": "Spacious",
+        "logout": "Log out"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Displays a card with header, content, and footer.",
@@ -823,6 +1156,33 @@
       "name": "Button",
       "description": "Clickable button elements"
     },
+    "buttonGroup": {
+      "description": "Visually groups related buttons"
+    },
+    "calendar": {
+      "description": "Interactive date picker with multiple modes"
+    },
+    "carousel": {
+      "description": "Displays content in navigable slides"
+    },
+    "chart": {
+      "description": "Interactive charts for data visualization"
+    },
+    "checkbox": {
+      "description": "Checkboxes for multiple selections"
+    },
+    "collapsible": {
+      "description": "Expands and collapses content sections"
+    },
+    "combobox": {
+      "description": "Option selector with search and autocomplete"
+    },
+    "command": {
+      "description": "Command palette with keyboard shortcuts"
+    },
+    "contextMenu": {
+      "description": "Context menu triggered by right-click"
+    },
     "alert": {
       "name": "Alert",
       "description": "Alert notifications and messages"
@@ -846,6 +1206,10 @@
     "badge": {
       "name": "Badge",
       "description": "Small labels for categories, status or counters"
+    },
+    "breadcrumb": {
+      "name": "Breadcrumb",
+      "description": "Hierarchical navigation showing the current path"
     },
     "stats": {
       "totalComponents": "Total Components:",
