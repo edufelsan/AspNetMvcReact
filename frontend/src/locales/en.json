@@ -888,6 +888,48 @@
         "logout": "Log out"
       }
     },
+    "dataTable": {
+      "title": "Data Table",
+      "description": "Interactive data table with sorting, filtering, and pagination.",
+      "basic": {
+        "title": "Basic Table with Sorting",
+        "description": "Simple data table with sortable columns.",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "noResults": "No results found."
+      },
+      "filtering": {
+        "title": "Table with Filtering",
+        "description": "Data table with search field to filter results.",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "filterPlaceholder": "Filter by email...",
+        "noResults": "No results found."
+      },
+      "pagination": {
+        "title": "Table with Pagination and Selection",
+        "description": "Complete table with pagination, row selection, and action menu.",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "actions": "Actions",
+        "copyId": "Copy user ID",
+        "viewDetails": "View details",
+        "edit": "Edit user",
+        "filterPlaceholder": "Filter emails...",
+        "columns": "Columns",
+        "noResults": "No results found.",
+        "of": "of",
+        "rowsSelected": "row(s) selected.",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Displays a card with header, content, and footer.",
@@ -1182,6 +1224,9 @@
     },
     "contextMenu": {
       "description": "Context menu triggered by right-click"
+    },
+    "dataTable": {
+      "description": "Data table with sorting, filtering, and pagination"
     },
     "alert": {
       "name": "Alert",

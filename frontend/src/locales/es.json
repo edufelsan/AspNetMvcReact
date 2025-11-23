@@ -921,6 +921,48 @@
         "logout": "Cerrar sesión"
       }
     },
+    "dataTable": {
+      "title": "Tabla de Datos",
+      "description": "Tabla de datos interactiva con ordenación, filtrado y paginación.",
+      "basic": {
+        "title": "Tabla Básica con Ordenación",
+        "description": "Tabla de datos simple con columnas ordenables.",
+        "name": "Nombre",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Estado",
+        "noResults": "No se encontraron resultados."
+      },
+      "filtering": {
+        "title": "Tabla con Filtrado",
+        "description": "Tabla de datos con campo de búsqueda para filtrar resultados.",
+        "name": "Nombre",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Estado",
+        "filterPlaceholder": "Filtrar por email...",
+        "noResults": "No se encontraron resultados."
+      },
+      "pagination": {
+        "title": "Tabla con Paginación y Selección",
+        "description": "Tabla completa con paginación, selección de filas y menú de acciones.",
+        "name": "Nombre",
+        "email": "Email",
+        "role": "Rol",
+        "status": "Estado",
+        "actions": "Acciones",
+        "copyId": "Copiar ID del usuario",
+        "viewDetails": "Ver detalles",
+        "edit": "Editar usuario",
+        "filterPlaceholder": "Filtrar emails...",
+        "columns": "Columnas",
+        "noResults": "No se encontraron resultados.",
+        "of": "de",
+        "rowsSelected": "fila(s) seleccionada(s).",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      }
+    },
     "card": {
       "title": "Tarjeta",
       "description": "Muestra una tarjeta con encabezado, contenido y pie de página.",
@@ -1163,6 +1205,9 @@
     },
     "contextMenu": {
       "description": "Menú contextual activado por clic derecho"
+    },
+    "dataTable": {
+      "description": "Tabla de datos con ordenación, filtrado y paginación"
     },
     "alert": {
       "name": "Alerta",

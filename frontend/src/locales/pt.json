@@ -888,6 +888,48 @@
         "logout": "Sair"
       }
     },
+    "dataTable": {
+      "title": "Data Table",
+      "description": "Tabela de dados interativa com ordenação, filtragem e paginação.",
+      "basic": {
+        "title": "Tabela Básica com Ordenação",
+        "description": "Tabela de dados simples com colunas ordenáveis.",
+        "name": "Nome",
+        "email": "Email",
+        "role": "Função",
+        "status": "Status",
+        "noResults": "Nenhum resultado encontrado."
+      },
+      "filtering": {
+        "title": "Tabela com Filtragem",
+        "description": "Tabela de dados com campo de busca para filtrar resultados.",
+        "name": "Nome",
+        "email": "Email",
+        "role": "Função",
+        "status": "Status",
+        "filterPlaceholder": "Filtrar por email...",
+        "noResults": "Nenhum resultado encontrado."
+      },
+      "pagination": {
+        "title": "Tabela com Paginação e Seleção",
+        "description": "Tabela completa com paginação, seleção de linhas e menu de ações.",
+        "name": "Nome",
+        "email": "Email",
+        "role": "Função",
+        "status": "Status",
+        "actions": "Ações",
+        "copyId": "Copiar ID do usuário",
+        "viewDetails": "Ver detalhes",
+        "edit": "Editar usuário",
+        "filterPlaceholder": "Filtrar emails...",
+        "columns": "Colunas",
+        "noResults": "Nenhum resultado encontrado.",
+        "of": "de",
+        "rowsSelected": "linha(s) selecionada(s).",
+        "previous": "Anterior",
+        "next": "Próximo"
+      }
+    },
     "card": {
       "title": "Card",
       "description": "Exibe um cartão com cabeçalho, conteúdo e rodapé.",
@@ -1130,6 +1172,9 @@
     },
     "contextMenu": {
       "description": "Menu contextual acionado por clique direito"
+    },
+    "dataTable": {
+      "description": "Tabela de dados com ordenação, filtragem e paginação"
     },
     "alert": {
       "name": "Alerta",

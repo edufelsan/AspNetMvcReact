@@ -20,6 +20,7 @@ import CollapsibleExamples from '@/components/examples/CollapsibleExamples';
 import ComboboxExamples from '@/components/examples/ComboboxExamples';
 import CommandExamples from '@/components/examples/CommandExamples';
 import ContextMenuExamples from '@/components/examples/ContextMenuExamples';
+import DataTableExamples from '@/components/examples/DataTableExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, Palette, Zap } from 'lucide-react';
@@ -64,6 +65,8 @@ export default function ComponentsDemo() {
                 return <CommandExamples />;
             case 'contextMenu':
                 return <ContextMenuExamples />;
+            case 'dataTable':
+                return <DataTableExamples />;
             case 'card':
                 return <CardExamples />;
             case 'overview':
@@ -149,9 +152,9 @@ export default function ComponentsDemo() {
 
     return (
         <AppLayout title="Components Demo - shadcn/ui" showFooter={false}>
-            <div className="flex min-h-[calc(100vh-4rem)]">
+            <div className="flex h-[calc(100vh-4rem)]">
                 {/* Sidebar */}
-                <aside className="w-64 border-r bg-muted/30">
+                <aside className="w-64 border-r bg-muted/30 flex-shrink-0">
                     <ComponentsSidebar 
                         selectedComponent={selectedComponent}
                         onSelectComponent={setSelectedComponent}
@@ -159,8 +162,8 @@ export default function ComponentsDemo() {
                 </aside>
 
                 {/* Content Area */}
-                <main className="flex-1 p-8">
-                    <div className="max-w-6xl mx-auto">
+                <main className="flex-1 overflow-y-auto">
+                    <div className="max-w-6xl mx-auto p-8">
                         {renderContent()}
                     </div>
                 </main>

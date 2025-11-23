@@ -10,7 +10,6 @@ import {
     AlertTriangle, 
     CreditCard,
     Home,
-    ChevronRight,
     MessageSquare,
     ChevronDown,
     RectangleHorizontal,
@@ -24,7 +23,8 @@ import {
     CheckSquare,
     ChevronsUpDown,
     Terminal,
-    Menu
+    Menu,
+    Table as TableIcon
 } from 'lucide-react';
 
 interface ComponentsSidebarProps {
@@ -178,12 +178,19 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             icon: Menu,
             description: t('sidebar.contextMenu.description'),
             examples: 3
+        },
+        {
+            id: 'dataTable',
+            name: 'Data Table',
+            icon: TableIcon,
+            description: t('sidebar.dataTable.description'),
+            examples: 3
         }
     ];
 
     return (
         <div className="h-full flex flex-col">
-            <div className="p-4">
+            <div className="p-4 flex-shrink-0">
                 <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                     {t('sidebar.title')}
                 </h2>
@@ -192,10 +199,10 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
                 </p>
             </div>
             
-            <Separator />
+            <Separator className="flex-shrink-0" />
             
-            <ScrollArea className="flex-1 px-2">
-                <div className="space-y-1 p-2">
+            <ScrollArea className="flex-1">
+                <div className="p-2 space-y-1 pb-4">
                     {components.map((component) => {
                         const Icon = component.icon;
                         const isSelected = selectedComponent === component.id;
@@ -205,52 +212,41 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
                                 key={component.id}
                                 variant={isSelected ? 'secondary' : 'ghost'}
                                 className={cn(
-                                    'w-full justify-start h-auto p-3 relative group',
+                                    'w-full justify-between relative group',
                                     isSelected && 'bg-secondary border-l-2 border-l-primary'
                                 )}
                                 onClick={() => onSelectComponent(component.id)}
                             >
-                                <div className="flex items-start space-x-3 flex-1">
+                                <div className="flex items-center space-x-3">
                                     <Icon className={cn(
-                                        'h-4 w-4 mt-0.5 flex-shrink-0',
+                                        'h-4 w-4 flex-shrink-0',
                                         isSelected ? 'text-primary' : 'text-muted-foreground'
                                     )} />
-                                    <div className="flex-1 text-left space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <span className={cn(
-                                                'text-sm font-medium',
-                                                isSelected ? 'text-foreground' : 'text-foreground'
-                                            )}>
-                                                {component.name}
-                                            </span>
-                                            {component.examples > 0 && (
-                                                <Badge 
-                                                    variant="outline" 
-                                                    className="text-xs px-1.5 py-0.5 h-5"
-                                                >
-                                                    {component.examples}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-muted-foreground leading-tight">
-                                            {component.description}
-                                        </p>
-                                    </div>
+                                    <span className={cn(
+                                        'text-sm font-medium',
+                                        isSelected ? 'text-foreground' : 'text-foreground'
+                                    )}>
+                                        {component.name}
+                                    </span>
                                 </div>
                                 
-                                <ChevronRight className={cn(
-                                    'h-3 w-3 flex-shrink-0 transition-transform',
-                                    isSelected ? 'text-primary rotate-90' : 'text-transparent group-hover:text-muted-foreground'
-                                )} />
+                                {component.examples > 0 && (
+                                    <Badge 
+                                        variant="outline" 
+                                        className="text-xs px-1.5 py-0.5 h-5"
+                                    >
+                                        {component.examples}
+                                    </Badge>
+                                )}
                             </Button>
                         );
                     })}
                 </div>
             </ScrollArea>
             
-            <Separator />
+            <Separator className="flex-shrink-0" />
             
-            <div className="p-4 space-y-2">
+            <div className="p-4 space-y-2 flex-shrink-0">
                 <div className="text-xs text-muted-foreground">
                     <div className="flex justify-between">
                         <span>{t('sidebar.stats.totalComponents')}</span>
