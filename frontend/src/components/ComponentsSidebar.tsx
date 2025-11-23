@@ -15,7 +15,16 @@ import {
     ChevronDown,
     RectangleHorizontal,
     User,
-    Tag
+    Tag,
+    Navigation,
+    Group,
+    Calendar as CalendarIcon,
+    Image,
+    BarChart3,
+    CheckSquare,
+    ChevronsUpDown,
+    Terminal,
+    Menu
 } from 'lucide-react';
 
 interface ComponentsSidebarProps {
@@ -87,6 +96,13 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             examples: 3
         },
         {
+            id: 'breadcrumb',
+            name: 'Breadcrumb',
+            icon: Navigation,
+            description: t('sidebar.breadcrumb.description'),
+            examples: 3
+        },
+        {
             id: 'button',
             name: 'Button',
             icon: MousePointer2,
@@ -94,11 +110,74 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             examples: 8
         },
         {
+            id: 'buttonGroup',
+            name: 'Button Group',
+            icon: Group,
+            description: t('sidebar.buttonGroup.description'),
+            examples: 3
+        },
+        {
+            id: 'calendar',
+            name: 'Calendar',
+            icon: CalendarIcon,
+            description: t('sidebar.calendar.description'),
+            examples: 3
+        },
+        {
             id: 'card',
             name: 'Card',
             icon: CreditCard,
             description: t('sidebar.card.description'),
             examples: 7
+        },
+        {
+            id: 'carousel',
+            name: 'Carousel',
+            icon: Image,
+            description: t('sidebar.carousel.description'),
+            examples: 3
+        },
+        {
+            id: 'chart',
+            name: 'Chart',
+            icon: BarChart3,
+            description: t('sidebar.chart.description'),
+            examples: 3
+        },
+        {
+            id: 'checkbox',
+            name: 'Checkbox',
+            icon: CheckSquare,
+            description: t('sidebar.checkbox.description'),
+            examples: 3
+        },
+        {
+            id: 'collapsible',
+            name: 'Collapsible',
+            icon: ChevronsUpDown,
+            description: t('sidebar.collapsible.description'),
+            examples: 3
+        },
+        {
+            id: 'combobox',
+            name: 'Combobox',
+            icon: ChevronsUpDown,
+            description: t('sidebar.combobox.description'),
+            examples: 3
+        },
+        {
+            id: 'command',
+            name: 'Command',
+            icon: Terminal,
+            description: t('sidebar.command.description'),
+            examples: 3
+        },
+        {
+            id: 'contextMenu',
+            name: 'Context Menu',
+            icon: Menu,
+            description: t('sidebar.contextMenu.description'),
+            examples: 3
         }
     ];
 

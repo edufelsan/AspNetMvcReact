@@ -10,6 +10,16 @@ import AccordionExamples from '@/components/examples/AccordionExamples';
 import AspectRatioExamples from '@/components/examples/AspectRatioExamples';
 import AvatarExamples from '@/components/examples/AvatarExamples';
 import BadgeExamples from '@/components/examples/BadgeExamples';
+import BreadcrumbExamples from '@/components/examples/BreadcrumbExamples';
+import ButtonGroupExamples from '@/components/examples/ButtonGroupExamples';
+import CalendarExamples from '@/components/examples/CalendarExamples';
+import CarouselExamples from '@/components/examples/CarouselExamples';
+import ChartExamples from '@/components/examples/ChartExamples';
+import CheckboxExamples from '@/components/examples/CheckboxExamples';
+import CollapsibleExamples from '@/components/examples/CollapsibleExamples';
+import ComboboxExamples from '@/components/examples/ComboboxExamples';
+import CommandExamples from '@/components/examples/CommandExamples';
+import ContextMenuExamples from '@/components/examples/ContextMenuExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Code, Palette, Zap } from 'lucide-react';
@@ -32,8 +42,28 @@ export default function ComponentsDemo() {
                 return <AvatarExamples />;
             case 'badge':
                 return <BadgeExamples />;
+            case 'breadcrumb':
+                return <BreadcrumbExamples />;
             case 'button':
                 return <ButtonExamples />;
+            case 'buttonGroup':
+                return <ButtonGroupExamples />;
+            case 'calendar':
+                return <CalendarExamples />;
+            case 'carousel':
+                return <CarouselExamples />;
+            case 'chart':
+                return <ChartExamples />;
+            case 'checkbox':
+                return <CheckboxExamples />;
+            case 'collapsible':
+                return <CollapsibleExamples />;
+            case 'combobox':
+                return <ComboboxExamples />;
+            case 'command':
+                return <CommandExamples />;
+            case 'contextMenu':
+                return <ContextMenuExamples />;
             case 'card':
                 return <CardExamples />;
             case 'overview':
