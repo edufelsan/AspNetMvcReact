@@ -58,6 +58,18 @@
       "startNow": "Comenzar Ahora",
       "viewDashboard": "Ver Dashboard"
     },
+    "github": {
+      "title": "Código Abierto en GitHub",
+      "subtitle": "Proyecto gratuito y open source",
+      "description": "Esta plantilla es completamente gratuita y open source. Accede al código en GitHub para contribuir, reportar bugs o simplemente darle una ⭐!",
+      "viewOnGithub": "Ver en GitHub",
+      "features": {
+        "openSource": "100% Open Source",
+        "free": "Completamente Gratis",
+        "community": "Soporte de la Comunidad",
+        "contributions": "Contribuciones Bienvenidas"
+      }
+    },
     "footer": {
       "description": "Plantilla completa para desarrollo moderno con ASP.NET Core 8, Inertia.js, React y shadcn/ui.",
       "copyright": "© 2025 ASP.NET Stack Template. Desarrollado con ❤️ para la comunidad."

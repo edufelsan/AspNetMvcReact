@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, Code, Database, Zap, Shield, Palette, Rocket, Star, Table, BarChart3 } from 'lucide-react';
+import { ArrowRight, Code, Database, Zap, Shield, Palette, Rocket, Star, Table, BarChart3, Github, Users, Heart, GitFork } from 'lucide-react';
 import { AppLayout } from '@/components/layout';
 import { useTranslation } from 'react-i18next';
 
@@ -187,6 +187,90 @@ export default function Welcome() {
                         <div className="text-center">
                             <div className="text-3xl font-bold text-foreground mb-2">5min</div>
                             <div className="text-sm text-muted-foreground">{t('welcome.stats.setup')}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* GitHub Section */}
+            <section className="py-24 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-4xl mx-auto text-center space-y-12">
+                        {/* Header */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-center space-x-3 mb-6">
+                                <div className="w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg">
+                                    <Github className="h-8 w-8 text-white dark:text-gray-900" />
+                                </div>
+                            </div>
+                            <h2 className="text-3xl lg:text-4xl font-bold">
+                                {t('welcome.github.title')}
+                            </h2>
+                            <p className="text-lg text-muted-foreground">
+                                {t('welcome.github.subtitle')}
+                            </p>
+                            <Separator className="w-20 mx-auto" />
+                        </div>
+
+                        {/* Description */}
+                        <div className="space-y-6">
+                            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                                {t('welcome.github.description')}
+                            </p>
+                        </div>
+
+                        {/* Features Grid */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                                <CardContent className="pt-6 text-center">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 mx-auto mb-4">
+                                        <Code className="h-6 w-6 text-white" />
+                                    </div>
+                                    <h3 className="font-semibold mb-2">{t('welcome.github.features.openSource')}</h3>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                                <CardContent className="pt-6 text-center">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 mx-auto mb-4">
+                                        <Heart className="h-6 w-6 text-white" />
+                                    </div>
+                                    <h3 className="font-semibold mb-2">{t('welcome.github.features.free')}</h3>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                                <CardContent className="pt-6 text-center">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 mx-auto mb-4">
+                                        <Users className="h-6 w-6 text-white" />
+                                    </div>
+                                    <h3 className="font-semibold mb-2">{t('welcome.github.features.community')}</h3>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                                <CardContent className="pt-6 text-center">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 mx-auto mb-4">
+                                        <GitFork className="h-6 w-6 text-white" />
+                                    </div>
+                                    <h3 className="font-semibold mb-2">{t('welcome.github.features.contributions')}</h3>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* CTA Button */}
+                        <div className="flex justify-center">
+                            <a 
+                                href="https://github.com/edufelsan/AspNetMvcReact" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex"
+                            >
+                                <Button size="lg" className="h-12 px-8 text-base">
+                                    <Github className="mr-2 h-5 w-5" />
+                                    {t('welcome.github.viewOnGithub')}
+                                </Button>
+                            </a>
                         </div>
                     </div>
                 </div>
