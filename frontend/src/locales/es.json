@@ -9,7 +9,7 @@
     "hero": {
       "badge": "Plantilla Completa para Desarrollo Moderno",
       "title": "ASP.NET Core 8 + React + Shadcn/ui",
-      "description": "Plantilla completa con ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS y todos los 56 componentes Shadcn/ui. Comience su próximo proyecto en minutos, no en horas.",
+      "description": "Plantilla completa con ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS y 19 componentes shadcn/ui implementados (63+ ejemplos). Comience su próximo proyecto en minutos, no en horas.",
       "startNow": "Comenzar Ahora",
       "viewDashboard": "Ver Dashboard",
       "viewComponents": "Ver Componentes"
@@ -27,7 +27,7 @@
       },
       "shadcn": {
         "title": "Shadcn/ui + Tailwind",
-        "description": "56+ componentes modernos con sistema de diseño profesional"
+        "description": "19+ componentes implementados con sistema de diseño profesional (más siendo añadidos)"
       },
       "auth": {
         "title": "Autenticación Completa",

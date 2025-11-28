@@ -9,7 +9,7 @@
     "hero": {
       "badge": "Template Completo para Desenvolvimento Moderno!",
       "title": "ASP.NET Core 8 + React + Shadcn/ui",
-      "description": "Template completo com ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS e todos os 56 componentes shadcn/ui. Comece seu próximo projeto em minutos, não em horas.",
+      "description": "Template completo com ASP.NET Core 8, Inertia.js, React, TypeScript, Tailwind CSS e 19 componentes shadcn/ui implementados (63+ exemplos). Comece seu próximo projeto em minutos, não em horas.",
       "startNow": "Começar Agora",
       "viewDashboard": "Ver Dashboard",
       "viewComponents": "Ver Componentes"
@@ -27,7 +27,7 @@
       },
       "shadcn": {
         "title": "Shadcn/ui + Tailwind",
-        "description": "56+ componentes modernos com design system profissional"
+        "description": "19+ componentes implementados com design system profissional (mais sendo adicionados)"
       },
       "auth": {
         "title": "Autenticação Completa",
