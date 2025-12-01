@@ -900,6 +900,83 @@
         "logout": "Sair"
       }
     },
+    "datePicker": {
+      "title": "Date Picker",
+      "description": "Seletor de datas com calendário pop-up integrado para escolha fácil e rápida de datas.",
+      "basic": {
+        "title": "Date Picker Básico",
+        "description": "Seletor de data simples com calendário pop-up para escolha de uma data.",
+        "selectDate": "Selecionar data",
+        "placeholder": "Escolha uma data",
+        "selectedDate": "Data selecionada:"
+      },
+      "birthday": {
+        "title": "Seletor de Aniversário",
+        "description": "Date picker especializado para seleção de data de aniversário com informações adicionais.",
+        "selectBirthday": "Data de nascimento",
+        "placeholder": "Selecione sua data de nascimento",
+        "birthdayInfo": "Seu aniversário",
+        "age": "Idade",
+        "years": "anos"
+      },
+      "appointment": {
+        "title": "Agendamento de Compromisso",
+        "description": "Date picker para agendamento com atalhos rápidos e status de compromisso.",
+        "selectDate": "Data do compromisso",
+        "placeholder": "Agendar para quando?",
+        "actions": "Ações rápidas",
+        "today": "Hoje",
+        "tomorrow": "Amanhã",
+        "scheduled": "Compromisso agendado",
+        "future": "Compromisso futuro",
+        "past": "Compromisso passado",
+        "upcoming": "Próximo",
+        "completed": "Realizado"
+      },
+      "noDateSelected": "Nenhuma data selecionada",
+      "clearAll": "Limpar todas as datas"
+    },
+    "dialog": {
+      "title": "Dialog",
+      "description": "Janelas modais elegantes e acessíveis para exibir conteúdo sobreposto",
+      "basic": {
+        "title": "Dialog Básico",
+        "description": "Um dialog simples com título, descrição e botões de ação",
+        "openDialog": "Abrir Dialog",
+        "dialogTitle": "Dialog Simples",
+        "dialogDescription": "Este é um exemplo básico de dialog com título e descrição.",
+        "content": "O conteúdo do dialog fica aqui. Você pode adicionar qualquer componente ou conteúdo necessário.",
+        "close": "Fechar"
+      },
+      "profile": {
+        "title": "Dialog de Formulário",
+        "description": "Dialog com formulário para edição de perfil de usuário",
+        "editProfile": "Editar Perfil",
+        "dialogTitle": "Editar Perfil",
+        "dialogDescription": "Faça alterações no seu perfil aqui. Clique em salvar quando terminar.",
+        "name": "Nome",
+        "email": "E-mail",
+        "bio": "Biografia",
+        "cancel": "Cancelar",
+        "save": "Salvar Alterações",
+        "currentProfile": "Perfil Atual"
+      },
+      "contact": {
+        "title": "Dialog de Contato",
+        "description": "Formulário de contato com validação e campos obrigatórios",
+        "contactUs": "Entre em Contato",
+        "dialogTitle": "Entre em Contato",
+        "dialogDescription": "Envie-nos uma mensagem e retornaremos o mais breve possível.",
+        "name": "Nome",
+        "email": "E-mail",
+        "message": "Mensagem",
+        "namePlaceholder": "Seu nome completo",
+        "emailPlaceholder": "seu.email@exemplo.com",
+        "messagePlaceholder": "Escreva sua mensagem aqui...",
+        "cancel": "Cancelar",
+        "send": "Enviar Mensagem"
+      }
+    },
     "dataTable": {
       "title": "Data Table",
       "description": "Tabela de dados interativa com ordenação, filtragem e paginação.",
@@ -1184,6 +1261,12 @@
     },
     "contextMenu": {
       "description": "Menu contextual acionado por clique direito"
+    },
+    "datePicker": {
+      "description": "Seletor de datas com calendário pop-up integrado"
+    },
+    "dialog": {
+      "description": "Janelas modais elegantes e acessíveis"
     },
     "dataTable": {
       "description": "Tabela de dados com ordenação, filtragem e paginação"

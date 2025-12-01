@@ -933,6 +933,83 @@
         "logout": "Cerrar sesión"
       }
     },
+    "datePicker": {
+      "title": "Date Picker",
+      "description": "Selector de fechas con calendario emergente integrado para selección fácil y rápida de fechas.",
+      "basic": {
+        "title": "Date Picker Básico",
+        "description": "Selector de fecha simple con calendario emergente para elegir una fecha.",
+        "selectDate": "Seleccionar fecha",
+        "placeholder": "Elige una fecha",
+        "selectedDate": "Fecha seleccionada:"
+      },
+      "birthday": {
+        "title": "Selector de Cumpleaños",
+        "description": "Date picker especializado para selección de fecha de cumpleaños con información adicional.",
+        "selectBirthday": "Fecha de nacimiento",
+        "placeholder": "Selecciona tu fecha de nacimiento",
+        "birthdayInfo": "Tu cumpleaños",
+        "age": "Edad",
+        "years": "años"
+      },
+      "appointment": {
+        "title": "Programación de Cita",
+        "description": "Date picker para programación con atajos rápidos y estado de cita.",
+        "selectDate": "Fecha de la cita",
+        "placeholder": "¿Programar para cuándo?",
+        "actions": "Acciones rápidas",
+        "today": "Hoy",
+        "tomorrow": "Mañana",
+        "scheduled": "Cita programada",
+        "future": "Cita futura",
+        "past": "Cita pasada",
+        "upcoming": "Próxima",
+        "completed": "Completada"
+      },
+      "noDateSelected": "Ninguna fecha seleccionada",
+      "clearAll": "Limpiar todas las fechas"
+    },
+    "dialog": {
+      "title": "Dialog",
+      "description": "Ventanas modales elegantes y accesibles para mostrar contenido superpuesto",
+      "basic": {
+        "title": "Dialog Básico",
+        "description": "Un dialog simple con título, descripción y botones de acción",
+        "openDialog": "Abrir Dialog",
+        "dialogTitle": "Dialog Simple",
+        "dialogDescription": "Este es un ejemplo básico de dialog con título y descripción.",
+        "content": "El contenido del dialog va aquí. Puedes agregar cualquier componente o contenido que necesites.",
+        "close": "Cerrar"
+      },
+      "profile": {
+        "title": "Dialog de Formulario",
+        "description": "Dialog con formulario para edición de perfil de usuario",
+        "editProfile": "Editar Perfil",
+        "dialogTitle": "Editar Perfil",
+        "dialogDescription": "Haz cambios en tu perfil aquí. Haz clic en guardar cuando termines.",
+        "name": "Nombre",
+        "email": "Correo",
+        "bio": "Biografía",
+        "cancel": "Cancelar",
+        "save": "Guardar Cambios",
+        "currentProfile": "Perfil Actual"
+      },
+      "contact": {
+        "title": "Dialog de Contacto",
+        "description": "Formulario de contacto con validación y campos requeridos",
+        "contactUs": "Contáctanos",
+        "dialogTitle": "Contáctanos",
+        "dialogDescription": "Envíanos un mensaje y te responderemos lo antes posible.",
+        "name": "Nombre",
+        "email": "Correo",
+        "message": "Mensaje",
+        "namePlaceholder": "Tu nombre completo",
+        "emailPlaceholder": "tu.correo@ejemplo.com",
+        "messagePlaceholder": "Escribe tu mensaje aquí...",
+        "cancel": "Cancelar",
+        "send": "Enviar Mensaje"
+      }
+    },
     "dataTable": {
       "title": "Tabla de Datos",
       "description": "Tabla de datos interactiva con ordenación, filtrado y paginación.",
@@ -1217,6 +1294,12 @@
     },
     "contextMenu": {
       "description": "Menú contextual activado por clic derecho"
+    },
+    "datePicker": {
+      "description": "Selector de fechas con calendario emergente integrado"
+    },
+    "dialog": {
+      "description": "Ventanas modales elegantes y accesibles"
     },
     "dataTable": {
       "description": "Tabla de datos con ordenación, filtrado y paginación"

@@ -900,6 +900,83 @@
         "logout": "Log out"
       }
     },
+    "datePicker": {
+      "title": "Date Picker",
+      "description": "Date selector with integrated pop-up calendar for easy and quick date selection.",
+      "basic": {
+        "title": "Basic Date Picker",
+        "description": "Simple date selector with pop-up calendar for choosing a date.",
+        "selectDate": "Select date",
+        "placeholder": "Pick a date",
+        "selectedDate": "Selected date:"
+      },
+      "birthday": {
+        "title": "Birthday Selector",
+        "description": "Specialized date picker for birthday selection with additional information.",
+        "selectBirthday": "Date of birth",
+        "placeholder": "Select your birth date",
+        "birthdayInfo": "Your birthday",
+        "age": "Age",
+        "years": "years"
+      },
+      "appointment": {
+        "title": "Appointment Scheduling",
+        "description": "Date picker for scheduling with quick shortcuts and appointment status.",
+        "selectDate": "Appointment date",
+        "placeholder": "Schedule for when?",
+        "actions": "Quick actions",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "scheduled": "Appointment scheduled",
+        "future": "Future appointment",
+        "past": "Past appointment",
+        "upcoming": "Upcoming",
+        "completed": "Completed"
+      },
+      "noDateSelected": "No date selected",
+      "clearAll": "Clear all dates"
+    },
+    "dialog": {
+      "title": "Dialog",
+      "description": "Elegant and accessible modal windows for displaying overlay content",
+      "basic": {
+        "title": "Basic Dialog",
+        "description": "A simple dialog with title, description and action buttons",
+        "openDialog": "Open Dialog",
+        "dialogTitle": "Simple Dialog",
+        "dialogDescription": "This is a basic dialog example with a title and description.",
+        "content": "Dialog content goes here. You can add any components or content you need.",
+        "close": "Close"
+      },
+      "profile": {
+        "title": "Form Dialog",
+        "description": "Dialog with form for user profile editing",
+        "editProfile": "Edit Profile",
+        "dialogTitle": "Edit Profile",
+        "dialogDescription": "Make changes to your profile here. Click save when you're done.",
+        "name": "Name",
+        "email": "Email",
+        "bio": "Bio",
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "currentProfile": "Current Profile"
+      },
+      "contact": {
+        "title": "Contact Dialog",
+        "description": "Contact form with validation and required fields",
+        "contactUs": "Contact Us",
+        "dialogTitle": "Contact Us",
+        "dialogDescription": "Send us a message and we'll get back to you as soon as possible.",
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "namePlaceholder": "Your full name",
+        "emailPlaceholder": "your.email@example.com",
+        "messagePlaceholder": "Write your message here...",
+        "cancel": "Cancel",
+        "send": "Send Message"
+      }
+    },
     "dataTable": {
       "title": "Data Table",
       "description": "Interactive data table with sorting, filtering, and pagination.",
@@ -1236,6 +1313,12 @@
     },
     "contextMenu": {
       "description": "Context menu triggered by right-click"
+    },
+    "datePicker": {
+      "description": "Date selector with integrated pop-up calendar"
+    },
+    "dialog": {
+      "description": "Elegant and accessible modal windows"
     },
     "dataTable": {
       "description": "Data table with sorting, filtering, and pagination"
