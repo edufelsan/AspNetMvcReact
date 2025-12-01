@@ -20,6 +20,8 @@ import CollapsibleExamples from '@/components/examples/CollapsibleExamples';
 import ComboboxExamples from '@/components/examples/ComboboxExamples';
 import CommandExamples from '@/components/examples/CommandExamples';
 import ContextMenuExamples from '@/components/examples/ContextMenuExamples';
+import DatePickerExamples from '@/components/examples/DatePickerExamples';
+import DialogExamples from '@/components/examples/DialogExamples';
 import DataTableExamples from '@/components/examples/DataTableExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -65,6 +67,10 @@ export default function ComponentsDemo() {
                 return <CommandExamples />;
             case 'contextMenu':
                 return <ContextMenuExamples />;
+            case 'datePicker':
+                return <DatePickerExamples />;
+            case 'dialog':
+                return <DialogExamples />;
             case 'dataTable':
                 return <DataTableExamples />;
             case 'card':

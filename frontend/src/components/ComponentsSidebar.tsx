@@ -185,6 +185,20 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             icon: TableIcon,
             description: t('sidebar.dataTable.description'),
             examples: 3
+        },
+        {
+            id: 'datePicker',
+            name: 'Date Picker',
+            icon: CalendarIcon,
+            description: t('sidebar.datePicker.description'),
+            examples: 3
+        },
+        {
+            id: 'dialog',
+            name: 'Dialog',
+            icon: MessageSquare,
+            description: t('sidebar.dialog.description'),
+            examples: 3
         }
     ];
 
