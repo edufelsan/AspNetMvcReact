@@ -1,6 +1,6 @@
 # ASP.NET Core + Inertia.js + React
 
-Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, **multilingual support** (Portuguese, English, Spanish), **SEO optimization**, **PWA ready**, and **comprehensive component showcase** with **19 shadcn/ui components** and **63+ interactive examples**.
+Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, **multilingual support** (Portuguese, English, Spanish), **SEO optimization**, **PWA ready**, and **comprehensive component showcase** with **21 shadcn/ui components** and **69+ interactive examples**.
 
 ## 🌐 Live Demo
 
@@ -218,10 +218,22 @@ npm run type-check           # TypeScript type checking
 
 ### 🎨 Component Showcase Features
 
-**Currently Implemented**: 19 shadcn/ui components with 63+ interactive examples
+**Currently Implemented**: 21 shadcn/ui components with 69+ interactive examples
 **Status**: Progressive implementation - new components added regularly
 
 ### 📋 Component Examples Available (Current Implementation)
+
+#### **Date Picker Component** (3 Examples)
+- **Basic Date Picker**: Simple calendar selection with formatted display
+- **Birthday Picker**: Age calculation with specialized date selection
+- **Appointment Picker**: Future date scheduling with quick action buttons
+- **Date formatting** with date-fns integration
+
+#### **Dialog Component** (3 Examples)
+- **Basic Dialog**: Simple modal with title and description
+- **Form Dialog**: Profile editing with controlled form inputs
+- **Contact Dialog**: Contact form with validation and required fields
+- **State management** and form handling
 
 #### **Accordion Component** (3 Examples)
 - **Basic Accordion**: Single collapsible FAQ sections
@@ -281,6 +293,8 @@ npm run type-check           # TypeScript type checking
 - **Command Component** (3 Examples): Command palette with search functionality
 - **Context Menu Component** (3 Examples): Right-click contextual menus
 - **Combobox Component** (3 Examples): Searchable select dropdowns
+- **Date Picker Component** (3 Examples): Calendar date selection with various formats
+- **Dialog Component** (3 Examples): Modal windows for forms and confirmations
 
 #### **GitHub Integration Features**
 - **Open Source Section**: Dedicated section on Welcome page
@@ -381,7 +395,9 @@ AspNetMvcReact/
 │   │   │   │   ├── AlertDialogExamples.tsx
 │   │   │   │   ├── AlertExamples.tsx
 │   │   │   │   ├── ButtonExamples.tsx
-│   │   │   │   └── CardExamples.tsx
+│   │   │   │   ├── CardExamples.tsx
+│   │   │   │   ├── DatePickerExamples.tsx
+│   │   │   │   └── DialogExamples.tsx
 │   │   │   ├── layout/   # Layout components
 │   │   │   │   ├── AppLayout.tsx
 │   │   │   │   └── Footer.tsx
@@ -395,7 +411,7 @@ AspNetMvcReact/
 │   │   │   │   ├── Login.tsx
 │   │   │   │   ├── Register.tsx
 │   │   │   │   └── ForgotPassword.tsx
-│   │   │   ├── ComponentsDemo.tsx  # 50+ interactive examples
+│   │   │   ├── ComponentsDemo.tsx  # 69+ interactive examples
 │   │   │   ├── Dashboard.tsx       # Admin panel
 │   │   │   ├── Profile/           # User profile management
 │   │   │   │   └── Index.tsx
@@ -513,7 +529,7 @@ dotnet ef database update
 ## 📊 Component Implementation Status
 
 ### Currently Available (19/56+ Components)
-The project implements **19 shadcn/ui components** with **63+ interactive examples**:
+The project implements **21 shadcn/ui components** with **69+ interactive examples**:
 
 ✅ **Fully Implemented Components:**
 - Accordion (3 examples) • Alert (6 examples) • Alert Dialog (3 examples)
@@ -522,7 +538,7 @@ The project implements **19 shadcn/ui components** with **63+ interactive exampl
 - Calendar (3 examples) • Card (7 examples) • Carousel (3 examples)
 - Chart (3 examples) • Checkbox (3 examples) • Collapsible (3 examples)
 - Combobox (3 examples) • Command (3 examples) • Context Menu (3 examples)
-- Data Table (3 examples)
+- Date Picker (3 examples) • Dialog (3 examples) • Data Table (3 examples)
 
 🚧 **In Progressive Development:**
 - Additional shadcn/ui components are being implemented gradually
@@ -545,7 +561,7 @@ The project implements **19 shadcn/ui components** with **63+ interactive exampl
 - **✅ Complete Coverage**: Every UI element and example properly translated
 
 ### Component Showcase Implementation
-- **📈 63+ Examples**: Currently implemented across 19 shadcn/ui components
+- **📈 69+ Examples**: Currently implemented across 21 shadcn/ui components
 - **🎯 Practical Use Cases**: Real-world examples for each component
 - **📋 Progressive Documentation**: Enhanced descriptions and use case explanations
 - **🔍 Improved Navigation**: Sidebar with component counts and implementation status
