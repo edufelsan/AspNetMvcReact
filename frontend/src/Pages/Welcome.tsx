@@ -195,32 +195,22 @@ export default function Welcome() {
             {/* GitHub Section */}
             <section className="py-24 bg-background">
                 <div className="container mx-auto px-4">
-                    <div className="max-w-4xl mx-auto text-center space-y-12">
-                        {/* Header */}
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-center space-x-3 mb-6">
-                                <div className="w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg">
-                                    <Github className="h-8 w-8 text-white dark:text-gray-900" />
-                                </div>
+                    <div className="text-center space-y-4 mb-16">
+                        <div className="flex items-center justify-center space-x-3 mb-6">
+                            <div className="w-16 h-16 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg">
+                                <Github className="h-8 w-8 text-white dark:text-gray-900" />
                             </div>
-                            <h2 className="text-3xl lg:text-4xl font-bold">
-                                {t('welcome.github.title')}
-                            </h2>
-                            <p className="text-lg text-muted-foreground">
-                                {t('welcome.github.subtitle')}
-                            </p>
-                            <Separator className="w-20 mx-auto" />
                         </div>
+                        <h2 className="text-3xl lg:text-4xl font-bold">
+                            {t('welcome.github.title')}
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            {t('welcome.github.description')}
+                        </p>
+                        <Separator className="w-20 mx-auto" />
+                    </div>
 
-                        {/* Description */}
-                        <div className="space-y-6">
-                            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                                {t('welcome.github.description')}
-                            </p>
-                        </div>
-
-                        {/* Features Grid */}
-                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                             <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
                                 <CardContent className="pt-6 text-center">
                                     <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 mx-auto mb-4">
@@ -257,21 +247,19 @@ export default function Welcome() {
                                 </CardContent>
                             </Card>
                         </div>
-
-                        {/* CTA Button */}
-                        <div className="flex justify-center">
-                            <a 
-                                href="https://github.com/edufelsan/AspNetMvcReact" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="inline-flex"
-                            >
-                                <Button size="lg" className="h-12 px-8 text-base">
-                                    <Github className="mr-2 h-5 w-5" />
-                                    {t('welcome.github.viewOnGithub')}
-                                </Button>
-                            </a>
-                        </div>
+                    
+                    <div className="flex justify-center">
+                        <a 
+                            href="https://github.com/edufelsan/AspNetMvcReact" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex"
+                        >
+                            <Button size="lg" className="h-12 px-8 text-base">
+                                <Github className="mr-2 h-5 w-5" />
+                                {t('welcome.github.viewOnGithub')}
+                            </Button>
+                        </a>
                     </div>
                 </div>
             </section>
