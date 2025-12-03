@@ -969,6 +969,55 @@
       "noDateSelected": "Ninguna fecha seleccionada",
       "clearAll": "Limpiar todas las fechas"
     },
+    "drawer": {
+      "title": "Drawer",
+      "description": "Paneles deslizantes que aparecen desde el borde de la pantalla",
+      "navigation": {
+        "title": "Menú de Navegación",
+        "description": "Drawer con menú lateral para navegación principal",
+        "openMenu": "Abrir Menú",
+        "drawerTitle": "Menú de Navegación",
+        "drawerDescription": "Accede a tu cuenta y funciones de la aplicación",
+        "profile": "Perfil",
+        "notifications": "Notificaciones",
+        "settings": "Configuración",
+        "messages": "Mensajes",
+        "contact": "Contacto",
+        "close": "Cerrar"
+      },
+      "cart": {
+        "title": "Carrito de Compras",
+        "description": "Drawer de carrito con productos y checkout",
+        "openCart": "Carrito",
+        "drawerTitle": "Carrito de Compras",
+        "drawerDescription": "Revisa tus artículos antes del checkout",
+        "total": "Total",
+        "checkout": "Proceder al Checkout",
+        "continueShopping": "Continuar Comprando"
+      },
+      "settings": {
+        "title": "Configuración",
+        "description": "Drawer de configuración con preferencias de cuenta",
+        "openSettings": "Configuración",
+        "drawerTitle": "Configuración de Cuenta",
+        "drawerDescription": "Gestiona tus preferencias de cuenta y notificaciones",
+        "profileInfo": "Información del Perfil",
+        "name": "Nombre",
+        "email": "Correo",
+        "bio": "Biografía",
+        "notifications": "Preferencias de Notificación",
+        "pushNotifications": "Notificaciones Push",
+        "emailFrequency": "Frecuencia de Correo",
+        "enabled": "Activado",
+        "disabled": "Desactivado",
+        "never": "Nunca",
+        "daily": "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "save": "Guardar Cambios",
+        "cancel": "Cancelar"
+      }
+    },
     "dialog": {
       "title": "Dialog",
       "description": "Ventanas modales elegantes y accesibles para mostrar contenido superpuesto",
@@ -1300,6 +1349,9 @@
     },
     "dialog": {
       "description": "Ventanas modales elegantes y accesibles"
+    },
+    "drawer": {
+      "description": "Paneles deslizantes desde el borde"
     },
     "dataTable": {
       "description": "Tabla de datos con ordenación, filtrado y paginación"

@@ -936,6 +936,55 @@
       "noDateSelected": "No date selected",
       "clearAll": "Clear all dates"
     },
+    "drawer": {
+      "title": "Drawer",
+      "description": "Sliding panels that appear from the edge of the screen",
+      "navigation": {
+        "title": "Navigation Menu",
+        "description": "Drawer with side menu for main navigation",
+        "openMenu": "Open Menu",
+        "drawerTitle": "Navigation Menu",
+        "drawerDescription": "Access your account and app features",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "messages": "Messages",
+        "contact": "Contact",
+        "close": "Close"
+      },
+      "cart": {
+        "title": "Shopping Cart",
+        "description": "Cart drawer with products and checkout",
+        "openCart": "Cart",
+        "drawerTitle": "Shopping Cart",
+        "drawerDescription": "Review your items before checkout",
+        "total": "Total",
+        "checkout": "Proceed to Checkout",
+        "continueShopping": "Continue Shopping"
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Settings drawer with account preferences",
+        "openSettings": "Settings",
+        "drawerTitle": "Account Settings",
+        "drawerDescription": "Manage your account preferences and notifications",
+        "profileInfo": "Profile Information",
+        "name": "Name",
+        "email": "Email",
+        "bio": "Bio",
+        "notifications": "Notification Preferences",
+        "pushNotifications": "Push Notifications",
+        "emailFrequency": "Email Frequency",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "never": "Never",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "save": "Save Changes",
+        "cancel": "Cancel"
+      }
+    },
     "dialog": {
       "title": "Dialog",
       "description": "Elegant and accessible modal windows for displaying overlay content",
@@ -1319,6 +1368,9 @@
     },
     "dialog": {
       "description": "Elegant and accessible modal windows"
+    },
+    "drawer": {
+      "description": "Sliding panels from screen edge"
     },
     "dataTable": {
       "description": "Data table with sorting, filtering, and pagination"
