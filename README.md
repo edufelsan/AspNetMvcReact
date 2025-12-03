@@ -64,9 +64,11 @@ After configuring the credentials, run the following commands:
 # Create the initial Identity migration
 dotnet ef migrations add InitialIdentitySetup
 
-# Create the database and apply migrations
+# Create the database and apply migrations (Development only)
 dotnet ef database update
 ```
+
+> **📝 Note**: Migrations are automatically applied in **Production environment** when `ASPNETCORE_ENVIRONMENT=Production`. In development, you need to run `dotnet ef database update` manually.
 
 ### 4. Install .NET Packages
 
@@ -431,6 +433,59 @@ AspNetMvcReact/
 ├── appsettings.json      # Configuration
 └── Program.cs            # Application Configuration
 ```
+
+## 🗄️ Database Migrations
+
+### Automatic Migration System
+
+The application includes an **automatic migration system** that executes database migrations based on the environment:
+
+#### **Production Environment** (`ASPNETCORE_ENVIRONMENT=Production`)
+- ✅ **Automatic Execution**: Migrations run automatically on application startup
+- ✅ **Pending Detection**: Only applies migrations that haven't been executed
+- ✅ **Detailed Logging**: Logs all migration activity and results
+- ✅ **Fail-Fast**: Application stops if migrations fail (ensures data integrity)
+
+#### **Development Environment** (`ASPNETCORE_ENVIRONMENT=Development`)
+- ❌ **Manual Execution**: Migrations must be run manually using `dotnet ef database update`
+- ✅ **Full Control**: Developers maintain control over when migrations are applied
+
+### Migration Commands
+
+```bash
+# Create a new migration
+dotnet ef migrations add MigrationName
+
+# Apply migrations manually (Development)
+dotnet ef database update
+
+# Remove the last migration (if not applied)
+dotnet ef migrations remove
+
+# Check migration status
+dotnet ef migrations list
+```
+
+### Production Deployment
+
+When deploying to production:
+
+1. **Set Environment Variable**: `ASPNETCORE_ENVIRONMENT=Production`
+2. **Deploy Application**: Migrations will run automatically on first startup
+3. **Monitor Logs**: Check application logs for migration execution status
+
+```bash
+# Example production environment setup
+export ASPNETCORE_ENVIRONMENT=Production
+dotnet AspNetMvcReact.dll
+```
+
+The system automatically:
+- Detects pending migrations
+- Logs migration names before execution
+- Applies all pending migrations in correct order
+- Confirms successful completion
+- Throws exceptions on failure (fail-fast approach)
 
 ## 🔐 Security Settings
 
