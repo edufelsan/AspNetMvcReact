@@ -116,13 +116,9 @@ export function DeleteConfirmationDialog() {
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
-    try {
-      // Call API to delete item
-      await fetch('/api/items/delete', { method: 'POST' });
-      setOpen(false);
-    } catch (error) {
-      console.error('Failed to delete item');
-    }
+    // In real app: router.post('/items/delete', {}, { onSuccess: () => setOpen(false) });
+    console.log('Item would be deleted via Inertia.js');
+    setOpen(false);
   };
 
   return (
@@ -205,17 +201,14 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
-import { router } from '@inertiajs/react';
 
 export function LogoutConfirmationDialog() {
   const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
-    router.post('/auth/logout', {}, {
-      onSuccess: () => {
-        setOpen(false);
-      }
-    });
+    // In real app: router.post('/auth/logout', {}, { onSuccess: () => setOpen(false) });
+    console.log('User would be logged out via Inertia.js');
+    setOpen(false);
   };
 
   return (

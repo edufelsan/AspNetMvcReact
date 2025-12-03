@@ -108,6 +108,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { UserPlus } from 'lucide-react'
+import { router } from '@inertiajs/react'
 
 export function ProfileDialogExample() {
     const [isOpen, setIsOpen] = useState(false)
@@ -118,8 +119,13 @@ export function ProfileDialogExample() {
     })
 
     const handleSave = () => {
-        console.log('Profile saved:', profile)
-        setIsOpen(false)
+        // Using Inertia.js router to submit form data
+        router.post('/profile/update', profile, {
+            onSuccess: () => {
+                setIsOpen(false)
+                // Success handled by controller redirect
+            }
+        })
     }
 
     return (
@@ -181,46 +187,56 @@ export function ProfileDialogExample() {
 }`,
         backend: `// ProfileController.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using InertiaCore;
+using AspNetMvcReact.Models;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ProfileController : ControllerBase
+[Authorize]
+public class ProfileController : Controller
 {
-    private readonly IProfileService _profileService;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IEmailService _emailService;
 
-    public ProfileController(IProfileService profileService)
+    public ProfileController(UserManager<ApplicationUser> userManager, IEmailService emailService)
     {
-        _profileService = profileService;
+        _userManager = userManager;
+        _emailService = emailService;
     }
 
-    [HttpPut("{userId}")]
-    public async Task<IActionResult> UpdateProfile(string userId, [FromBody] UpdateProfileRequest request)
+    [HttpPost]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
-        var profile = await _profileService.GetByUserIdAsync(userId);
-        if (profile == null)
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            return NotFound("Profile not found");
+            return RedirectToAction("Login", "Auth");
         }
 
-        profile.Name = request.Name;
-        profile.Email = request.Email;
-        profile.Bio = request.Bio;
-        profile.UpdatedAt = DateTime.UtcNow;
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.Email = request.Email;
 
-        await _profileService.UpdateAsync(profile);
+        var result = await _userManager.UpdateAsync(user);
 
-        return Ok(new { 
-            Message = "Profile updated successfully",
-            Profile = profile 
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Index", new { 
+                success = "Profile updated successfully" 
+            });
+        }
+
+        return Inertia.Render("Profile/Index", new {
+            user = user,
+            errors = result.Errors
         });
     }
 }
 
 public class UpdateProfileRequest
 {
-    public string Name { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string Email { get; set; }
-    public string Bio { get; set; }
 }`
     };
 
@@ -240,6 +256,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { MessageSquare } from 'lucide-react'
+import { router } from '@inertiajs/react'
 
 export function ContactDialogExample() {
     const [isOpen, setIsOpen] = useState(false)
@@ -250,9 +267,14 @@ export function ContactDialogExample() {
     })
 
     const handleSubmit = () => {
-        console.log('Contact form submitted:', contact)
-        setContact({ name: '', email: '', message: '' })
-        setIsOpen(false)
+        // Using Inertia.js router to submit contact form
+        router.post('/contact/send', contact, {
+            onSuccess: () => {
+                setContact({ name: '', email: '', message: '' })
+                setIsOpen(false)
+                // Success message handled by controller
+            }
+        })
     }
 
     const isValid = contact.name && contact.email && contact.message
@@ -317,49 +339,74 @@ export function ContactDialogExample() {
 }`,
         backend: `// ContactController.cs
 using Microsoft.AspNetCore.Mvc;
+using AspNetMvcReact.Models;
+using AspNetMvcReact.Services.Interfaces;
+using InertiaCore;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ContactController : ControllerBase
+public class ContactController : Controller
 {
     private readonly IEmailService _emailService;
-    private readonly IContactService _contactService;
+    private readonly ILogger<ContactController> _logger;
 
-    public ContactController(IEmailService emailService, IContactService contactService)
+    public ContactController(IEmailService emailService, ILogger<ContactController> logger)
     {
         _emailService = emailService;
-        _contactService = contactService;
+        _logger = logger;
     }
 
-    [HttpPost("send")]
-    public async Task<IActionResult> SendContact([FromBody] ContactRequest request)
+    [HttpGet]
+    public IActionResult Index()
     {
-        // Validate request
+        return Inertia.Render("Contact/Index");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Send([FromBody] ContactRequest request)
+    {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return Inertia.Render("Contact/Index", new {
+                errors = ModelState,
+                data = request
+            });
         }
 
-        // Save contact to database
-        var contact = new Contact
+        try
         {
-            Id = Guid.NewGuid(),
-            Name = request.Name,
-            Email = request.Email,
-            Message = request.Message,
-            CreatedAt = DateTime.UtcNow,
-            Status = ContactStatus.New
-        };
+            // Send email notification to admin
+            var variables = new Dictionary<string, object>
+            {
+                { "Name", request.Name },
+                { "Email", request.Email },
+                { "Message", request.Message },
+                { "DateTime", DateTime.Now.ToString("dd/MM/yyyy HH:mm") }
+            };
 
-        await _contactService.CreateAsync(contact);
+            var result = await _emailService.SendTemplatedEmailAsync(
+                "ContactForm",
+                "admin@yoursite.com",
+                $"Nova mensagem de contato - {request.Name}",
+                variables
+            );
 
-        // Send email notification
-        await _emailService.SendContactNotificationAsync(contact);
+            if (result.IsSuccess)
+            {
+                return RedirectToAction("Index", new { 
+                    success = "Your message has been sent successfully!" 
+                });
+            }
 
-        return Ok(new { 
-            Message = "Your message has been sent successfully!",
-            ContactId = contact.Id 
-        });
+            return RedirectToAction("Index", new { 
+                error = "There was an error sending your message. Please try again." 
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending contact form");
+            return RedirectToAction("Index", new { 
+                error = "There was an error sending your message. Please try again." 
+            });
+        }
     }
 }
 

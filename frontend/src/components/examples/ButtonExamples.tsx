@@ -305,15 +305,9 @@ export function LoadingButton() {
 
     const handleAsyncAction = async () => {
         setIsLoading(true);
-        try {
-            const response = await fetch('/api/process', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            // Handle response
-        } finally {
-            setIsLoading(false);
-        }
+        
+        // In real app: router.post('/process', {}, { onFinish: () => setIsLoading(false) });
+        setTimeout(() => setIsLoading(false), 2000); // Simulate async operation
     };
 
     return (

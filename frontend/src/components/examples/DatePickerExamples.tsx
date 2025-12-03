@@ -190,44 +190,73 @@ export function AppointmentDatePickerExample() {
 }`,
         backend: `// AppointmentController.cs
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using AspNetMvcReact.Models;
+using InertiaCore;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AppointmentController : ControllerBase
+[Authorize]
+public class AppointmentController : Controller
 {
-    [HttpPost("schedule")]
-    public IActionResult ScheduleAppointment([FromBody] AppointmentRequest request)
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ILogger<AppointmentController> _logger;
+
+    public AppointmentController(
+        UserManager<ApplicationUser> userManager,
+        ILogger<AppointmentController> logger)
     {
-        // Validate appointment date
-        if (request.Date < DateTime.Now.Date)
+        _userManager = userManager;
+        _logger = logger;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            return BadRequest("Cannot schedule appointment in the past");
+            return RedirectToAction("Login", "Auth");
         }
 
-        // Save to database
-        var appointment = new Appointment
+        // Mock appointments data
+        var appointments = new[]
         {
-            Id = Guid.NewGuid(),
-            Date = request.Date,
-            Title = request.Title,
-            Status = AppointmentStatus.Scheduled,
-            CreatedAt = DateTime.UtcNow
+            new { Id = 1, Date = DateTime.Now.AddDays(1), Title = "Doctor Appointment", Status = "Scheduled" },
+            new { Id = 2, Date = DateTime.Now.AddDays(7), Title = "Business Meeting", Status = "Confirmed" }
         };
 
-        // _appointmentService.Create(appointment);
+        return Inertia.Render("Appointments/Index", new { appointments });
+    }
 
-        return Ok(new { 
-            Id = appointment.Id,
-            Message = "Appointment scheduled successfully"
+    [HttpPost]
+    public async Task<IActionResult> Schedule([FromBody] AppointmentRequest request)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        if (request.Date < DateTime.Now.Date)
+        {
+            return Inertia.Render("Appointments/Create", new {
+                error = "Cannot schedule appointment in the past",
+                data = request
+            });
+        }
+
+        // In real app, save to database
+        _logger.LogInformation($"Appointment scheduled for {request.Date} by user {user.Id}");
+
+        return RedirectToAction("Index", new { 
+            success = "Appointment scheduled successfully" 
         });
     }
+}
 
-    [HttpGet("upcoming")]
-    public IActionResult GetUpcoming()
-    {
-        var upcoming = _appointmentService.GetUpcoming();
-        return Ok(upcoming);
-    }
+public class AppointmentRequest
+{
+    public DateTime Date { get; set; }
+    public string Title { get; set; }
 }
 
 public class AppointmentRequest
