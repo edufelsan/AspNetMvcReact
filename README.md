@@ -470,15 +470,24 @@ dotnet ef migrations list
 
 When deploying to production:
 
-1. **Set Environment Variable**: `ASPNETCORE_ENVIRONMENT=Production`
-2. **Deploy Application**: Migrations will run automatically on first startup
-3. **Monitor Logs**: Check application logs for migration execution status
+1. **Configure Production Settings**: Update `appsettings.Production.json` with your production database and email settings
+2. **Set Environment Variable**: `ASPNETCORE_ENVIRONMENT=Production`
+3. **Deploy Application**: Migrations will run automatically on first startup
+4. **Monitor Logs**: Check application logs for migration execution status
 
 ```bash
-# Example production environment setup
+# Linux/Mac - Production environment setup
 export ASPNETCORE_ENVIRONMENT=Production
 dotnet AspNetMvcReact.dll
+
+# Windows - Production environment setup
+$env:ASPNETCORE_ENVIRONMENT = "Production"
+dotnet AspNetMvcReact.dll
 ```
+
+**Configuration Files Loading Order:**
+1. `appsettings.json` (base configuration)
+2. `appsettings.Production.json` (production overrides - loaded automatically)
 
 The system automatically:
 - Detects pending migrations
@@ -564,11 +573,17 @@ dotnet ef database update
 ### Production Checklist
 
 1. **Environment Configuration**
-   - Update connection strings in `appsettings.json`
+   - Update connection strings in `appsettings.Production.json`
+   - Configure email settings in `appsettings.Production.json`
    - Set `ASPNETCORE_ENVIRONMENT=Production`
    - Configure proper SSL certificates
 
-2. **Build for Production**
+2. **Production Configuration**
+   - The application automatically uses `appsettings.Production.json` when `ASPNETCORE_ENVIRONMENT=Production`
+   - Update database connection string and email configuration in this file
+   - Never commit real production credentials to version control
+
+3. **Build for Production**
    ```bash
    cd frontend
    npm run build
@@ -576,10 +591,9 @@ dotnet ef database update
    dotnet publish -c Release -o ./publish
    ```
 
-3. **Database Migration**
-   ```bash
-   dotnet ef database update --configuration Release
-   ```
+4. **Database Migration**
+   - **Automatic**: Migrations run automatically when `ASPNETCORE_ENVIRONMENT=Production`
+   - No manual intervention required
 
 ## 📊 Component Implementation Status
 
