@@ -22,6 +22,7 @@ import CommandExamples from '@/components/examples/CommandExamples';
 import ContextMenuExamples from '@/components/examples/ContextMenuExamples';
 import DatePickerExamples from '@/components/examples/DatePickerExamples';
 import DialogExamples from '@/components/examples/DialogExamples';
+import DrawerExamples from '@/components/examples/DrawerExamples';
 import DataTableExamples from '@/components/examples/DataTableExamples';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -71,6 +72,8 @@ export default function ComponentsDemo() {
                 return <DatePickerExamples />;
             case 'dialog':
                 return <DialogExamples />;
+            case 'drawer':
+                return <DrawerExamples />;
             case 'dataTable':
                 return <DataTableExamples />;
             case 'card':

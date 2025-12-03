@@ -199,6 +199,13 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             icon: MessageSquare,
             description: t('sidebar.dialog.description'),
             examples: 3
+        },
+        {
+            id: 'drawer',
+            name: 'Drawer',
+            icon: Menu,
+            description: t('sidebar.drawer.description'),
+            examples: 3
         }
     ];
 
