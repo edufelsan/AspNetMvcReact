@@ -80,27 +80,46 @@ builder.Services.AddInertia();
 
 var app = builder.Build();
 
-// Apply migrations automatically on startup
-using (var scope = app.Services.CreateScope())
+// Apply migrations automatically only in Production environment
+if (app.Environment.IsProduction())
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         
-        // Ensure the database is created and apply any pending migrations
-        await context.Database.MigrateAsync();
+        // Check for pending migrations
+        var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
         
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Database migrations applied successfully.");
+        if (pendingMigrations.Any())
+        {
+            logger.LogInformation("Found {Count} pending migrations. Applying them now...", 
+                pendingMigrations.Count());
+                
+            foreach (var migration in pendingMigrations)
+            {
+                logger.LogInformation("Pending migration: {Migration}", migration);
+            }
+            
+            // Apply all pending migrations
+            await context.Database.MigrateAsync();
+            
+            logger.LogInformation("All database migrations applied successfully in Production environment.");
+        }
+        else
+        {
+            logger.LogInformation("No pending migrations found. Database is up to date.");
+        }
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while applying database migrations.");
+        logger.LogError(ex, "An error occurred while applying database migrations in Production environment.");
         
-        // Em produção, você pode decidir se quer que a aplicação falhe ou continue
-        // throw; // Descomente esta linha se quiser que a aplicação falhe quando as migrações falharem
+        // In production, fail fast if migrations fail to ensure data integrity
+        throw;
     }
 }
 
