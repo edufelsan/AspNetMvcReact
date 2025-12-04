@@ -26,20 +26,32 @@ export function BasicButtonGroup() {
   )
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode1 = `// Controllers/EditorController.cs
 public class EditorController : Controller
 {
-    public class EditorAction
+    private readonly IEditorService _editorService;
+
+    public EditorController(IEditorService editorService)
     {
-        public string Name { get; set; } = "";
-        public string Icon { get; set; } = "";
-        public string Action { get; set; } = "";
-        public bool IsActive { get; set; }
+        _editorService = editorService;
     }
 
-    [HttpGet("/api/editor/formatting-actions")]
-    public IActionResult GetFormattingActions()
+    [HttpGet]
+    public IActionResult FormattingActions()
+    {
+        var actions = _editorService.GetFormattingActions();
+        return Inertia.Render("Editor/FormattingActions", new { actions });
+    }
+}
+
+// Models/EditorAction.cs
+public class EditorAction
+{
+    public string Name { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Action { get; set; } = "";
+    public bool IsActive { get; set; }
+}
     {
         var actions = new[]
         {
@@ -196,8 +208,7 @@ public class DocumentController : Controller
         public string Endpoint { get; set; } = "";
     }
 
-    [HttpGet("/api/document/{documentId}/actions")]
-    public IActionResult GetDocumentActions(int documentId)
+    public IActionResult DocumentActions(int documentId)
     {
         var actions = new[]
         {

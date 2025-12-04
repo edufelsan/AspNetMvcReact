@@ -59,40 +59,56 @@ export function BasicCheckbox() {
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserPreferencesController : ControllerBase
+// Controllers/UserPreferencesController.cs
+public class UserPreferencesController : Controller
+{
+    private readonly IUserPreferencesService _preferencesService;
+    private readonly ITermsService _termsService;
+
+    public UserPreferencesController(IUserPreferencesService preferencesService, ITermsService termsService)
     {
-        // Aceitar termos de serviço
-        [HttpPost("accept-terms")]
-        public IActionResult AcceptTerms([FromBody] TermsAcceptanceRequest request)
+        _preferencesService = preferencesService;
+        _termsService = termsService;
+    }
+
+    [HttpPost]
+    public IActionResult AcceptTerms(TermsAcceptanceRequest request)
+    {
+        if (!ModelState.IsValid || !request.Accepted)
         {
-            if (!request.Accepted)
-                return BadRequest("Você deve aceitar os termos para continuar");
-
-            var acceptance = new
-            {
-                userId = request.UserId,
-                accepted = true,
-                acceptedAt = DateTime.UtcNow,
-                ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                termsVersion = "1.0"
-            };
-            
-            return Ok(new
-            {
-                success = true,
-                message = "Termos aceitos com sucesso",
-                data = acceptance
-            });
+            TempData["Error"] = "Você deve aceitar os termos para continuar";
+            return RedirectToAction("Terms");
         }
-    }
 
-    public class TermsAcceptanceRequest
-    {
-        public string UserId { get; set; } = string.Empty;
-        public bool Accepted { get; set; }
+        _termsService.RecordAcceptance(request);
+        TempData["Success"] = "Termos aceitos com sucesso";
+        return RedirectToAction("Index", "Dashboard");
     }
+        
+    [HttpGet]
+    public IActionResult Terms()
+    {
+        return Inertia.Render("UserPreferences/Terms");
+    }
+}
+
+// Models/TermsAcceptance.cs
+public class TermsAcceptance
+{
+    public int Id { get; set; }
+    public string UserId { get; set; } = "";
+    public bool Accepted { get; set; }
+    public DateTime AcceptedAt { get; set; }
+    public string IpAddress { get; set; } = "";
+    public string TermsVersion { get; set; } = "";
+}
+
+// Models/TermsAcceptanceRequest.cs
+public class TermsAcceptanceRequest
+{
+    public string UserId { get; set; } = "";
+    public bool Accepted { get; set; }
+}
 }`;
 
     // Exemplo 2: Checkbox com Notificações
@@ -151,13 +167,11 @@ export function NotificationCheckboxes() {
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class NotificationsController : ControllerBase
+    public class NotificationsController : Controller
     {
         // Atualizar preferências de notificação
-        [HttpPut("preferences")]
-        public IActionResult UpdateNotificationPreferences([FromBody] NotificationPreferencesRequest request)
+        [HttpPost]
+        public IActionResult UpdatePreferences(NotificationPreferencesRequest request)
         {
             var preferences = new
             {
@@ -168,12 +182,11 @@ namespace AspNetMvcReact.Controllers
                 updatedAt = DateTime.UtcNow
             };
             
-            return Ok(new
-            {
-                success = true,
-                message = "Preferências atualizadas com sucesso",
-                preferences = preferences
-            });
+            // Salvar preferências no banco de dados
+            // ...
+            
+            TempData["Success"] = "Preferências atualizadas com sucesso";
+            return RedirectToAction("Index");
         }
 
         // Obter preferências atuais

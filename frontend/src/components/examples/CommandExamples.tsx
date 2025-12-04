@@ -87,15 +87,13 @@ import {
     </CommandList>
 </Command>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CommandsController : ControllerBase
+    public class CommandsController : Controller
     {
-        [HttpGet("suggestions")]
-        public IActionResult GetSuggestions()
+        public IActionResult Suggestions()
         {
             var suggestions = new[]
             {
@@ -104,11 +102,10 @@ namespace YourApp.Controllers
                 new { id = "calculator", icon = "Calculator", label = "Calculator" }
             };
             
-            return Ok(suggestions);
+            return Inertia.Render("Commands/Suggestions", new { suggestions });
         }
         
-        [HttpGet("settings")]
-        public IActionResult GetSettings()
+        public IActionResult Settings()
         {
             var settings = new[]
             {
@@ -117,14 +114,14 @@ namespace YourApp.Controllers
                 new { id = "settings", icon = "Settings", label = "Settings" }
             };
             
-            return Ok(settings);
+            return Inertia.Render("Commands/Settings", new { settings });
         }
         
-        [HttpPost("execute")]
-        public IActionResult ExecuteCommand([FromBody] CommandExecution command)
+        [HttpPost]
+        public IActionResult Execute(CommandExecution command)
         {
             // Execute the command
-            return Ok(new { message = $"Executed command: {command.CommandId}" });
+            return RedirectToAction("Index", new { message = $"Executed command: {command.CommandId}" });
         }
     }
     
@@ -197,15 +194,13 @@ const [open, setOpen] = useState(false)
     </CommandDialog>
 </>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CommandMenuController : ControllerBase
+    public class CommandMenuController : Controller
     {
-        [HttpGet("actions")]
-        public IActionResult GetActions()
+        public IActionResult Actions()
         {
             var actions = new[]
             {
@@ -214,11 +209,10 @@ namespace YourApp.Controllers
                 new { id = "send-email", icon = "Mail", label = "Send Email" }
             };
             
-            return Ok(actions);
+            return Inertia.Render("CommandMenu/Actions", new { actions });
         }
         
-        [HttpGet("user")]
-        public IActionResult GetUserCommands()
+        public IActionResult User()
         {
             var userCommands = new[]
             {
@@ -226,14 +220,14 @@ namespace YourApp.Controllers
                 new { id = "preferences", icon = "Settings", label = "Preferences" }
             };
             
-            return Ok(userCommands);
+            return Inertia.Render("CommandMenu/User", new { userCommands });
         }
         
-        [HttpPost("execute")]
-        public IActionResult ExecuteCommand([FromBody] CommandRequest request)
+        [HttpPost]
+        public IActionResult Execute(CommandRequest request)
         {
             // Execute the command based on action
-            return Ok(new { success = true, action = request.Action });
+            return RedirectToAction("Index", new { success = true, action = request.Action });
         }
     }
     
@@ -317,12 +311,9 @@ useEffect(() => {
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ShortcutsController : ControllerBase
+    public class ShortcutsController : Controller
     {
-        [HttpGet]
-        public IActionResult GetShortcuts()
+        public IActionResult Index()
         {
             var shortcuts = new[]
             {
@@ -332,24 +323,24 @@ namespace YourApp.Controllers
                 new { id = "settings", icon = "Settings", label = "Settings", shortcut = "⌘S" }
             };
             
-            return Ok(shortcuts);
+            return Inertia.Render("Shortcuts/Index", new { shortcuts });
         }
         
-        [HttpPost("register")]
-        public IActionResult RegisterShortcut([FromBody] ShortcutRegistration registration)
+        [HttpPost]
+        public IActionResult Register(ShortcutRegistration registration)
         {
             // Register custom keyboard shortcut
-            return Ok(new 
+            return RedirectToAction("Index", new 
             { 
                 message = $"Registered shortcut {registration.Shortcut} for {registration.Action}" 
             });
         }
         
-        [HttpPost("execute")]
-        public IActionResult ExecuteShortcut([FromBody] ShortcutExecution execution)
+        [HttpPost]
+        public IActionResult Execute(ShortcutExecution execution)
         {
             // Execute command triggered by shortcut
-            return Ok(new 
+            return RedirectToAction("Index", new 
             { 
                 success = true, 
                 command = execution.CommandId,

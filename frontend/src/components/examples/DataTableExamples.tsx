@@ -383,55 +383,52 @@ const table = useReactTable({
         </TableBody>
     </Table>
 </div>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/UsersController.cs
+public class UsersController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    private readonly IUserService _userService;
+
+    public UsersController(IUserService userService)
     {
-        public class User
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public string Email { get; set; }
-            public string Role { get; set; }
-            public string Status { get; set; }
-        }
-
-        [HttpGet]
-        public IActionResult GetUsers([FromQuery] string? sortBy = null, [FromQuery] string? sortOrder = "asc")
-        {
-            var users = new List<User>
-            {
-                new User { Id = "1", Name = "John Doe", Email = "john@example.com", Role = "Admin", Status = "Active" },
-                new User { Id = "2", Name = "Jane Smith", Email = "jane@example.com", Role = "User", Status = "Active" },
-                new User { Id = "3", Name = "Bob Johnson", Email = "bob@example.com", Role = "User", Status = "Inactive" },
-                new User { Id = "4", Name = "Alice Brown", Email = "alice@example.com", Role = "Manager", Status = "Active" },
-                new User { Id = "5", Name = "Charlie Wilson", Email = "charlie@example.com", Role = "User", Status = "Active" }
-            };
-
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                users = sortBy.ToLower() switch
-                {
-                    "name" => sortOrder == "desc" 
-                        ? users.OrderByDescending(u => u.Name).ToList() 
-                        : users.OrderBy(u => u.Name).ToList(),
-                    "email" => sortOrder == "desc" 
-                        ? users.OrderByDescending(u => u.Email).ToList() 
-                        : users.OrderBy(u => u.Email).ToList(),
-                    "role" => sortOrder == "desc" 
-                        ? users.OrderByDescending(u => u.Role).ToList() 
-                        : users.OrderBy(u => u.Role).ToList(),
-                    _ => users
-                };
-            }
-
-            return Ok(users);
-        }
+        _userService = userService;
     }
+
+    [HttpGet]
+    public IActionResult Index(string? sortBy = null, string? sortOrder = "asc")
+    {
+        var users = _userService.GetAllUsers();
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            users = sortBy.ToLower() switch
+            {
+                "name" => sortOrder == "desc" 
+                    ? users.OrderByDescending(u => u.Name).ToList() 
+                    : users.OrderBy(u => u.Name).ToList(),
+                "email" => sortOrder == "desc" 
+                    ? users.OrderByDescending(u => u.Email).ToList() 
+                    : users.OrderBy(u => u.Email).ToList(),
+                "role" => sortOrder == "desc" 
+                    ? users.OrderByDescending(u => u.Role).ToList() 
+                    : users.OrderBy(u => u.Role).ToList(),
+                _ => users
+            };
+        }
+
+        return Inertia.Render("DataTable/Index", new { users });
+    }
+}
+
+// Models/User.cs
+public class User
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
+    public string Role { get; set; } = "";
+    public string Status { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastLoginAt { get; set; }
 }`,
     }
 
@@ -540,18 +537,16 @@ const table = useReactTable({
     </div>
 </div>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
-        [HttpGet]
-        public IActionResult GetUsers(
-            [FromQuery] string? sortBy = null, 
-            [FromQuery] string? sortOrder = "asc",
-            [FromQuery] string? filterEmail = null)
+        public IActionResult Index(
+            string? sortBy = null, 
+            string? sortOrder = "asc",
+            string? filterEmail = null)
         {
             var users = new List<User>
             {
@@ -585,7 +580,7 @@ namespace YourApp.Controllers
                 };
             }
 
-            return Ok(users);
+            return Inertia.Render("DataTable/Filtered", new { users });
         }
     }
 }`,
@@ -767,17 +762,14 @@ const table = useReactTable({
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
-        [HttpGet]
-        public IActionResult GetUsers(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] string? sortBy = null,
-            [FromQuery] string? sortOrder = "asc",
-            [FromQuery] string? filterEmail = null)
+        public IActionResult Index(
+            int page = 1,
+            int pageSize = 10,
+            string? sortBy = null,
+            string? sortOrder = "asc",
+            string? filterEmail = null)
         {
             var allUsers = GenerateUsers(50); // Generate sample data
 
@@ -812,7 +804,7 @@ namespace YourApp.Controllers
                 .Take(pageSize)
                 .ToList();
 
-            return Ok(new
+            return Inertia.Render("DataTable/Paginated", new
             {
                 Data = paginatedUsers,
                 Page = page,
@@ -822,18 +814,25 @@ namespace YourApp.Controllers
             });
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost]
         public IActionResult DeleteUser(string id)
         {
             // Delete user logic
-            return Ok(new { message = $"User {id} deleted successfully" });
+            TempData["Success"] = $"User {id} deleted successfully";
+            return RedirectToAction("Index");
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(string id, [FromBody] User user)
+        [HttpPost]
+        public IActionResult UpdateUser(string id, User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return Inertia.Render("DataTable/Edit", new { user, errors = ModelState });
+            }
+
             // Update user logic
-            return Ok(new { message = $"User {id} updated successfully", user });
+            TempData["Success"] = $"User {id} updated successfully";
+            return RedirectToAction("Index");
         }
 
         private List<User> GenerateUsers(int count)

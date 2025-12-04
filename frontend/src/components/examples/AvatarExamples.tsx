@@ -21,8 +21,7 @@ export function BasicAvatar() {
 
 public class UserController : Controller
 {
-    [HttpGet("/api/user/{username}")]
-    public IActionResult GetUser(string username)
+    public IActionResult Profile(string username)
     {
         var user = new
         {
@@ -73,8 +72,7 @@ public class UserController : Controller
         public string CssClass { get; set; } = "";
     }
 
-    [HttpGet("/api/avatar-sizes")]
-    public IActionResult GetAvatarSizes()
+    public IActionResult AvatarSizes()
     {
         var sizes = new[]
         {

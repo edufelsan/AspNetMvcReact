@@ -34,57 +34,61 @@ export function BasicCalendar() {
     );
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode1 = `// Controllers/CalendarController.cs
+public class CalendarController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CalendarController : ControllerBase
-    {
-        // Obter eventos do calendário
-        [HttpGet("events")]
-        public IActionResult GetEvents([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
-        {
-            var events = new[]
-            {
-                new { 
-                    id = 1, 
-                    date = DateTime.Now.AddDays(2), 
-                    title = "Reunião de Equipe" 
-                },
-                new { 
-                    id = 2, 
-                    date = DateTime.Now.AddDays(5), 
-                    title = "Apresentação do Projeto" 
-                }
-            };
-            
-            return Ok(events);
-        }
+    private readonly ICalendarService _calendarService;
 
-        // Criar novo evento
-        [HttpPost("events")]
-        public IActionResult CreateEvent([FromBody] CalendarEventRequest request)
-        {
-            var newEvent = new
-            {
-                id = Guid.NewGuid(),
-                date = request.Date,
-                title = request.Title,
-                description = request.Description
-            };
-            
-            return CreatedAtAction(nameof(GetEvents), new { id = newEvent.id }, newEvent);
-        }
+    public CalendarController(ICalendarService calendarService)
+    {
+        _calendarService = calendarService;
     }
 
-    public class CalendarEventRequest
+    [HttpGet]
+    public IActionResult Index(DateTime? startDate = null, DateTime? endDate = null)
     {
-        public DateTime Date { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string? Description { get; set; }
+        var events = _calendarService.GetEvents(startDate, endDate);
+        return Inertia.Render("Calendar/Index", new { events });
     }
+
+    [HttpPost]
+    public IActionResult CreateEvent(CalendarEventRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Render("Calendar/Create", new { errors = ModelState });
+        }
+
+        _calendarService.CreateEvent(request);
+        TempData["Success"] = "Evento criado com sucesso!";
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return Inertia.Render("Calendar/Create");
+    }
+}
+
+// Models/CalendarEvent.cs
+public class CalendarEvent
+{
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public string Title { get; set; } = "";
+    public string? Description { get; set; }
+    public string UserId { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+}
+
+// Models/CalendarEventRequest.cs
+public class CalendarEventRequest
+{
+    public DateTime Date { get; set; }
+    public string Title { get; set; } = "";
+    public string? Description { get; set; }
+}
 }`;
 
     // Exemplo 2: Calendar com Múltiplas Datas
@@ -119,17 +123,21 @@ export function MultipleCalendar() {
 }`;
 
     const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BookingController : ControllerBase
+    public class BookingController : Controller
     {
         // Verificar disponibilidade de múltiplas datas
-        [HttpPost("check-availability")]
-        public IActionResult CheckAvailability([FromBody] DateAvailabilityRequest request)
+        [HttpPost]
+        public IActionResult CheckAvailability(DateAvailabilityRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return Inertia.Render("Booking/CheckAvailability", new { errors = ModelState });
+            }
+
             var availabilityResults = request.Dates.Select(date => new
             {
                 date = date,
@@ -137,7 +145,7 @@ namespace AspNetMvcReact.Controllers
                 slotsRemaining = GetAvailableSlots(date)
             }).ToList();
             
-            return Ok(new
+            return Inertia.Render("Booking/AvailabilityResults", new
             {
                 totalDates = request.Dates.Count,
                 availableDates = availabilityResults.Count(x => x.available),
@@ -146,24 +154,19 @@ namespace AspNetMvcReact.Controllers
         }
 
         // Reservar múltiplas datas
-        [HttpPost("book-multiple")]
-        public IActionResult BookMultipleDates([FromBody] MultiBookingRequest request)
+        [HttpPost]
+        public IActionResult BookMultipleDates(MultiBookingRequest request)
         {
-            var bookings = request.Dates.Select(date => new
+            if (!ModelState.IsValid)
             {
-                id = Guid.NewGuid(),
-                date = date,
-                userId = request.UserId,
-                status = "Confirmed",
-                createdAt = DateTime.UtcNow
-            }).ToList();
+                return Inertia.Render("Booking/MultipleBooking", new { errors = ModelState });
+            }
+
+            // Processar reservas
+            // ... salvar no banco de dados
             
-            return Ok(new
-            {
-                success = true,
-                bookingsCreated = bookings.Count,
-                bookings = bookings
-            });
+            TempData["Success"] = $"Reserva criada com sucesso para {request.Dates.Count} datas";
+            return RedirectToAction("Index");
         }
 
         private bool IsDateAvailable(DateTime date) => date > DateTime.Today;
@@ -232,17 +235,21 @@ export function RangeCalendar() {
 }`;
 
     const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ReservationController : ControllerBase
+    public class ReservationController : Controller
     {
         // Calcular preço para range de datas
-        [HttpPost("calculate-price")]
-        public IActionResult CalculatePrice([FromBody] DateRangeRequest request)
+        [HttpPost]
+        public IActionResult CalculatePrice(DateRangeRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return Inertia.Render("Reservation/CalculatePrice", new { errors = ModelState });
+            }
+
             var days = (request.EndDate - request.StartDate).Days + 1;
             var basePrice = 100.00m;
             var totalPrice = days * basePrice;
@@ -251,7 +258,7 @@ namespace AspNetMvcReact.Controllers
             var discount = days >= 7 ? 0.15m : days >= 3 ? 0.10m : 0m;
             var finalPrice = totalPrice * (1 - discount);
             
-            return Ok(new
+            return Inertia.Render("Reservation/PriceCalculation", new
             {
                 startDate = request.StartDate,
                 endDate = request.EndDate,
@@ -264,23 +271,19 @@ namespace AspNetMvcReact.Controllers
         }
 
         // Criar reserva com range de datas
-        [HttpPost("reserve")]
-        public IActionResult CreateReservation([FromBody] ReservationRequest request)
+        [HttpPost]
+        public IActionResult CreateReservation(ReservationRequest request)
         {
-            var days = (request.EndDate - request.StartDate).Days + 1;
-            
-            var reservation = new
+            if (!ModelState.IsValid)
             {
-                id = Guid.NewGuid(),
-                userId = request.UserId,
-                startDate = request.StartDate,
-                endDate = request.EndDate,
-                totalDays = days,
-                status = "Confirmed",
-                createdAt = DateTime.UtcNow
-            };
+                return Inertia.Render("Reservation/Create", new { errors = ModelState });
+            }
+
+            // Processar reserva
+            // ... salvar no banco de dados
             
-            return CreatedAtAction(nameof(CalculatePrice), new { id = reservation.id }, reservation);
+            TempData["Success"] = "Reserva criada com sucesso!";
+            return RedirectToAction("Index");
         }
 
         // Verificar disponibilidade em um range

@@ -70,15 +70,13 @@ import {
     </ContextMenuContent>
 </ContextMenu>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ContextMenuController : ControllerBase
+    public class ContextMenuController : Controller
     {
-        [HttpGet("items")]
-        public IActionResult GetMenuItems()
+        public IActionResult Items()
         {
             var menuItems = new[]
             {
@@ -87,14 +85,14 @@ namespace YourApp.Controllers
                 new { id = "logout", icon = "LogOut", label = "Log out", separator = true }
             };
             
-            return Ok(menuItems);
+            return Inertia.Render("ContextMenu/Items", new { menuItems });
         }
         
-        [HttpPost("action")]
-        public IActionResult ExecuteAction([FromBody] MenuAction action)
+        [HttpPost]
+        public IActionResult ExecuteAction(MenuAction action)
         {
             // Execute the menu action
-            return Ok(new { message = $"Executed action: {action.ActionId}" });
+            return RedirectToAction("Index", new { message = $"Executed action: {action.ActionId}" });
         }
     }
     
@@ -205,15 +203,13 @@ import {
     </ContextMenuContent>
 </ContextMenu>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AdvancedMenuController : ControllerBase
+    public class AdvancedMenuController : Controller
     {
-        [HttpGet("structure")]
-        public IActionResult GetMenuStructure()
+        public IActionResult Structure()
         {
             var menuStructure = new
             {
@@ -251,14 +247,14 @@ namespace YourApp.Controllers
                 }
             };
             
-            return Ok(menuStructure);
+            return Inertia.Render("AdvancedMenu/Structure", menuStructure);
         }
         
-        [HttpPost("invite")]
-        public IActionResult InviteUser([FromBody] InviteRequest request)
+        [HttpPost]
+        public IActionResult Invite(InviteRequest request)
         {
             // Process user invitation
-            return Ok(new 
+            return RedirectToAction("Index", new 
             { 
                 message = $"Invitation sent via {request.Method}",
                 recipient = request.Email
@@ -342,15 +338,13 @@ import {
     </ContextMenuContent>
 </ContextMenu>`,
         backend: `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace YourApp.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ShortcutMenuController : ControllerBase
+    public class ShortcutMenuController : Controller
     {
-        [HttpGet("shortcuts")]
-        public IActionResult GetShortcuts()
+        public IActionResult Shortcuts()
         {
             var shortcuts = new[]
             {
@@ -360,11 +354,10 @@ namespace YourApp.Controllers
                 new { action = "logout", shortcut = "⇧⌘Q", icon = "LogOut", label = "Log out" }
             };
             
-            return Ok(shortcuts);
+            return Inertia.Render("ContextMenu/Shortcuts", new { shortcuts });
         }
         
-        [HttpGet("preferences")]
-        public IActionResult GetPreferences()
+        public IActionResult Preferences()
         {
             var preferences = new
             {
@@ -381,19 +374,20 @@ namespace YourApp.Controllers
                 }
             };
             
-            return Ok(preferences);
+            return Inertia.Render("ContextMenu/Preferences", preferences);
         }
         
-        [HttpPost("update-preference")]
-        public IActionResult UpdatePreference([FromBody] PreferenceUpdate update)
+        [HttpPost]
+        public IActionResult UpdatePreference(PreferenceUpdate update)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Preferences");
+            }
+
             // Update user preference
-            return Ok(new 
-            { 
-                message = "Preference updated",
-                preference = update.Key,
-                value = update.Value
-            });
+            TempData["Success"] = "Preference updated successfully";
+            return RedirectToAction("Preferences");
         }
     }
     

@@ -76,61 +76,57 @@ export function BasicCollapsible() {
     );
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode1 = `// Controllers/ContentController.cs
+public class ContentController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ContentController : ControllerBase
-    {
-        // Obter conteúdo colapsável
-        [HttpGet("collapsible/{id}")]
-        public IActionResult GetCollapsibleContent(string id)
-        {
-            var content = new
-            {
-                id = id,
-                title = "Conteúdo Colapsável",
-                summary = "Este é o conteúdo sempre visível",
-                details = new[]
-                {
-                    "Informação adicional 1",
-                    "Informação adicional 2",
-                    "Informação adicional 3"
-                },
-                isExpanded = false
-            };
-            
-            return Ok(content);
-        }
+    private readonly IContentService _contentService;
+    private readonly IInteractionService _interactionService;
 
-        // Registrar expansão/colapso
-        [HttpPost("track-interaction")]
-        public IActionResult TrackInteraction([FromBody] InteractionRequest request)
-        {
-            var interaction = new
-            {
-                contentId = request.ContentId,
-                action = request.IsOpen ? "expanded" : "collapsed",
-                timestamp = DateTime.UtcNow,
-                userId = request.UserId
-            };
-            
-            return Ok(new
-            {
-                success = true,
-                interaction = interaction
-            });
-        }
+    public ContentController(IContentService contentService, IInteractionService interactionService)
+    {
+        _contentService = contentService;
+        _interactionService = interactionService;
     }
 
-    public class InteractionRequest
+    [HttpGet]
+    public IActionResult Collapsible(string id)
     {
-        public string ContentId { get; set; } = string.Empty;
-        public bool IsOpen { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        var content = _contentService.GetContentById(id);
+        return Inertia.Render("Content/Collapsible", new { content });
     }
+
+    [HttpPost]
+    public IActionResult TrackInteraction(InteractionRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction("Collapsible", new { id = request.ContentId });
+        }
+
+        _interactionService.TrackInteraction(request);
+        TempData["Info"] = $"Interação registrada: {(request.IsOpen ? "expanded" : "collapsed")}";
+        return RedirectToAction("Collapsible", new { id = request.ContentId });
+    }
+}
+
+// Models/CollapsibleContent.cs
+public class CollapsibleContent
+{
+    public string Id { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Summary { get; set; } = "";
+    public List<string> Details { get; set; } = new();
+    public bool IsExpanded { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+// Models/InteractionRequest.cs
+public class InteractionRequest
+{
+    public string ContentId { get; set; } = "";
+    public bool IsOpen { get; set; }
+    public string UserId { get; set; } = "";
+}
 }`;
 
     // Exemplo 2: FAQ Collapsible
@@ -197,16 +193,14 @@ export function FaqCollapsible() {
 }`;
 
     const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class FaqController : ControllerBase
+    public class FaqController : Controller
     {
-        // Obter perguntas frequentes
-        [HttpGet]
-        public IActionResult GetFaqs([FromQuery] string? category = null)
+        // Exibir perguntas frequentes
+        public IActionResult Index(string? category = null)
         {
             var faqs = new[]
             {
@@ -237,10 +231,11 @@ namespace AspNetMvcReact.Controllers
                 ? faqs.Where(f => f.category == category).ToArray()
                 : faqs;
             
-            return Ok(new
+            return Inertia.Render("Faq/Index", new
             {
                 total = filtered.Length,
-                data = filtered
+                data = filtered,
+                category = category
             });
         }
 

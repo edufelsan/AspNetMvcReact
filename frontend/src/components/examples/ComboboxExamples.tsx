@@ -139,41 +139,52 @@ const [value, setValue] = useState('')
         </Command>
     </PopoverContent>
 </Popover>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/FrameworksController.cs
+public class FrameworksController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class FrameworksController : ControllerBase
+    private readonly IFrameworkService _frameworkService;
+
+    public FrameworksController(IFrameworkService frameworkService)
     {
-        [HttpGet]
-        public IActionResult GetFrameworks()
-        {
-            var frameworks = new[]
-            {
-                new { value = "next.js", label = "Next.js" },
-                new { value = "sveltekit", label = "SvelteKit" },
-                new { value = "nuxt.js", label = "Nuxt.js" },
-                new { value = "remix", label = "Remix" },
-                new { value = "astro", label = "Astro" }
-            };
-            
-            return Ok(frameworks);
-        }
+        _frameworkService = frameworkService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var frameworks = _frameworkService.GetAllFrameworks();
+        return Inertia.Render("Frameworks/Index", new { frameworks });
+    }
         
-        [HttpPost("select")]
-        public IActionResult SelectFramework([FromBody] FrameworkSelection selection)
-        {
-            // Process the selected framework
-            return Ok(new { message = $"Selected framework: {selection.Value}" });
-        }
-    }
-    
-    public class FrameworkSelection
+    [HttpPost]
+    public IActionResult SelectFramework(FrameworkSelection selection)
     {
-        public string Value { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction("Index");
+        }
+
+        _frameworkService.SaveUserPreference(selection);
+        TempData["Success"] = $"Selected framework: {selection.Value}";
+        return RedirectToAction("Index");
     }
+}
+    
+// Models/Framework.cs
+public class Framework
+{
+    public string Value { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Description { get; set; } = "";
+    public bool IsPopular { get; set; }
+}
+
+// Models/FrameworkSelection.cs
+public class FrameworkSelection
+{
+    public string Value { get; set; } = "";
+    public string UserId { get; set; } = "";
+}
 }`,
     }
 
@@ -283,14 +294,20 @@ namespace YourApp.Controllers
                     .ToArray();
             }
             
-            return Ok(countries);
+            return Inertia.Render("Countries/Index", new { countries });
         }
         
-        [HttpPost("select")]
-        public IActionResult SelectCountry([FromBody] CountrySelection selection)
+        [HttpPost]
+        public IActionResult SelectCountry(CountrySelection selection)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+
             // Process the selected country
-            return Ok(new { message = $"Selected country: {selection.Value}" });
+            TempData["Success"] = $"Selected country: {selection.Value}";
+            return RedirectToAction("Index");
         }
     }
     

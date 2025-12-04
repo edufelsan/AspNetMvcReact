@@ -43,44 +43,32 @@ export function BasicBreadcrumb() {
   )
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode1 = `// Controllers/NavigationController.cs
 public class NavigationController : Controller
 {
-    public class BreadcrumbItem
+    private readonly INavigationService _navigationService;
+
+    public NavigationController(INavigationService navigationService)
     {
-        public string Label { get; set; } = "";
-        public string? Href { get; set; }
-        public bool IsCurrentPage { get; set; }
+        _navigationService = navigationService;
     }
 
-    [HttpGet("/api/breadcrumb")]
-    public IActionResult GetBreadcrumb(string path)
+    [HttpGet]
+    public IActionResult Breadcrumb(string path)
     {
-        var breadcrumbs = new List<BreadcrumbItem>
-        {
-            new BreadcrumbItem 
-            { 
-                Label = "Home", 
-                Href = "/", 
-                IsCurrentPage = false 
-            },
-            new BreadcrumbItem 
-            { 
-                Label = "Products", 
-                Href = "/products", 
-                IsCurrentPage = false 
-            },
-            new BreadcrumbItem 
-            { 
-                Label = "Electronics", 
-                Href = null, 
-                IsCurrentPage = true 
-            }
-        };
-        
-        return Json(breadcrumbs);
+        var breadcrumbs = _navigationService.GenerateBreadcrumbs(path);
+        return Inertia.Render("Navigation/Breadcrumb", new { breadcrumbs, path });
     }
+}
+
+// Models/BreadcrumbItem.cs
+public class BreadcrumbItem
+{
+    public string Label { get; set; } = "";
+    public string? Href { get; set; }
+    public bool IsCurrentPage { get; set; }
+    public string Icon { get; set; } = "";
+}
 }`;
 
     const frontendCode2 = `import {

@@ -72,13 +72,21 @@ export function SalesBarChart() {
     );
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode1 = `// Controllers/AnalyticsController.cs
+public class AnalyticsController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AnalyticsController : ControllerBase
+    private readonly IAnalyticsService _analyticsService;
+
+    public AnalyticsController(IAnalyticsService analyticsService)
+    {
+        _analyticsService = analyticsService;
+    }
+    private readonly IAnalyticsService _analyticsService;
+
+    public AnalyticsController(IAnalyticsService analyticsService)
+    {
+        _analyticsService = analyticsService;
+    }
     {
         // Obter dados de vendas mensais
         [HttpGet("monthly-sales")]
@@ -162,13 +170,10 @@ export function UserActivityLineChart() {
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserActivityController : ControllerBase
+    public class UserActivityController : Controller
     {
-        // Obter atividade de usuários por dia da semana
-        [HttpGet("weekly")]
-        public IActionResult GetWeeklyActivity()
+        // Exibir atividade de usuários por dia da semana
+        public IActionResult Weekly()
         {
             var weeklyActivity = new[]
             {
@@ -262,13 +267,10 @@ export function CategoryDistributionPieChart() {
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoriesController : ControllerBase
+    public class CategoriesController : Controller
     {
-        // Obter distribuição de vendas por categoria
-        [HttpGet("sales-distribution")]
-        public IActionResult GetSalesDistribution()
+        // Exibir distribuição de vendas por categoria
+        public IActionResult SalesDistribution()
         {
             var distribution = new[]
             {

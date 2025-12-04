@@ -47,58 +47,45 @@ export function BasicCarousel() {
     );
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode1 = `// Controllers/CarouselController.cs
+public class CarouselController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CarouselController : ControllerBase
-    {
-        // Obter itens do carousel
-        [HttpGet("items")]
-        public IActionResult GetCarouselItems()
-        {
-            var items = new[]
-            {
-                new { 
-                    id = 1, 
-                    title = "Item 1", 
-                    description = "Descrição do primeiro item",
-                    imageUrl = "/images/slide1.jpg"
-                },
-                new { 
-                    id = 2, 
-                    title = "Item 2", 
-                    description = "Descrição do segundo item",
-                    imageUrl = "/images/slide2.jpg"
-                },
-                new { 
-                    id = 3, 
-                    title = "Item 3", 
-                    description = "Descrição do terceiro item",
-                    imageUrl = "/images/slide3.jpg"
-                }
-            };
-            
-            return Ok(items);
-        }
+    private readonly ICarouselService _carouselService;
+    private readonly IAnalyticsService _analyticsService;
 
-        // Registrar visualização de item
-        [HttpPost("items/{id}/view")]
-        public IActionResult TrackView(int id)
-        {
-            // Registrar analytics da visualização
-            var viewRecord = new
-            {
-                itemId = id,
-                timestamp = DateTime.UtcNow,
-                viewCount = new Random().Next(100, 1000)
-            };
-            
-            return Ok(viewRecord);
-        }
+    public CarouselController(ICarouselService carouselService, IAnalyticsService analyticsService)
+    {
+        _carouselService = carouselService;
+        _analyticsService = analyticsService;
     }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var items = _carouselService.GetCarouselItems();
+        return Inertia.Render("Carousel/Index", new { items });
+    }
+
+    [HttpPost]
+    public IActionResult TrackView(int id)
+    {
+        _analyticsService.TrackCarouselView(id);
+        TempData["Info"] = $"Visualização do item {id} registrada";
+        return RedirectToAction("Index");
+    }
+}
+
+// Models/CarouselItem.cs
+public class CarouselItem
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string ImageUrl { get; set; } = "";
+    public int ViewCount { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsActive { get; set; } = true;
+}
 }`;
 
     // Exemplo 2: Carousel de Imagens
@@ -153,16 +140,14 @@ export function ImageCarousel() {
 }`;
 
     const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class GalleryController : ControllerBase
+    public class GalleryController : Controller
     {
-        // Obter galeria de imagens
-        [HttpGet("images")]
-        public IActionResult GetGalleryImages([FromQuery] string? category = null)
+        // Exibir galeria de imagens
+        public IActionResult Index(string? category = null)
         {
             var images = new[]
             {
@@ -193,28 +178,29 @@ namespace AspNetMvcReact.Controllers
                 ? images.Where(i => i.category == category).ToArray()
                 : images;
             
-            return Ok(filteredImages);
+            return Inertia.Render("Gallery/Index", new { images = filteredImages, category });
         }
 
         // Upload de nova imagem
-        [HttpPost("images")]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] string title, [FromForm] string category)
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file, string title, string category)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("Nenhum arquivo fornecido");
-
-            // Simular processamento de upload
-            var newImage = new
             {
-                id = Guid.NewGuid(),
-                title = title,
-                category = category,
-                url = $"/uploads/{file.FileName}",
-                size = file.Length,
-                uploadedAt = DateTime.UtcNow
-            };
-            
-            return CreatedAtAction(nameof(GetGalleryImages), new { id = newImage.id }, newImage);
+                TempData["Error"] = "Nenhum arquivo fornecido";
+                return RedirectToAction("Index");
+            }
+
+            // Processar upload da imagem
+            // Salvar no banco de dados...
+
+            TempData["Success"] = "Imagem enviada com sucesso!";
+            return RedirectToAction("Index", new { category });
+        }
+
+        public IActionResult Upload()
+        {
+            return Inertia.Render("Gallery/Upload");
         }
     }
 }`;
@@ -279,16 +265,14 @@ export function ProductCarousel() {
 }`;
 
     const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+using InertiaNetCore;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : Controller
     {
-        // Obter produtos em destaque
-        [HttpGet("featured")]
-        public IActionResult GetFeaturedProducts([FromQuery] int limit = 10)
+        // Exibir produtos em destaque
+        public IActionResult Featured(int limit = 10)
         {
             var products = new[]
             {
@@ -324,36 +308,29 @@ namespace AspNetMvcReact.Controllers
                 }
             };
             
-            return Ok(products.Take(limit));
+            return Inertia.Render("Products/Featured", new { products = products.Take(limit) });
         }
 
         // Adicionar produto ao carrinho
-        [HttpPost("cart")]
-        public IActionResult AddToCart([FromBody] CartItemRequest request)
+        [HttpPost]
+        public IActionResult AddToCart(CartItemRequest request)
         {
-            var cartItem = new
+            if (!ModelState.IsValid)
             {
-                id = Guid.NewGuid(),
-                productId = request.ProductId,
-                quantity = request.Quantity,
-                addedAt = DateTime.UtcNow,
-                userId = request.UserId
-            };
-            
-            return Ok(new
-            {
-                success = true,
-                message = "Produto adicionado ao carrinho",
-                cartItem = cartItem,
-                cartTotal = CalculateCartTotal(request.ProductId, request.Quantity)
-            });
+                TempData["Error"] = "Dados inválidos";
+                return RedirectToAction("Featured");
+            }
+
+            // Adicionar ao carrinho
+            // Salvar no banco de dados...
+
+            TempData["Success"] = "Produto adicionado ao carrinho com sucesso!";
+            return RedirectToAction("Featured");
         }
 
-        // Obter recomendações baseadas em produto
-        [HttpGet("{id}/recommendations")]
-        public IActionResult GetRecommendations(int id, [FromQuery] int limit = 5)
+        // Exibir recomendações baseadas em produto
+        public IActionResult Recommendations(int id, int limit = 5)
         {
-            // Simular recomendações baseadas no produto
             var recommendations = new[]
             {
                 new { id = 10, name = "Mouse Gamer", price = 299.99m, relevance = 0.95 },
@@ -361,7 +338,10 @@ namespace AspNetMvcReact.Controllers
                 new { id = 12, name = "Webcam HD", price = 399.99m, relevance = 0.82 }
             };
             
-            return Ok(recommendations.Take(limit));
+            return Inertia.Render("Products/Recommendations", new { 
+                productId = id,
+                recommendations = recommendations.Take(limit) 
+            });
         }
 
         private decimal CalculateCartTotal(int productId, int quantity)

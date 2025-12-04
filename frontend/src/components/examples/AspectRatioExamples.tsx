@@ -23,15 +23,33 @@ export default function ImageExample() {
   )
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode1 = `// Controllers/MediaController.cs
 public class MediaController : Controller
 {
-    [HttpGet("/media/image")]
-    public IActionResult GetImage()
+    private readonly IMediaService _mediaService;
+
+    public MediaController(IMediaService mediaService)
     {
-        var imageData = new
-        {
+        _mediaService = mediaService;
+    }
+
+    [HttpGet]
+    public IActionResult Image()
+    {
+        var imageData = _mediaService.GetImageData();
+        return Inertia.Render("Media/Image", imageData);
+    }
+}
+
+// Models/MediaItem.cs
+public class MediaItem
+{
+    public int Id { get; set; }
+    public string Url { get; set; } = "";
+    public string Alt { get; set; } = "";
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public string AspectRatio { get; set; } = ""
             Url = "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd",
             Alt = "Photo by Javier Allegue Barros",
             Width = 800,
@@ -108,8 +126,7 @@ export default function ComparisonExample() {
 
 public class MediaController : Controller
 {
-    [HttpGet("/media/aspect-ratios")]
-    public IActionResult GetAspectRatios()
+    public IActionResult AspectRatios()
     {
         var aspectRatios = new[]
         {
@@ -119,7 +136,7 @@ public class MediaController : Controller
             new { Ratio = "4:3", Name = "Standard", Width = 4, Height = 3 }
         };
         
-        return Json(aspectRatios);
+        return Inertia.Render("Media/AspectRatios", new { aspectRatios });
     }
 }`;
 
