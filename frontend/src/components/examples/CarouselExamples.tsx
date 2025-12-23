@@ -52,26 +52,47 @@ public class CarouselController : Controller
 {
     private readonly ICarouselService _carouselService;
     private readonly IAnalyticsService _analyticsService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public CarouselController(ICarouselService carouselService, IAnalyticsService analyticsService)
+    public CarouselController(
+        ICarouselService carouselService, 
+        IAnalyticsService analyticsService,
+        UserManager<ApplicationUser> userManager)
     {
         _carouselService = carouselService;
         _analyticsService = analyticsService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var items = _carouselService.GetCarouselItems();
-        return Inertia.Render("Carousel/Index", new { items });
+        var items = await _carouselService.GetCarouselItemsAsync();
+        var popularItems = await _carouselService.GetPopularItemsAsync(5);
+        
+        return Inertia.Render("Carousel/Index", new { 
+            items,
+            popularItems
+        });
     }
 
     [HttpPost]
-    public IActionResult TrackView(int id)
+    [Authorize]
+    public async Task<IActionResult> TrackView([FromForm] int id)
     {
-        _analyticsService.TrackCarouselView(id);
-        TempData["Info"] = $"Visualização do item {id} registrada";
-        return RedirectToAction("Index");
+        var user = await _userManager.GetUserAsync(User);
+        await _analyticsService.TrackCarouselViewAsync(id, user?.Id);
+        
+        return Inertia.Back().With("info", $"View for item {id} has been tracked");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var item = await _carouselService.GetCarouselItemAsync(id);
+        if (item == null) return NotFound();
+        
+        return Inertia.Render("Carousel/Details", new { item });
     }
 }
 
@@ -85,7 +106,7 @@ public class CarouselItem
     public int ViewCount { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsActive { get; set; } = true;
-}
+    public int Order { get; set; }
 }`;
 
     // Exemplo 2: Carousel de Imagens
@@ -139,70 +160,87 @@ export function ImageCarousel() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode2 = `// Controllers/GalleryController.cs
+public class GalleryController : Controller
 {
-    public class GalleryController : Controller
+    private readonly IGalleryService _galleryService;
+    private readonly IFileUploadService _fileUploadService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public GalleryController(
+        IGalleryService galleryService,
+        IFileUploadService fileUploadService,
+        UserManager<ApplicationUser> userManager)
     {
-        // Exibir galeria de imagens
-        public IActionResult Index(string? category = null)
-        {
-            var images = new[]
-            {
-                new { 
-                    id = 1, 
-                    url = "https://images.unsplash.com/photo-1593642532842-98d0fd5ebc1a",
-                    title = "Laptop Moderno",
-                    category = "Tecnologia",
-                    uploadedAt = DateTime.UtcNow.AddDays(-10)
-                },
-                new { 
-                    id = 2, 
-                    url = "https://images.unsplash.com/photo-1593642532400-2682810df593",
-                    title = "Workspace Criativo",
-                    category = "Design",
-                    uploadedAt = DateTime.UtcNow.AddDays(-5)
-                },
-                new { 
-                    id = 3, 
-                    url = "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec",
-                    title = "Setup Profissional",
-                    category = "Tecnologia",
-                    uploadedAt = DateTime.UtcNow.AddDays(-2)
-                }
-            };
-            
-            var filteredImages = category != null 
-                ? images.Where(i => i.category == category).ToArray()
-                : images;
-            
-            return Inertia.Render("Gallery/Index", new { images = filteredImages, category });
-        }
-
-        // Upload de nova imagem
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file, string title, string category)
-        {
-            if (file == null || file.Length == 0)
-            {
-                TempData["Error"] = "Nenhum arquivo fornecido";
-                return RedirectToAction("Index");
-            }
-
-            // Processar upload da imagem
-            // Salvar no banco de dados...
-
-            TempData["Success"] = "Imagem enviada com sucesso!";
-            return RedirectToAction("Index", new { category });
-        }
-
-        public IActionResult Upload()
-        {
-            return Inertia.Render("Gallery/Upload");
-        }
+        _galleryService = galleryService;
+        _fileUploadService = fileUploadService;
+        _userManager = userManager;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Index(string? category = null)
+    {
+        var images = await _galleryService.GetImagesAsync(category);
+        var categories = await _galleryService.GetCategoriesAsync();
+        
+        return Inertia.Render("Gallery/Index", new { 
+            images,
+            categories,
+            selectedCategory = category
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        if (request.File == null || request.File.Length == 0)
+        {
+            return Inertia.Back().With("error", "No file provided");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        var imageResult = await _fileUploadService.UploadImageAsync(request.File, request.Title, request.Category, user.Id);
+        
+        if (imageResult.Success)
+        {
+            return Redirect("/Gallery").With("success", "Image uploaded successfully!");
+        }
+        
+        return Inertia.Back().With("error", imageResult.ErrorMessage);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Upload()
+    {
+        var categories = await _galleryService.GetCategoriesAsync();
+        return Inertia.Render("Gallery/Upload", new { categories });
+    }
+}
+
+// Models/UploadImageRequest.cs
+public class UploadImageRequest
+{
+    public IFormFile File { get; set; } = null!;
+    public string Title { get; set; } = "";
+    public string Category { get; set; } = "";
+}
+
+// Models/GalleryImage.cs
+public class GalleryImage
+{
+    public int Id { get; set; }
+    public string Url { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Category { get; set; } = "";
+    public DateTime UploadedAt { get; set; }
+    public string UserId { get; set; } = "";
 }`;
 
     // Exemplo 3: Carousel de Produtos com Grid
@@ -264,100 +302,106 @@ export function ProductCarousel() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode3 = `// Controllers/ProductsController.cs
+public class ProductsController : Controller
 {
-    public class ProductsController : Controller
+    private readonly IProductService _productService;
+    private readonly ICartService _cartService;
+    private readonly IRecommendationService _recommendationService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ProductsController(
+        IProductService productService,
+        ICartService cartService,
+        IRecommendationService recommendationService,
+        UserManager<ApplicationUser> userManager)
     {
-        // Exibir produtos em destaque
-        public IActionResult Featured(int limit = 10)
-        {
-            var products = new[]
-            {
-                new { 
-                    id = 1, 
-                    name = "Gaming Console",
-                    description = "Console de última geração",
-                    price = 2999.99m,
-                    image = "🎮",
-                    category = "Gaming",
-                    stock = 15,
-                    featured = true
-                },
-                new { 
-                    id = 2, 
-                    name = "Wireless Headphones",
-                    description = "Fones com cancelamento de ruído",
-                    price = 899.99m,
-                    image = "🎧",
-                    category = "Audio",
-                    stock = 30,
-                    featured = true
-                },
-                new { 
-                    id = 3, 
-                    name = "Mechanical Keyboard",
-                    description = "Teclado mecânico RGB",
-                    price = 549.99m,
-                    image = "⌨️",
-                    category = "Peripherals",
-                    stock = 25,
-                    featured = true
-                }
-            };
-            
-            return Inertia.Render("Products/Featured", new { products = products.Take(limit) });
-        }
-
-        // Adicionar produto ao carrinho
-        [HttpPost]
-        public IActionResult AddToCart(CartItemRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["Error"] = "Dados inválidos";
-                return RedirectToAction("Featured");
-            }
-
-            // Adicionar ao carrinho
-            // Salvar no banco de dados...
-
-            TempData["Success"] = "Produto adicionado ao carrinho com sucesso!";
-            return RedirectToAction("Featured");
-        }
-
-        // Exibir recomendações baseadas em produto
-        public IActionResult Recommendations(int id, int limit = 5)
-        {
-            var recommendations = new[]
-            {
-                new { id = 10, name = "Mouse Gamer", price = 299.99m, relevance = 0.95 },
-                new { id = 11, name = "Mousepad XXL", price = 89.99m, relevance = 0.87 },
-                new { id = 12, name = "Webcam HD", price = 399.99m, relevance = 0.82 }
-            };
-            
-            return Inertia.Render("Products/Recommendations", new { 
-                productId = id,
-                recommendations = recommendations.Take(limit) 
-            });
-        }
-
-        private decimal CalculateCartTotal(int productId, int quantity)
-        {
-            // Simular cálculo do total
-            var basePrice = 299.99m;
-            return basePrice * quantity;
-        }
+        _productService = productService;
+        _cartService = cartService;
+        _recommendationService = recommendationService;
+        _userManager = userManager;
     }
 
-    public class CartItemRequest
+    [HttpGet]
+    public async Task<IActionResult> Featured(int limit = 10)
     {
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        var products = await _productService.GetFeaturedProductsAsync(limit);
+        var categories = await _productService.GetCategoriesAsync();
+        
+        return Inertia.Render("Products/Featured", new { 
+            products,
+            categories
+        });
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddToCart([FromForm] CartItemRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("error", "Invalid data provided");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        var result = await _cartService.AddToCartAsync(user.Id, request.ProductId, request.Quantity);
+        
+        if (result.Success)
+        {
+            return Inertia.Back().With("success", "Product added to cart successfully!");
+        }
+        
+        return Inertia.Back().With("error", result.ErrorMessage);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Recommendations(int id, int limit = 5)
+    {
+        var product = await _productService.GetProductAsync(id);
+        if (product == null) return NotFound();
+        
+        var recommendations = await _recommendationService.GetRecommendationsAsync(id, limit);
+        
+        return Inertia.Render("Products/Recommendations", new { 
+            product,
+            recommendations
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var product = await _productService.GetProductAsync(id);
+        if (product == null) return NotFound();
+        
+        var relatedProducts = await _productService.GetRelatedProductsAsync(id, 4);
+        
+        return Inertia.Render("Products/Details", new {
+            product,
+            relatedProducts
+        });
+    }
+}
+
+// Models/CartItemRequest.cs
+public class CartItemRequest
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; } = 1;
+}
+
+// Models/Product.cs
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal Price { get; set; }
+    public string Image { get; set; } = "";
+    public string Category { get; set; } = "";
+    public int Stock { get; set; }
+    public bool Featured { get; set; }
+    public DateTime CreatedAt { get; set; }
 }`;
 
     return (
