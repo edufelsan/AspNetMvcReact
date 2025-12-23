@@ -20,50 +20,45 @@ export function BadgeVariants() {
   )
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-public class BadgeController : Controller
+    const backendCode1 = `// Controllers/ComponentsController.cs
+public class ComponentsController : Controller
 {
-    public class BadgeVariant
+    private readonly IComponentService _componentService;
+
+    public ComponentsController(IComponentService componentService)
     {
-        public string Name { get; set; } = "";
-        public string Variant { get; set; } = "";
-        public string Description { get; set; } = "";
+        _componentService = componentService;
     }
 
-    [HttpGet("/api/badges/variants")]
-    public IActionResult GetBadgeVariants()
+    [HttpGet]
+    public IActionResult BadgeVariants()
     {
         var variants = new[]
         {
-            new BadgeVariant 
-            { 
-                Name = "Default", 
-                Variant = "default", 
-                Description = "Primary badge style" 
-            },
-            new BadgeVariant 
-            { 
-                Name = "Secondary", 
-                Variant = "secondary", 
-                Description = "Subtle neutral badge" 
-            },
-            new BadgeVariant 
-            { 
-                Name = "Destructive", 
-                Variant = "destructive", 
-                Description = "Error or warning badge" 
-            },
-            new BadgeVariant 
-            { 
-                Name = "Outline", 
-                Variant = "outline", 
-                Description = "Outlined badge variant" 
-            }
+            new { Name = "Default", Variant = "default", Description = "Primary badge style", UseCase = "Main actions or status" },
+            new { Name = "Secondary", Variant = "secondary", Description = "Subtle neutral badge", UseCase = "Supporting information" },
+            new { Name = "Destructive", Variant = "destructive", Description = "Error or warning badge", UseCase = "Critical alerts" },
+            new { Name = "Outline", Variant = "outline", Description = "Outlined badge variant", UseCase = "Subtle categorization" }
         };
         
-        return Json(variants);
+        return Inertia.Render("Components/BadgeVariants", new { variants });
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> BadgeExamples()
+    {
+        var examples = await _componentService.GetBadgeExamplesAsync();
+        return Inertia.Render("Components/BadgeExamples", new { examples });
+    }
+}
+
+// Models/BadgeVariant.cs
+public class BadgeVariant
+{
+    public string Name { get; set; } = "";
+    public string Variant { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string UseCase { get; set; } = "";
 }`;
 
     const frontendCode2 = `import { Badge } from "@/components/ui/badge"
@@ -89,61 +84,60 @@ export function StatusBadges() {
   )
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode2 = `// Controllers/OrderController.cs
 public class OrderController : Controller
 {
-    public class OrderStatus
+    private readonly IOrderService _orderService;
+    private readonly IStatusService _statusService;
+
+    public OrderController(IOrderService orderService, IStatusService statusService)
     {
-        public int OrderId { get; set; }
-        public string Status { get; set; } = "";
-        public string StatusLabel { get; set; } = "";
-        public string BadgeVariant { get; set; } = "";
-        public string Icon { get; set; } = "";
+        _orderService = orderService;
+        _statusService = statusService;
     }
 
-    [HttpGet("/api/orders/{orderId}/status")]
-    public IActionResult GetOrderStatus(int orderId)
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Details(int id)
     {
-        var orderStatuses = new Dictionary<string, OrderStatus>
+        var order = await _orderService.GetOrderAsync(id);
+        if (order == null) return NotFound();
+        
+        var statusBadge = _statusService.GetStatusBadge(order.Status);
+        
+        return Inertia.Render("Orders/Details", new { order, statusBadge });
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> List()
+    {
+        var orders = await _orderService.GetUserOrdersAsync(User.Identity.Name);
+        var orderStatuses = orders.Select(o => new 
         {
-            ["active"] = new OrderStatus 
-            { 
-                OrderId = orderId,
-                Status = "active", 
-                StatusLabel = "Active",
-                BadgeVariant = "default",
-                Icon = "CheckCircle"
-            },
-            ["pending"] = new OrderStatus 
-            { 
-                OrderId = orderId,
-                Status = "pending", 
-                StatusLabel = "Pending",
-                BadgeVariant = "secondary",
-                Icon = "Clock"
-            },
-            ["warning"] = new OrderStatus 
-            { 
-                OrderId = orderId,
-                Status = "warning", 
-                StatusLabel = "Warning",
-                BadgeVariant = "outline",
-                Icon = "AlertCircle"
-            },
-            ["inactive"] = new OrderStatus 
-            { 
-                OrderId = orderId,
-                Status = "inactive", 
-                StatusLabel = "Inactive",
-                BadgeVariant = "destructive",
-                Icon = "XCircle"
-            }
-        };
-
-        var status = orderStatuses["active"]; // Example
-        return Json(status);
+            o.Id,
+            o.OrderNumber,
+            Status = _statusService.GetStatusBadge(o.Status)
+        });
+        
+        return Inertia.Render("Orders/List", new { orders = orderStatuses });
     }
+}
+
+// Models/OrderStatus.cs
+public class OrderStatus
+{
+    public string Status { get; set; } = "";
+    public string StatusLabel { get; set; } = "";
+    public string BadgeVariant { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string ColorClass { get; set; } = "";
+}
+
+// Services/IStatusService.cs
+public interface IStatusService
+{
+    OrderStatus GetStatusBadge(string status);
 }`;
 
     const frontendCode3 = `import { Badge } from "@/components/ui/badge"
@@ -189,51 +183,65 @@ export function ProductBadges({ product }: { product: Product }) {
   )
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode3 = `// Controllers/ProductController.cs
 public class ProductController : Controller
 {
-    public class Product
+    private readonly IProductService _productService;
+    private readonly IBadgeService _badgeService;
+
+    public ProductController(IProductService productService, IBadgeService badgeService)
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public decimal Price { get; set; }
-        public string[] Tags { get; set; } = Array.Empty<string>();
-        public double Rating { get; set; }
-        public bool IsNew { get; set; }
-        public int? Discount { get; set; }
+        _productService = productService;
+        _badgeService = badgeService;
     }
 
-    [HttpGet("/api/products/{productId}")]
-    public IActionResult GetProduct(int productId)
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
     {
-        var product = new Product
+        var product = await _productService.GetProductAsync(id);
+        if (product == null) return NotFound();
+        
+        var badges = _badgeService.GenerateProductBadges(product);
+        
+        return Inertia.Render("Products/Details", new { product, badges });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Catalog(string? category = null)
+    {
+        var products = await _productService.GetProductsAsync(category);
+        var productsWithBadges = products.Select(p => new 
         {
-            Id = productId,
-            Name = "Premium Wireless Headphones",
-            Price = 299.99M,
-            Tags = new[] { "Electronics", "Audio", "Wireless" },
-            Rating = 4.8,
-            IsNew = true,
-            Discount = 20
-        };
-
-        var badges = new List<object>();
-
-        if (product.IsNew)
-            badges.Add(new { Type = "new", Label = "New", Variant = "default" });
-
-        if (product.Discount.HasValue)
-            badges.Add(new { Type = "discount", Label = $"-{product.Discount}%", Variant = "destructive" });
-
-        if (product.Rating >= 4.5)
-            badges.Add(new { Type = "rating", Label = product.Rating.ToString(), Variant = "secondary" });
-
-        foreach (var tag in product.Tags)
-            badges.Add(new { Type = "tag", Label = tag, Variant = "outline" });
-
-        return Json(new { product, badges });
+            Product = p,
+            Badges = _badgeService.GenerateProductBadges(p)
+        });
+        
+        return Inertia.Render("Products/Catalog", new { products = productsWithBadges, category });
     }
+}
+
+// Models/Product.cs
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public decimal Price { get; set; }
+    public string[] Tags { get; set; } = Array.Empty<string>();
+    public double Rating { get; set; }
+    public bool IsNew { get; set; }
+    public int? DiscountPercentage { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsFeatured { get; set; }
+}
+
+// Models/ProductBadge.cs
+public class ProductBadge
+{
+    public string Type { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Variant { get; set; } = "";
+    public string? Icon { get; set; }
+    public string? ColorClass { get; set; }
 }`;
 
     return (
