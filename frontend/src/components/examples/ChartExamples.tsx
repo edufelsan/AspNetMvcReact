@@ -73,60 +73,81 @@ export function SalesBarChart() {
 }`;
 
     const backendCode1 = `// Controllers/AnalyticsController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+[Authorize]
 public class AnalyticsController : Controller
 {
     private readonly IAnalyticsService _analyticsService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AnalyticsController(IAnalyticsService analyticsService)
+    public AnalyticsController(IAnalyticsService analyticsService, UserManager<ApplicationUser> userManager)
     {
         _analyticsService = analyticsService;
+        _userManager = userManager;
     }
-    private readonly IAnalyticsService _analyticsService;
 
-    public AnalyticsController(IAnalyticsService analyticsService)
+    // Exibir vendas mensais
+    public async Task<IActionResult> MonthlySales(int year = 2024)
     {
-        _analyticsService = analyticsService;
-    }
-    {
-        // Obter dados de vendas mensais
-        [HttpGet("monthly-sales")]
-        public IActionResult GetMonthlySales([FromQuery] int year = 2024)
-        {
-            var monthlySales = new[]
-            {
-                new { month = "Janeiro", sales = 4000, target = 3500 },
-                new { month = "Fevereiro", sales = 3000, target = 3500 },
-                new { month = "Março", sales = 5000, target = 4000 },
-                new { month = "Abril", sales = 4500, target = 4000 },
-                new { month = "Maio", sales = 6000, target = 5000 },
-                new { month = "Junho", sales = 5500, target = 5000 }
-            };
-            
-            return Ok(new
-            {
-                year = year,
-                data = monthlySales,
-                totalSales = monthlySales.Sum(x => x.sales),
-                averageSales = monthlySales.Average(x => x.sales)
-            });
-        }
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Redirect("/Account/Login");
 
-        // Obter comparação de vendas por período
-        [HttpGet("sales-comparison")]
-        public IActionResult GetSalesComparison(
-            [FromQuery] DateTime startDate, 
-            [FromQuery] DateTime endDate)
+        var monthlySales = new[]
         {
-            var comparison = new
-            {
-                currentPeriod = new { start = startDate, end = endDate, total = 28500 },
-                previousPeriod = new { start = startDate.AddMonths(-6), end = endDate.AddMonths(-6), total = 24000 },
-                growth = 18.75m
-            };
-            
-            return Ok(comparison);
-        }
+            new { month = "Janeiro", sales = 4000, target = 3500 },
+            new { month = "Fevereiro", sales = 3000, target = 3500 },
+            new { month = "Março", sales = 5000, target = 4000 },
+            new { month = "Abril", sales = 4500, target = 4000 },
+            new { month = "Maio", sales = 6000, target = 5000 },
+            new { month = "Junho", sales = 5500, target = 5000 }
+        };
+        
+        var viewModel = new MonthlySalesViewModel
+        {
+            Year = year,
+            Data = monthlySales,
+            TotalSales = monthlySales.Sum(x => x.sales),
+            AverageSales = monthlySales.Average(x => x.sales)
+        };
+
+        return Inertia.Render("Analytics/MonthlySales", viewModel);
     }
+
+    // Comparar vendas por período
+    public async Task<IActionResult> SalesComparison(DateTime startDate, DateTime endDate)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Inertia.Back().With("error", "Usuário não autenticado");
+
+        var comparison = new SalesComparisonViewModel
+        {
+            CurrentPeriod = new { start = startDate, end = endDate, total = 28500 },
+            PreviousPeriod = new { start = startDate.AddMonths(-6), end = endDate.AddMonths(-6), total = 24000 },
+            Growth = 18.75m
+        };
+        
+        return Inertia.Render("Analytics/Comparison", comparison);
+    }
+}
+
+public class MonthlySalesViewModel
+{
+    public int Year { get; set; }
+    public object[] Data { get; set; } = Array.Empty<object>();
+    public int TotalSales { get; set; }
+    public double AverageSales { get; set; }
+}
+
+public class SalesComparisonViewModel
+{
+    public object CurrentPeriod { get; set; } = new();
+    public object PreviousPeriod { get; set; } = new();
+    public decimal Growth { get; set; }
 }`;
 
     // Exemplo 2: Line Chart
@@ -166,15 +187,31 @@ export function UserActivityLineChart() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode2 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
+    [Authorize]
     public class UserActivityController : Controller
     {
-        // Exibir atividade de usuários por dia da semana
-        public IActionResult Weekly()
+        private readonly IUserActivityService _activityService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public UserActivityController(IUserActivityService activityService, UserManager<ApplicationUser> userManager)
         {
+            _activityService = activityService;
+            _userManager = userManager;
+        }
+
+        // Exibir atividade de usuários por dia da semana
+        public async Task<IActionResult> Weekly()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Redirect("/Account/Login");
+
             var weeklyActivity = new[]
             {
                 new { day = "Segunda", users = 120, sessions = 350, avgDuration = 15.5 },
@@ -186,18 +223,23 @@ namespace AspNetMvcReact.Controllers
                 new { day = "Domingo", users = 140, sessions = 380, avgDuration = 16.7 }
             };
             
-            return Ok(new
+            var viewModel = new WeeklyActivityViewModel
             {
-                data = weeklyActivity,
-                totalUsers = weeklyActivity.Sum(x => x.users),
-                peakDay = weeklyActivity.OrderByDescending(x => x.users).First().day
-            });
+                Data = weeklyActivity,
+                TotalUsers = weeklyActivity.Sum(x => x.users),
+                PeakDay = weeklyActivity.OrderByDescending(x => x.users).First().day
+            };
+
+            return Inertia.Render("UserActivity/Weekly", viewModel);
         }
 
         // Obter dados de atividade por hora
-        [HttpGet("hourly")]
-        public IActionResult GetHourlyActivity([FromQuery] DateTime date)
+        public async Task<IActionResult> Hourly(DateTime date)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
             var hourlyData = Enumerable.Range(0, 24).Select(hour => new
             {
                 hour = hour,
@@ -205,13 +247,29 @@ namespace AspNetMvcReact.Controllers
                 requests = new Random().Next(100, 1000)
             }).ToArray();
             
-            return Ok(new
+            var viewModel = new HourlyActivityViewModel
             {
-                date = date,
-                data = hourlyData,
-                peakHour = hourlyData.OrderByDescending(x => x.activeUsers).First().hour
-            });
+                Date = date,
+                Data = hourlyData,
+                PeakHour = hourlyData.OrderByDescending(x => x.activeUsers).First().hour
+            };
+
+            return Inertia.Render("UserActivity/Hourly", viewModel);
         }
+    }
+
+    public class WeeklyActivityViewModel
+    {
+        public object[] Data { get; set; } = Array.Empty<object>();
+        public int TotalUsers { get; set; }
+        public string PeakDay { get; set; } = string.Empty;
+    }
+
+    public class HourlyActivityViewModel
+    {
+        public DateTime Date { get; set; }
+        public object[] Data { get; set; } = Array.Empty<object>();
+        public int PeakHour { get; set; }
     }
 }`;
 
@@ -263,15 +321,31 @@ export function CategoryDistributionPieChart() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode3 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
-        // Exibir distribuição de vendas por categoria
-        public IActionResult SalesDistribution()
+        private readonly ICategoriesService _categoriesService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public CategoriesController(ICategoriesService categoriesService, UserManager<ApplicationUser> userManager)
         {
+            _categoriesService = categoriesService;
+            _userManager = userManager;
+        }
+
+        // Exibir distribuição de vendas por categoria
+        public async Task<IActionResult> SalesDistribution()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Redirect("/Account/Login");
+
             var distribution = new[]
             {
                 new { 
@@ -300,18 +374,23 @@ namespace AspNetMvcReact.Controllers
                 }
             };
             
-            return Ok(new
+            var viewModel = new SalesDistributionViewModel
             {
-                data = distribution,
-                totalValue = distribution.Sum(x => x.value),
-                topCategory = distribution.OrderByDescending(x => x.value).First().category
-            });
+                Data = distribution,
+                TotalValue = distribution.Sum(x => x.value),
+                TopCategory = distribution.OrderByDescending(x => x.value).First().category
+            };
+
+            return Inertia.Render("Categories/SalesDistribution", viewModel);
         }
 
         // Obter tendências de categorias
-        [HttpGet("trends")]
-        public IActionResult GetCategoryTrends([FromQuery] int months = 6)
+        public async Task<IActionResult> Trends(int months = 6)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
             var trends = new[]
             {
                 new { category = "Eletrônicos", growth = 15.5m, trend = "up" },
@@ -320,13 +399,29 @@ namespace AspNetMvcReact.Controllers
                 new { category = "Livros", growth = 2.1m, trend = "stable" }
             };
             
-            return Ok(new
+            var viewModel = new CategoryTrendsViewModel
             {
-                period = months,
-                trends = trends,
-                fastestGrowing = trends.OrderByDescending(x => x.growth).First().category
-            });
+                Period = months,
+                Trends = trends,
+                FastestGrowing = trends.OrderByDescending(x => x.growth).First().category
+            };
+
+            return Inertia.Render("Categories/Trends", viewModel);
         }
+    }
+
+    public class SalesDistributionViewModel
+    {
+        public object[] Data { get; set; } = Array.Empty<object>();
+        public int TotalValue { get; set; }
+        public string TopCategory { get; set; } = string.Empty;
+    }
+
+    public class CategoryTrendsViewModel
+    {
+        public int Period { get; set; }
+        public object[] Trends { get; set; } = Array.Empty<object>();
+        public string FastestGrowing { get; set; } = string.Empty;
     }
 }`;
 
