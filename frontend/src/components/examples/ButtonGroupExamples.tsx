@@ -30,17 +30,41 @@ export function BasicButtonGroup() {
 public class EditorController : Controller
 {
     private readonly IEditorService _editorService;
+    private readonly IUserPreferenceService _preferenceService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public EditorController(IEditorService editorService)
+    public EditorController(
+        IEditorService editorService,
+        IUserPreferenceService preferenceService, 
+        UserManager<ApplicationUser> userManager)
     {
         _editorService = editorService;
+        _preferenceService = preferenceService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult FormattingActions()
+    [Authorize]
+    public async Task<IActionResult> Index()
     {
-        var actions = _editorService.GetFormattingActions();
-        return Inertia.Render("Editor/FormattingActions", new { actions });
+        var user = await _userManager.GetUserAsync(User);
+        var formattingActions = await _editorService.GetFormattingActionsAsync(user.Id);
+        var userPreferences = await _preferenceService.GetEditorPreferencesAsync(user.Id);
+        
+        return Inertia.Render("Editor/Index", new { 
+            formattingActions,
+            userPreferences
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ApplyFormatting([FromForm] ApplyFormattingRequest request)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        await _editorService.ApplyFormattingAsync(user.Id, request.Action, request.Content);
+        
+        return Inertia.Back().With("success", $"Formatting '{request.Action}' applied successfully!");
     }
 }
 
@@ -51,41 +75,14 @@ public class EditorAction
     public string Icon { get; set; } = "";
     public string Action { get; set; } = "";
     public bool IsActive { get; set; }
+    public string Shortcut { get; set; } = "";
 }
-    {
-        var actions = new[]
-        {
-            new EditorAction 
-            { 
-                Name = "Bold", 
-                Icon = "Bold", 
-                Action = "toggleBold",
-                IsActive = false 
-            },
-            new EditorAction 
-            { 
-                Name = "Italic", 
-                Icon = "Italic", 
-                Action = "toggleItalic",
-                IsActive = false 
-            },
-            new EditorAction 
-            { 
-                Name = "Underline", 
-                Icon = "Underline", 
-                Action = "toggleUnderline",
-                IsActive = false 
-            }
-        };
-        
-        return Json(actions);
-    }
 
-    [HttpPost("/api/editor/apply-formatting")]
-    public IActionResult ApplyFormatting([FromBody] string action)
-    {
-        return Json(new { Success = true, Action = action });
-    }
+// Models/ApplyFormattingRequest.cs
+public class ApplyFormattingRequest
+{
+    public string Action { get; set; } = "";
+    public string Content { get; set; } = "";
 }`;
 
     const frontendCode2 = `import { Button } from "@/components/ui/button"
@@ -122,56 +119,66 @@ export function ButtonGroupWithState() {
   )
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode2 = `// Controllers/TextEditorController.cs
 public class TextEditorController : Controller
 {
-    public class AlignmentOption
+    private readonly ITextEditorService _textEditorService;
+    private readonly IUserPreferenceService _preferenceService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public TextEditorController(
+        ITextEditorService textEditorService,
+        IUserPreferenceService preferenceService,
+        UserManager<ApplicationUser> userManager)
     {
-        public string Value { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string Icon { get; set; } = "";
+        _textEditorService = textEditorService;
+        _preferenceService = preferenceService;
+        _userManager = userManager;
     }
 
-    [HttpGet("/api/text-editor/alignment-options")]
-    public IActionResult GetAlignmentOptions()
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> AlignmentOptions()
     {
+        var user = await _userManager.GetUserAsync(User);
+        var currentAlignment = await _preferenceService.GetAlignmentPreferenceAsync(user.Id);
+        
         var options = new[]
         {
-            new AlignmentOption 
-            { 
-                Value = "left", 
-                Label = "Align Left", 
-                Icon = "AlignLeft" 
-            },
-            new AlignmentOption 
-            { 
-                Value = "center", 
-                Label = "Align Center", 
-                Icon = "AlignCenter" 
-            },
-            new AlignmentOption 
-            { 
-                Value = "right", 
-                Label = "Align Right", 
-                Icon = "AlignRight" 
-            }
+            new AlignmentOption { Value = "left", Label = "Align Left", Icon = "AlignLeft" },
+            new AlignmentOption { Value = "center", Label = "Align Center", Icon = "AlignCenter" },
+            new AlignmentOption { Value = "right", Label = "Align Right", Icon = "AlignRight" }
         };
         
-        return Json(options);
-    }
-
-    [HttpPost("/api/text-editor/set-alignment")]
-    public IActionResult SetAlignment([FromBody] string alignment)
-    {
-        // Save user preference
-        return Json(new 
-        { 
-            Success = true, 
-            Alignment = alignment,
-            Message = $"Text alignment changed to {alignment}"
+        return Inertia.Render("TextEditor/AlignmentOptions", new { 
+            options,
+            currentAlignment
         });
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SetAlignment([FromForm] SetAlignmentRequest request)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        await _preferenceService.SaveAlignmentPreferenceAsync(user.Id, request.Alignment);
+        
+        return Inertia.Back().With("success", $"Text alignment changed to {request.Alignment}");
+    }
+}
+
+// Models/AlignmentOption.cs
+public class AlignmentOption
+{
+    public string Value { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Icon { get; set; } = "";
+}
+
+// Models/SetAlignmentRequest.cs
+public class SetAlignmentRequest
+{
+    public string Alignment { get; set; } = "left";
 }`;
 
     const frontendCode3 = `import { Button } from "@/components/ui/button"
@@ -196,65 +203,92 @@ export function ButtonGroupWithLabels() {
   )
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode3 = `// Controllers/DocumentController.cs
 public class DocumentController : Controller
 {
-    public class DocumentAction
+    private readonly IDocumentService _documentService;
+    private readonly IShareService _shareService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public DocumentController(
+        IDocumentService documentService,
+        IShareService shareService,
+        UserManager<ApplicationUser> userManager)
     {
-        public string Id { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string Icon { get; set; } = "";
-        public string Endpoint { get; set; } = "";
+        _documentService = documentService;
+        _shareService = shareService;
+        _userManager = userManager;
     }
 
-    public IActionResult DocumentActions(int documentId)
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
     {
+        var document = await _documentService.GetDocumentAsync(id);
+        if (document == null) return NotFound();
+        
         var actions = new[]
         {
-            new DocumentAction 
-            { 
-                Id = "copy", 
-                Label = "Copy", 
-                Icon = "Copy",
-                Endpoint = $"/api/document/{documentId}/copy"
-            },
-            new DocumentAction 
-            { 
-                Id = "download", 
-                Label = "Download", 
-                Icon = "Download",
-                Endpoint = $"/api/document/{documentId}/download"
-            },
-            new DocumentAction 
-            { 
-                Id = "share", 
-                Label = "Share", 
-                Icon = "Share2",
-                Endpoint = $"/api/document/{documentId}/share"
-            }
+            new DocumentAction { Id = "copy", Label = "Copy", Icon = "Copy", IsEnabled = true },
+            new DocumentAction { Id = "download", Label = "Download", Icon = "Download", IsEnabled = true },
+            new DocumentAction { Id = "share", Label = "Share", Icon = "Share2", IsEnabled = document.IsShareable }
         };
         
-        return Json(actions);
+        return Inertia.Render("Documents/Details", new { 
+            document,
+            actions
+        });
     }
 
-    [HttpPost("/api/document/{documentId}/copy")]
-    public IActionResult CopyDocument(int documentId)
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Copy(int id)
     {
-        return Json(new { Success = true, Message = "Document copied to clipboard" });
+        var document = await _documentService.GetDocumentAsync(id);
+        if (document == null) return NotFound();
+        
+        var copyLink = await _documentService.CreateCopyLinkAsync(document.Id);
+        
+        return Inertia.Back().With("success", "Document copy link created!")
+                            .With("copyLink", copyLink);
     }
 
-    [HttpGet("/api/document/{documentId}/download")]
-    public IActionResult DownloadDocument(int documentId)
+    [HttpGet]
+    public async Task<IActionResult> Download(int id)
     {
-        return Json(new { Success = true, DownloadUrl = $"/downloads/document-{documentId}.pdf" });
+        var document = await _documentService.GetDocumentAsync(id);
+        if (document == null) return NotFound();
+        
+        var fileBytes = await _documentService.GetDocumentBytesAsync(id);
+        return File(fileBytes, "application/pdf", $"{document.Title}.pdf");
     }
 
-    [HttpPost("/api/document/{documentId}/share")]
-    public IActionResult ShareDocument(int documentId, [FromBody] string[] recipients)
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Share(int id, [FromForm] ShareDocumentRequest request)
     {
-        return Json(new { Success = true, Message = $"Document shared with {recipients.Length} recipients" });
+        var document = await _documentService.GetDocumentAsync(id);
+        if (document == null) return NotFound();
+        
+        await _shareService.ShareDocumentAsync(document.Id, request.Recipients);
+        
+        return Inertia.Back().With("success", 
+            $"Document shared with {request.Recipients.Length} recipients");
     }
+}
+
+// Models/DocumentAction.cs
+public class DocumentAction
+{
+    public string Id { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public bool IsEnabled { get; set; } = true;
+}
+
+// Models/ShareDocumentRequest.cs
+public class ShareDocumentRequest
+{
+    public string[] Recipients { get; set; } = Array.Empty<string>();
 }`;
 
     const [alignment, setAlignment] = React.useState('left');
