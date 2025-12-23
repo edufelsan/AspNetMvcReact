@@ -92,41 +92,64 @@ export function ButtonVariants() {
         </div>
     );
 }`,
-                        backend: `[HttpPost("save-item")]
-public async Task<IActionResult> SaveItem([FromForm] SaveItemRequest request)
+                        backend: `// Controllers/ItemsController.cs
+public class ItemsController : Controller
 {
-    var item = new Item { Name = request.Name, Description = request.Description };
-    await _context.Items.AddAsync(item);
-    await _context.SaveChangesAsync();
-    
-    return Inertia.Back(new { success = "Item saved successfully!" });
+    private readonly ApplicationDbContext _context;
+    private readonly IItemService _itemService;
+
+    public ItemsController(ApplicationDbContext context, IItemService itemService)
+    {
+        _context = context;
+        _itemService = itemService;
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Save([FromForm] SaveItemRequest request)
+    {
+        var item = new Item 
+        { 
+            Name = request.Name, 
+            Description = request.Description,
+            UserId = User.Identity.Name,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        await _context.Items.AddAsync(item);
+        await _context.SaveChangesAsync();
+        
+        return Inertia.Back().With("success", "Item saved successfully!");
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        if (item == null) return Inertia.Back().With("error", "Item not found");
+        
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
+        
+        return Inertia.Back().With("success", "Item deleted successfully!");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        if (item == null) return NotFound();
+        
+        return Inertia.Render("Items/Edit", new { item });
+    }
 }
 
-[HttpDelete("delete-item/{id}")]
-public async Task<IActionResult> DeleteItem(int id)
-{
-    var item = await _context.Items.FindAsync(id);
-    if (item == null) return Inertia.Back(new { error = "Item not found" });
-    
-    _context.Items.Remove(item);
-    await _context.SaveChangesAsync();
-    
-    return Inertia.Back(new { success = "Item deleted successfully!" });
-}
-
-[HttpGet("edit-item/{id}")]
-public async Task<IActionResult> EditItem(int id)
-{
-    var item = await _context.Items.FindAsync(id);
-    if (item == null) return NotFound();
-    
-    return Inertia.Render("EditItem", new { item });
-}
-
+// Models/SaveItemRequest.cs
 public class SaveItemRequest
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
 }`
                     }}
                 >
@@ -160,32 +183,49 @@ export function ButtonSizes() {
         </div>
     );
 }`,
-                        backend: `[HttpGet("dashboard")]
-public async Task<IActionResult> Dashboard()
+                        backend: `// Controllers/DashboardController.cs
+public class DashboardController : Controller
 {
-    var userAgent = Request.Headers["User-Agent"].ToString();
-    var isMobile = IsMobileDevice(userAgent);
-    
-    var uiConfig = new UIConfig
+    private readonly IDashboardService _dashboardService;
+    private readonly IDeviceDetectionService _deviceService;
+
+    public DashboardController(IDashboardService dashboardService, IDeviceDetectionService deviceService)
     {
-        ButtonSize = isMobile ? "sm" : "default",
-        IconSize = isMobile ? "h-3 w-3" : "h-4 w-4",
-        IsMobile = isMobile
-    };
-    
-    var dashboardData = await _dashboardService.GetDataAsync();
-    
-    return Inertia.Render("Dashboard", new { 
-        data = dashboardData,
-        uiConfig = uiConfig
-    });
+        _dashboardService = dashboardService;
+        _deviceService = deviceService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var userAgent = Request.Headers["User-Agent"].ToString();
+        var deviceInfo = _deviceService.GetDeviceInfo(userAgent);
+        
+        var uiConfig = new UIConfigModel
+        {
+            ButtonSize = deviceInfo.IsMobile ? "sm" : "default",
+            IconSize = deviceInfo.IsMobile ? "h-3 w-3" : "h-4 w-4",
+            IsMobile = deviceInfo.IsMobile,
+            IsTablet = deviceInfo.IsTablet
+        };
+        
+        var dashboardData = await _dashboardService.GetUserDashboardAsync(User.Identity.Name);
+        
+        return Inertia.Render("Dashboard/Index", new { 
+            data = dashboardData,
+            uiConfig
+        });
+    }
 }
 
-public class UIConfig
+// Models/UIConfigModel.cs
+public class UIConfigModel
 {
-    public string ButtonSize { get; set; }
-    public string IconSize { get; set; }
+    public string ButtonSize { get; set; } = "default";
+    public string IconSize { get; set; } = "h-4 w-4";
     public bool IsMobile { get; set; }
+    public bool IsTablet { get; set; }
 }`
                     }}
                 >
@@ -229,45 +269,69 @@ export function IconButtons() {
         </div>
     );
 }`,
-                        backend: `[HttpPost("send-email")]
-public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
+                        backend: `// Controllers/CommunicationController.cs
+public class CommunicationController : Controller
 {
-    try
+    private readonly IEmailService _emailService;
+    private readonly IFileService _fileService;
+    private readonly IShareService _shareService;
+    private readonly ApplicationDbContext _context;
+
+    public CommunicationController(
+        IEmailService emailService,
+        IFileService fileService, 
+        IShareService shareService,
+        ApplicationDbContext context)
     {
-        await _emailService.SendAsync(request.To, request.Subject, request.Body);
-        return Inertia.Back(new { success = "Email sent successfully!" });
+        _emailService = emailService;
+        _fileService = fileService;
+        _shareService = shareService;
+        _context = context;
     }
-    catch (Exception ex)
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
     {
-        return Inertia.Back(new { error = $"Failed to send email: {ex.Message}" });
+        try
+        {
+            await _emailService.SendAsync(request.To, request.Subject, request.Body);
+            return Inertia.Back().With("success", "Email sent successfully!");
+        }
+        catch (Exception ex)
+        {
+            return Inertia.Back().With("error", $"Failed to send email: {ex.Message}");
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadFile(int id)
+    {
+        var file = await _context.Files.FindAsync(id);
+        if (file == null) return NotFound();
+        
+        var fileBytes = await _fileService.GetFileAsync(file.Path);
+        return File(fileBytes, file.ContentType, file.Name);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ShareItem(int id)
+    {
+        var item = await _context.Items.FindAsync(id);
+        if (item == null) return Inertia.Back().With("error", "Item not found");
+        
+        var shareLink = await _shareService.CreateShareLinkAsync(item);
+        return Inertia.Back().With("success", "Share link created!").With("shareLink", shareLink);
     }
 }
 
-[HttpPost("download-file/{id}")]
-public async Task<IActionResult> DownloadFile(int id)
-{
-    var file = await _context.Files.FindAsync(id);
-    if (file == null) return Inertia.Back(new { error = "File not found" });
-    
-    var fileBytes = await _fileService.GetFileAsync(file.Path);
-    return File(fileBytes, file.ContentType, file.Name);
-}
-
-[HttpPost("share-item/{id}")]
-public async Task<IActionResult> ShareItem(int id)
-{
-    var item = await _context.Items.FindAsync(id);
-    if (item == null) return Inertia.Back(new { error = "Item not found" });
-    
-    var shareLink = await _shareService.CreateShareLinkAsync(item);
-    return Inertia.Back(new { success = "Share link created!", shareLink });
-}
-
+// Models/EmailRequest.cs
 public class EmailRequest
 {
-    public string To { get; set; }
-    public string Subject { get; set; }
-    public string Body { get; set; }
+    public string To { get; set; } = "";
+    public string Subject { get; set; } = "";
+    public string Body { get; set; } = "";
 }`
                     }}
                 >
@@ -317,47 +381,64 @@ export function LoadingButton() {
         </Button>
     );
 }`,
-                        backend: `[HttpPost("process-data")]
-public async Task<IActionResult> ProcessData([FromForm] ProcessDataRequest request)
+                        backend: `// Controllers/ProcessingController.cs
+public class ProcessingController : Controller
 {
-    try
+    private readonly IBackgroundJobService _backgroundJobService;
+    private readonly IDataService _dataService;
+    private readonly ILogger<ProcessingController> _logger;
+
+    public ProcessingController(
+        IBackgroundJobService backgroundJobService,
+        IDataService dataService,
+        ILogger<ProcessingController> logger)
     {
-        // Start background job for long-running operation
-        var jobId = await _backgroundJobService.EnqueueAsync(async () => 
+        _backgroundJobService = backgroundJobService;
+        _dataService = dataService;
+        _logger = logger;
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> StartProcess([FromForm] ProcessDataRequest request)
+    {
+        try
         {
-            await _dataService.ProcessAsync(request.Data);
-        });
-        
-        return Inertia.Back(new { 
-            success = "Processing started! You'll be notified when complete.",
-            jobId = jobId
-        });
+            var jobId = await _backgroundJobService.EnqueueAsync(async () => 
+            {
+                await _dataService.ProcessAsync(request.Data, request.ProcessType);
+            });
+            
+            return Inertia.Back().With("success", "Processing started! You'll be notified when complete.")
+                                .With("jobId", jobId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error starting data processing");
+            return Inertia.Back().With("error", "Failed to start processing. Please try again.");
+        }
     }
-    catch (Exception ex)
+
+    [HttpGet]
+    public async Task<IActionResult> Status(string jobId)
     {
-        _logger.LogError(ex, "Error starting data processing");
-        return Inertia.Back(new { 
-            error = "Failed to start processing. Please try again." 
+        var status = await _backgroundJobService.GetStatusAsync(jobId);
+        var progress = await _backgroundJobService.GetProgressAsync(jobId);
+        
+        return Inertia.Render("Processing/Status", new { 
+            jobId,
+            status,
+            progress,
+            isComplete = status == "Completed"
         });
     }
 }
 
-[HttpGet("process-status/{jobId}")]
-public async Task<IActionResult> GetProcessStatus(string jobId)
-{
-    var status = await _backgroundJobService.GetStatusAsync(jobId);
-    
-    return Inertia.Render("ProcessStatus", new { 
-        jobId = jobId,
-        status = status,
-        isComplete = status == "Completed"
-    });
-}
-
+// Models/ProcessDataRequest.cs
 public class ProcessDataRequest
 {
-    public string Data { get; set; }
-    public string ProcessType { get; set; }
+    public string Data { get; set; } = "";
+    public string ProcessType { get; set; } = "default";
 }`
                     }}
                 >
@@ -396,59 +477,77 @@ export function IconOnlyButtons() {
         </div>
     );
 }`,
-                        backend: `[HttpPost("toggle-favorite/{itemId}")]
-public async Task<IActionResult> ToggleFavorite(int itemId)
+                        backend: `// Controllers/UserActionsController.cs
+public class UserActionsController : Controller
 {
-    var userId = GetCurrentUserId();
-    var favorite = await _context.Favorites
-        .FirstOrDefaultAsync(f => f.UserId == userId && f.ItemId == itemId);
-    
-    if (favorite == null)
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UserActionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
-        _context.Favorites.Add(new Favorite { UserId = userId, ItemId = itemId });
-        await _context.SaveChangesAsync();
-        return Inertia.Back(new { success = "Added to favorites!" });
+        _context = context;
+        _userManager = userManager;
     }
-    else
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ToggleFavorite(int itemId)
     {
-        _context.Favorites.Remove(favorite);
+        var user = await _userManager.GetUserAsync(User);
+        var favorite = await _context.Favorites
+            .FirstOrDefaultAsync(f => f.UserId == user.Id && f.ItemId == itemId);
+        
+        if (favorite == null)
+        {
+            _context.Favorites.Add(new Favorite { UserId = user.Id, ItemId = itemId });
+            await _context.SaveChangesAsync();
+            return Inertia.Back().With("success", "Added to favorites!");
+        }
+        else
+        {
+            _context.Favorites.Remove(favorite);
+            await _context.SaveChangesAsync();
+            return Inertia.Back().With("success", "Removed from favorites!");
+        }
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Settings()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var userSettings = await _context.UserSettings
+            .FirstOrDefaultAsync(us => us.UserId == user.Id);
+        
+        return Inertia.Render("User/Settings", new { 
+            user,
+            settings = userSettings ?? new UserSettings()
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddItem([FromForm] AddItemRequest request)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var item = new Item 
+        { 
+            Name = request.Name,
+            UserId = user.Id,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        await _context.Items.AddAsync(item);
         await _context.SaveChangesAsync();
-        return Inertia.Back(new { success = "Removed from favorites!" });
+        
+        return Inertia.Back().With("success", "Item added successfully!");
     }
 }
 
-[HttpGet("settings")]
-public async Task<IActionResult> Settings()
-{
-    var user = await GetCurrentUserAsync();
-    var userSettings = await _context.UserSettings
-        .FirstOrDefaultAsync(us => us.UserId == user.Id);
-    
-    return Inertia.Render("Settings", new { 
-        user = user,
-        settings = userSettings ?? new UserSettings()
-    });
-}
-
-[HttpPost("add-item")]
-public async Task<IActionResult> AddItem([FromForm] AddItemRequest request)
-{
-    var item = new Item 
-    { 
-        Name = request.Name,
-        UserId = GetCurrentUserId(),
-        CreatedAt = DateTime.UtcNow
-    };
-    
-    await _context.Items.AddAsync(item);
-    await _context.SaveChangesAsync();
-    
-    return Inertia.Back(new { success = "Item added successfully!" });
-}
-
+// Models/AddItemRequest.cs
 public class AddItemRequest
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 }`
                     }}
                 >
@@ -484,45 +583,68 @@ export function DisabledButtons() {
         </div>
     );
 }`,
-                        backend: `[HttpGet("item-list")]
-public async Task<IActionResult> ItemList()
+                        backend: `// Controllers/PermissionsController.cs
+public class PermissionsController : Controller
 {
-    var user = await GetCurrentUserAsync();
-    var items = await _context.Items.ToListAsync();
-    
-    var permissions = new PermissionsModel
-    {
-        CanDelete = await _permissionService.HasPermissionAsync(user.Id, "DELETE_ITEMS"),
-        CanEdit = await _permissionService.HasPermissionAsync(user.Id, "EDIT_ITEMS"),
-        CanCreate = await _permissionService.HasPermissionAsync(user.Id, "CREATE_ITEMS")
-    };
-    
-    return Inertia.Render("ItemList", new { 
-        items = items,
-        permissions = permissions,
-        user = user
-    });
-}
+    private readonly ApplicationDbContext _context;
+    private readonly IPermissionService _permissionService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-[HttpPost("check-permissions")]
-public async Task<IActionResult> CheckPermissions([FromForm] string action)
-{
-    var user = await GetCurrentUserAsync();
-    var hasPermission = await _permissionService.HasPermissionAsync(user.Id, action);
-    
-    if (!hasPermission)
+    public PermissionsController(
+        ApplicationDbContext context, 
+        IPermissionService permissionService,
+        UserManager<ApplicationUser> userManager)
     {
-        return Inertia.Back(new { error = "You don't have permission to perform this action." });
+        _context = context;
+        _permissionService = permissionService;
+        _userManager = userManager;
     }
-    
-    return Inertia.Back(new { success = "Permission granted!" });
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> ItemList()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var items = await _context.Items.ToListAsync();
+        
+        var permissions = new PermissionsModel
+        {
+            CanDelete = await _permissionService.HasPermissionAsync(user.Id, "DELETE_ITEMS"),
+            CanEdit = await _permissionService.HasPermissionAsync(user.Id, "EDIT_ITEMS"),
+            CanCreate = await _permissionService.HasPermissionAsync(user.Id, "CREATE_ITEMS"),
+            CanView = await _permissionService.HasPermissionAsync(user.Id, "VIEW_ITEMS")
+        };
+        
+        return Inertia.Render("Items/List", new { 
+            items,
+            permissions,
+            user
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> CheckPermission([FromForm] string action)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var hasPermission = await _permissionService.HasPermissionAsync(user.Id, action);
+        
+        if (!hasPermission)
+        {
+            return Inertia.Back().With("error", "You don't have permission to perform this action.");
+        }
+        
+        return Inertia.Back().With("success", "Permission granted!");
+    }
 }
 
+// Models/PermissionsModel.cs
 public class PermissionsModel
 {
     public bool CanDelete { get; set; }
     public bool CanEdit { get; set; }
     public bool CanCreate { get; set; }
+    public bool CanView { get; set; }
 }`
                     }}
                 >
@@ -576,56 +698,60 @@ export function ButtonGroups() {
         </div>
     );
 }`,
-                        backend: `[HttpGet("analytics")]
-public async Task<IActionResult> Analytics([FromQuery] string period = "months")
+                        backend: `// Controllers/AnalyticsController.cs
+public class AnalyticsController : Controller
 {
-    var data = period switch
-    {
-        "years" => await _analyticsService.GetYearlyDataAsync(),
-        "months" => await _analyticsService.GetMonthlyDataAsync(),
-        "days" => await _analyticsService.GetDailyDataAsync(),
-        _ => await _analyticsService.GetMonthlyDataAsync()
-    };
-    
-    return Inertia.Render("Analytics", new { 
-        data = data,
-        selectedPeriod = period,
-        periods = new[] { "years", "months", "days" }
-    });
-}
+    private readonly IAnalyticsService _analyticsService;
+    private readonly IUserPreferenceService _preferenceService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-[HttpPost("save-user-preference")]
-public async Task<IActionResult> SaveUserPreference([FromForm] UserPreferenceRequest request)
-{
-    var userId = GetCurrentUserId();
-    var preference = await _context.UserPreferences
-        .FirstOrDefaultAsync(up => up.UserId == userId && up.Key == request.Key);
-    
-    if (preference == null)
+    public AnalyticsController(
+        IAnalyticsService analyticsService, 
+        IUserPreferenceService preferenceService,
+        UserManager<ApplicationUser> userManager)
     {
-        preference = new UserPreference 
-        { 
-            UserId = userId, 
-            Key = request.Key, 
-            Value = request.Value 
+        _analyticsService = analyticsService;
+        _preferenceService = preferenceService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index([FromQuery] string period = "months")
+    {
+        var data = period switch
+        {
+            "years" => await _analyticsService.GetYearlyDataAsync(),
+            "months" => await _analyticsService.GetMonthlyDataAsync(),
+            "days" => await _analyticsService.GetDailyDataAsync(),
+            _ => await _analyticsService.GetMonthlyDataAsync()
         };
-        await _context.UserPreferences.AddAsync(preference);
+        
+        var availablePeriods = new[] { "years", "months", "days" };
+        
+        return Inertia.Render("Analytics/Index", new { 
+            data,
+            selectedPeriod = period,
+            periods = availablePeriods
+        });
     }
-    else
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SavePreference([FromForm] UserPreferenceRequest request)
     {
-        preference.Value = request.Value;
-        preference.UpdatedAt = DateTime.UtcNow;
+        var user = await _userManager.GetUserAsync(User);
+        await _preferenceService.SavePreferenceAsync(user.Id, request.Key, request.Value);
+        
+        return Inertia.Back().With("success", "Preference saved successfully!");
     }
-    
-    await _context.SaveChangesAsync();
-    
-    return Inertia.Back(new { success = "Preference saved successfully!" });
 }
 
+// Models/UserPreferenceRequest.cs
 public class UserPreferenceRequest
 {
-    public string Key { get; set; } // "analytics_period"
-    public string Value { get; set; } // "years", "months", "days"
+    public string Key { get; set; } = ""; // "analytics_period"
+    public string Value { get; set; } = ""; // "years", "months", "days"
 }`
                     }}
                 >
@@ -680,49 +806,72 @@ export function LinkButtons() {
         </div>
     );
 }`,
-                        backend: `[HttpGet("terms-of-service")]
-public async Task<IActionResult> TermsOfService()
+                        backend: `// Controllers/ContentController.cs
+public class ContentController : Controller
 {
-    var terms = await _contentService.GetTermsAsync();
-    var lastUpdated = await _contentService.GetLastUpdatedAsync("terms");
-    
-    return Inertia.Render("TermsOfService", new { 
-        terms = terms,
-        lastUpdated = lastUpdated
-    });
-}
+    private readonly IContentService _contentService;
+    private readonly IAnalyticsService _analyticsService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-[HttpGet("learn-more")]
-public async Task<IActionResult> LearnMore()
-{
-    var content = await _contentService.GetPageContentAsync("learn-more");
-    var relatedArticles = await _contentService.GetRelatedArticlesAsync("learn-more");
-    
-    return Inertia.Render("LearnMore", new { 
-        content = content,
-        relatedArticles = relatedArticles
-    });
-}
-
-[HttpPost("track-link-click")]
-public async Task<IActionResult> TrackLinkClick([FromForm] LinkClickRequest request)
-{
-    await _analyticsService.TrackEventAsync(new AnalyticsEvent
+    public ContentController(
+        IContentService contentService, 
+        IAnalyticsService analyticsService,
+        UserManager<ApplicationUser> userManager)
     {
-        EventType = "link_click",
-        Url = request.Url,
-        Page = request.SourcePage,
-        UserId = GetCurrentUserId(),
-        Timestamp = DateTime.UtcNow
-    });
-    
-    return Inertia.Back();
+        _contentService = contentService;
+        _analyticsService = analyticsService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> TermsOfService()
+    {
+        var terms = await _contentService.GetTermsAsync();
+        var lastUpdated = await _contentService.GetLastUpdatedAsync("terms");
+        
+        return Inertia.Render("Legal/TermsOfService", new { 
+            terms,
+            lastUpdated
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LearnMore()
+    {
+        var content = await _contentService.GetPageContentAsync("learn-more");
+        var relatedArticles = await _contentService.GetRelatedArticlesAsync("learn-more");
+        
+        return Inertia.Render("Content/LearnMore", new { 
+            content,
+            relatedArticles
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> TrackLinkClick([FromForm] LinkClickRequest request)
+    {
+        var userId = User.Identity.IsAuthenticated 
+            ? (await _userManager.GetUserAsync(User))?.Id 
+            : null;
+            
+        await _analyticsService.TrackEventAsync(new AnalyticsEvent
+        {
+            EventType = "link_click",
+            Url = request.Url,
+            Page = request.SourcePage,
+            UserId = userId,
+            Timestamp = DateTime.UtcNow
+        });
+        
+        return Inertia.Back();
+    }
 }
 
+// Models/LinkClickRequest.cs
 public class LinkClickRequest
 {
-    public string Url { get; set; }
-    public string SourcePage { get; set; }
+    public string Url { get; set; } = "";
+    public string SourcePage { get; set; } = "";
 }`
                     }}
                 >
