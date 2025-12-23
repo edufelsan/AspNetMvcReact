@@ -38,33 +38,48 @@ export function BasicCalendar() {
 public class CalendarController : Controller
 {
     private readonly ICalendarService _calendarService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public CalendarController(ICalendarService calendarService)
+    public CalendarController(ICalendarService calendarService, UserManager<ApplicationUser> userManager)
     {
         _calendarService = calendarService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index(DateTime? startDate = null, DateTime? endDate = null)
+    [Authorize]
+    public async Task<IActionResult> Index(DateTime? startDate = null, DateTime? endDate = null)
     {
-        var events = _calendarService.GetEvents(startDate, endDate);
-        return Inertia.Render("Calendar/Index", new { events });
+        var user = await _userManager.GetUserAsync(User);
+        var events = await _calendarService.GetEventsAsync(user.Id, startDate, endDate);
+        
+        return Inertia.Render("Calendar/Index", new { 
+            events,
+            startDate = startDate?.ToString("yyyy-MM-dd"),
+            endDate = endDate?.ToString("yyyy-MM-dd")
+        });
     }
 
     [HttpPost]
-    public IActionResult CreateEvent(CalendarEventRequest request)
+    [Authorize]
+    public async Task<IActionResult> CreateEvent([FromForm] CalendarEventRequest request)
     {
         if (!ModelState.IsValid)
         {
-            return Inertia.Render("Calendar/Create", new { errors = ModelState });
+            return Inertia.Render("Calendar/Create", new { 
+                errors = ModelState,
+                request
+            });
         }
 
-        _calendarService.CreateEvent(request);
-        TempData["Success"] = "Evento criado com sucesso!";
-        return RedirectToAction("Index");
+        var user = await _userManager.GetUserAsync(User);
+        await _calendarService.CreateEventAsync(request, user.Id);
+        
+        return Redirect("/Calendar").With("success", "Event created successfully!");
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult Create()
     {
         return Inertia.Render("Calendar/Create");
@@ -88,7 +103,6 @@ public class CalendarEventRequest
     public DateTime Date { get; set; }
     public string Title { get; set; } = "";
     public string? Description { get; set; }
-}
 }`;
 
     // Exemplo 2: Calendar com Múltiplas Datas
@@ -122,67 +136,94 @@ export function MultipleCalendar() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode2 = `// Controllers/BookingController.cs
+public class BookingController : Controller
 {
-    public class BookingController : Controller
-    {
-        // Verificar disponibilidade de múltiplas datas
-        [HttpPost]
-        public IActionResult CheckAvailability(DateAvailabilityRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Inertia.Render("Booking/CheckAvailability", new { errors = ModelState });
-            }
+    private readonly IBookingService _bookingService;
+    private readonly IAvailabilityService _availabilityService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-            var availabilityResults = request.Dates.Select(date => new
-            {
-                date = date,
-                available = IsDateAvailable(date),
-                slotsRemaining = GetAvailableSlots(date)
-            }).ToList();
+    public BookingController(
+        IBookingService bookingService,
+        IAvailabilityService availabilityService, 
+        UserManager<ApplicationUser> userManager)
+    {
+        _bookingService = bookingService;
+        _availabilityService = availabilityService;
+        _userManager = userManager;
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> CheckAvailability([FromForm] DateAvailabilityRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var availabilityResults = new List<object>();
+        foreach (var date in request.Dates)
+        {
+            var isAvailable = await _availabilityService.IsDateAvailableAsync(date);
+            var slotsRemaining = await _availabilityService.GetAvailableSlotsAsync(date);
             
-            return Inertia.Render("Booking/AvailabilityResults", new
+            availabilityResults.Add(new
             {
-                totalDates = request.Dates.Count,
-                availableDates = availabilityResults.Count(x => x.available),
-                results = availabilityResults
+                date = date.ToString("yyyy-MM-dd"),
+                available = isAvailable,
+                slotsRemaining
             });
         }
-
-        // Reservar múltiplas datas
-        [HttpPost]
-        public IActionResult BookMultipleDates(MultiBookingRequest request)
+        
+        return Inertia.Render("Booking/AvailabilityResults", new
         {
-            if (!ModelState.IsValid)
-            {
-                return Inertia.Render("Booking/MultipleBooking", new { errors = ModelState });
-            }
+            totalDates = request.Dates.Count,
+            availableDates = availabilityResults.Count(x => (bool)((dynamic)x).available),
+            results = availabilityResults
+        });
+    }
 
-            // Processar reservas
-            // ... salvar no banco de dados
-            
-            TempData["Success"] = $"Reserva criada com sucesso para {request.Dates.Count} datas";
-            return RedirectToAction("Index");
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> BookMultipleDates([FromForm] MultiBookingRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        private bool IsDateAvailable(DateTime date) => date > DateTime.Today;
-        private int GetAvailableSlots(DateTime date) => new Random().Next(0, 10);
+        var user = await _userManager.GetUserAsync(User);
+        var bookingResult = await _bookingService.CreateMultipleBookingsAsync(user.Id, request.Dates);
+        
+        if (bookingResult.Success)
+        {
+            return Redirect("/Booking").With("success", 
+                $"Booking created successfully for {request.Dates.Count} dates");
+        }
+        
+        return Inertia.Back().With("error", bookingResult.ErrorMessage);
     }
 
-    public class DateAvailabilityRequest
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> MultipleBooking()
     {
-        public List<DateTime> Dates { get; set; } = new();
+        var availableDates = await _availabilityService.GetAvailableDatesAsync(DateTime.Today, DateTime.Today.AddMonths(3));
+        return Inertia.Render("Booking/MultipleBooking", new { availableDates });
     }
+}
 
-    public class MultiBookingRequest
-    {
-        public string UserId { get; set; } = string.Empty;
-        public List<DateTime> Dates { get; set; } = new();
-    }
+// Models/DateAvailabilityRequest.cs
+public class DateAvailabilityRequest
+{
+    public List<DateTime> Dates { get; set; } = new();
+}
+
+// Models/MultiBookingRequest.cs
+public class MultiBookingRequest
+{
+    public List<DateTime> Dates { get; set; } = new();
 }`;
 
     // Exemplo 3: Calendar com Range de Datas
@@ -234,90 +275,100 @@ export function RangeCalendar() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode3 = `// Controllers/ReservationController.cs
+public class ReservationController : Controller
 {
-    public class ReservationController : Controller
+    private readonly IReservationService _reservationService;
+    private readonly IPricingService _pricingService;
+    private readonly IAvailabilityService _availabilityService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ReservationController(
+        IReservationService reservationService,
+        IPricingService pricingService,
+        IAvailabilityService availabilityService,
+        UserManager<ApplicationUser> userManager)
     {
-        // Calcular preço para range de datas
-        [HttpPost]
-        public IActionResult CalculatePrice(DateRangeRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Inertia.Render("Reservation/CalculatePrice", new { errors = ModelState });
-            }
-
-            var days = (request.EndDate - request.StartDate).Days + 1;
-            var basePrice = 100.00m;
-            var totalPrice = days * basePrice;
-            
-            // Aplicar desconto para reservas longas
-            var discount = days >= 7 ? 0.15m : days >= 3 ? 0.10m : 0m;
-            var finalPrice = totalPrice * (1 - discount);
-            
-            return Inertia.Render("Reservation/PriceCalculation", new
-            {
-                startDate = request.StartDate,
-                endDate = request.EndDate,
-                totalDays = days,
-                basePrice = basePrice,
-                subtotal = totalPrice,
-                discount = discount * 100,
-                totalPrice = finalPrice
-            });
-        }
-
-        // Criar reserva com range de datas
-        [HttpPost]
-        public IActionResult CreateReservation(ReservationRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Inertia.Render("Reservation/Create", new { errors = ModelState });
-            }
-
-            // Processar reserva
-            // ... salvar no banco de dados
-            
-            TempData["Success"] = "Reserva criada com sucesso!";
-            return RedirectToAction("Index");
-        }
-
-        // Verificar disponibilidade em um range
-        [HttpGet("availability")]
-        public IActionResult CheckRangeAvailability(
-            [FromQuery] DateTime startDate, 
-            [FromQuery] DateTime endDate)
-        {
-            var days = (endDate - startDate).Days + 1;
-            var unavailableDates = new List<DateTime>(); // Simular datas indisponíveis
-            
-            return Ok(new
-            {
-                startDate = startDate,
-                endDate = endDate,
-                totalDays = days,
-                available = unavailableDates.Count == 0,
-                unavailableDates = unavailableDates
-            });
-        }
+        _reservationService = reservationService;
+        _pricingService = pricingService;
+        _availabilityService = availabilityService;
+        _userManager = userManager;
     }
 
-    public class DateRangeRequest
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> CalculatePrice([FromForm] DateRangeRequest request)
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var priceCalculation = await _pricingService.CalculateRangePriceAsync(request.StartDate, request.EndDate);
+        
+        return Inertia.Render("Reservation/PriceCalculation", new
+        {
+            startDate = request.StartDate.ToString("yyyy-MM-dd"),
+            endDate = request.EndDate.ToString("yyyy-MM-dd"),
+            totalDays = priceCalculation.TotalDays,
+            basePrice = priceCalculation.BasePrice,
+            subtotal = priceCalculation.Subtotal,
+            discount = priceCalculation.DiscountPercentage,
+            totalPrice = priceCalculation.FinalPrice
+        });
     }
 
-    public class ReservationRequest
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Create([FromForm] ReservationRequest request)
     {
-        public string UserId { get; set; } = string.Empty;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        var reservation = await _reservationService.CreateReservationAsync(user.Id, request);
+        
+        return Redirect("/Reservation").With("success", "Reservation created successfully!");
     }
+
+    [HttpGet]
+    [Authorize] 
+    public async Task<IActionResult> CheckAvailability(DateTime startDate, DateTime endDate)
+    {
+        var availabilityResult = await _availabilityService.CheckRangeAvailabilityAsync(startDate, endDate);
+        
+        return Inertia.Render("Reservation/AvailabilityCheck", new
+        {
+            startDate = startDate.ToString("yyyy-MM-dd"),
+            endDate = endDate.ToString("yyyy-MM-dd"),
+            totalDays = availabilityResult.TotalDays,
+            available = availabilityResult.IsAvailable,
+            unavailableDates = availabilityResult.UnavailableDates?.Select(d => d.ToString("yyyy-MM-dd"))
+        });
+    }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return Inertia.Render("Reservation/Create");
+    }
+}
+
+// Models/DateRangeRequest.cs
+public class DateRangeRequest
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+}
+
+// Models/ReservationRequest.cs
+public class ReservationRequest
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public string? Notes { get; set; }
 }`;
 
     return (
