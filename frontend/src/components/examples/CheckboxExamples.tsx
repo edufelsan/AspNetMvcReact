@@ -163,55 +163,83 @@ export function NotificationCheckboxes() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode2 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
+    [Authorize]
     public class NotificationsController : Controller
     {
+        private readonly INotificationService _notificationService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public NotificationsController(INotificationService notificationService, UserManager<ApplicationUser> userManager)
+        {
+            _notificationService = notificationService;
+            _userManager = userManager;
+        }
+
         // Atualizar preferências de notificação
         [HttpPost]
-        public IActionResult UpdatePreferences(NotificationPreferencesRequest request)
+        public async Task<IActionResult> UpdatePreferences(NotificationPreferencesRequest request)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            if (!ModelState.IsValid)
+                return Inertia.Back().WithErrors(ModelState);
+
             var preferences = new
             {
-                userId = request.UserId,
+                userId = user.Id,
                 email = request.Email,
                 push = request.Push,
                 sms = request.Sms,
                 updatedAt = DateTime.UtcNow
             };
             
-            // Salvar preferências no banco de dados
-            // ...
+            await _notificationService.UpdatePreferencesAsync(user.Id, request);
             
-            TempData["Success"] = "Preferências atualizadas com sucesso";
-            return RedirectToAction("Index");
+            return Inertia.Back().With("success", "Preferências atualizadas com sucesso");
         }
 
-        // Obter preferências atuais
-        [HttpGet("preferences/{userId}")]
-        public IActionResult GetNotificationPreferences(string userId)
+        // Exibir preferências atuais
+        public async Task<IActionResult> Preferences()
         {
-            var preferences = new
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Redirect("/Account/Login");
+
+            var preferences = new NotificationPreferencesViewModel
             {
-                userId = userId,
-                email = true,
-                push = false,
-                sms = false,
-                lastUpdated = DateTime.UtcNow.AddDays(-5)
+                UserId = user.Id,
+                Email = true,
+                Push = false,
+                Sms = false,
+                LastUpdated = DateTime.UtcNow.AddDays(-5)
             };
             
-            return Ok(preferences);
+            return Inertia.Render("Notifications/Preferences", preferences);
         }
     }
 
     public class NotificationPreferencesRequest
     {
+        public bool Email { get; set; }
+        public bool Push { get; set; }
+        public bool Sms { get; set; }
+    }
+
+    public class NotificationPreferencesViewModel
+    {
         public string UserId { get; set; } = string.Empty;
         public bool Email { get; set; }
         public bool Push { get; set; }
         public bool Sms { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }`;
 
@@ -276,18 +304,35 @@ export function MultipleSelectionCheckbox() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode3 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class SelectionController : ControllerBase
+    [Authorize]
+    public class SelectionController : Controller
     {
-        // Processar seleção múltipla
-        [HttpPost("process-selection")]
-        public IActionResult ProcessSelection([FromBody] MultipleSelectionRequest request)
+        private readonly ISelectionService _selectionService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public SelectionController(ISelectionService selectionService, UserManager<ApplicationUser> userManager)
         {
+            _selectionService = selectionService;
+            _userManager = userManager;
+        }
+
+        // Processar seleção múltipla
+        [HttpPost]
+        public async Task<IActionResult> ProcessSelection(MultipleSelectionRequest request)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            if (!ModelState.IsValid)
+                return Inertia.Back().WithErrors(ModelState);
+
             var processedItems = request.SelectedIds.Select(id => new
             {
                 id = id,
@@ -295,18 +340,19 @@ namespace AspNetMvcReact.Controllers
                 processedAt = DateTime.UtcNow
             }).ToList();
             
-            return Ok(new
-            {
-                success = true,
-                totalProcessed = processedItems.Count,
-                items = processedItems
-            });
+            await _selectionService.ProcessItemsAsync(request.SelectedIds, user.Id);
+            
+            return Inertia.Back().With("success", $"{processedItems.Count} itens processados com sucesso");
         }
 
         // Exportar itens selecionados
-        [HttpPost("export")]
-        public IActionResult ExportSelected([FromBody] ExportRequest request)
+        [HttpPost]
+        public async Task<IActionResult> Export(ExportRequest request)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
             var exportData = new
             {
                 exportId = Guid.NewGuid(),
@@ -316,25 +362,25 @@ namespace AspNetMvcReact.Controllers
                 downloadUrl = $"/downloads/{Guid.NewGuid()}.{request.Format}"
             };
             
-            return Ok(new
-            {
-                success = true,
-                message = $"{request.SelectedIds.Count} itens exportados com sucesso",
-                export = exportData
-            });
+            await _selectionService.ExportItemsAsync(request.SelectedIds, request.Format, user.Id);
+            
+            return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens exportados com sucesso");
         }
 
         // Deletar itens selecionados
-        [HttpDelete("batch-delete")]
-        public IActionResult BatchDelete([FromBody] BatchDeleteRequest request)
+        [HttpPost]
+        public async Task<IActionResult> BatchDelete(BatchDeleteRequest request)
         {
-            return Ok(new
-            {
-                success = true,
-                message = $"{request.SelectedIds.Count} itens deletados com sucesso",
-                deletedCount = request.SelectedIds.Count,
-                deletedAt = DateTime.UtcNow
-            });
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            if (!ModelState.IsValid)
+                return Inertia.Back().WithErrors(ModelState);
+
+            await _selectionService.DeleteItemsAsync(request.SelectedIds, user.Id);
+            
+            return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens deletados com sucesso");
         }
     }
 
