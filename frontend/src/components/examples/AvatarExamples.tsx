@@ -17,21 +17,41 @@ export function BasicAvatar() {
   )
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode1 = `// Controllers/UserController.cs
 public class UserController : Controller
 {
-    public IActionResult Profile(string username)
+    private readonly IUserService _userService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UserController(IUserService userService, UserManager<ApplicationUser> userManager)
     {
-        var user = new
+        _userService = userService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var userProfile = new
         {
-            Username = username,
-            Avatar = $"https://api.dicebear.com/7.x/avataaars/svg?seed={username}",
-            Fallback = username.Substring(0, 2).ToUpper(),
-            FullName = "User Name"
+            Username = user.UserName,
+            Avatar = user.ProfileImageUrl ?? $"https://api.dicebear.com/7.x/avataaars/svg?seed={user.UserName}",
+            Fallback = (user.FirstName?.Substring(0, 1) ?? "") + (user.LastName?.Substring(0, 1) ?? ""),
+            FullName = $"{user.FirstName} {user.LastName}"
         };
         
-        return Json(user);
+        return Inertia.Render("User/Profile", new { user = userProfile });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Details(string username)
+    {
+        var user = await _userService.GetUserByUsernameAsync(username);
+        if (user == null) return NotFound();
+        
+        return Inertia.Render("User/Details", new { user });
     }
 }`;
 
@@ -60,30 +80,54 @@ export function AvatarSizes() {
   )
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode2 = `// Controllers/UserController.cs
 public class UserController : Controller
 {
-    public class AvatarSize
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
     {
-        public string Name { get; set; } = "";
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public string CssClass { get; set; } = "";
+        _userService = userService;
     }
 
+    [HttpGet]
     public IActionResult AvatarSizes()
     {
         var sizes = new[]
         {
-            new AvatarSize { Name = "Small", Width = 32, Height = 32, CssClass = "h-8 w-8" },
-            new AvatarSize { Name = "Medium", Width = 48, Height = 48, CssClass = "h-12 w-12" },
-            new AvatarSize { Name = "Large", Width = 64, Height = 64, CssClass = "h-16 w-16" },
-            new AvatarSize { Name = "Extra Large", Width = 96, Height = 96, CssClass = "h-24 w-24" }
+            new { Name = "Small", Width = 32, Height = 32, CssClass = "h-8 w-8", Description = "For compact layouts" },
+            new { Name = "Medium", Width = 48, Height = 48, CssClass = "h-12 w-12", Description = "Standard size" },
+            new { Name = "Large", Width = 64, Height = 64, CssClass = "h-16 w-16", Description = "Profile headers" },
+            new { Name = "Extra Large", Width = 96, Height = 96, CssClass = "h-24 w-24", Description = "Hero sections" }
         };
         
-        return Json(sizes);
+        return Inertia.Render("User/AvatarSizes", new { sizes });
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Gallery()
+    {
+        var users = await _userService.GetFeaturedUsersAsync();
+        var avatarExamples = users.Select(u => new 
+        {
+            u.Id,
+            u.UserName,
+            Avatar = u.ProfileImageUrl ?? $"https://api.dicebear.com/7.x/avataaars/svg?seed={u.UserName}",
+            Fallback = (u.FirstName?.Substring(0, 1) ?? "") + (u.LastName?.Substring(0, 1) ?? "")
+        });
+        
+        return Inertia.Render("User/Gallery", new { avatarExamples });
+    }
+}
+
+// Models/AvatarSize.cs
+public class AvatarSize
+{
+    public string Name { get; set; } = "";
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public string CssClass { get; set; } = "";
+    public string Description { get; set; } = "";
 }`;
 
     const frontendCode3 = `import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -125,60 +169,67 @@ export function AvatarGroup({ users }: { users: User[] }) {
   )
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode3 = `// Controllers/TeamController.cs
 public class TeamController : Controller
 {
-    public class TeamMember
+    private readonly ITeamService _teamService;
+    private readonly IUserService _userService;
+
+    public TeamController(ITeamService teamService, IUserService userService)
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string Avatar { get; set; } = "";
-        public string Status { get; set; } = "offline";
-        public string Role { get; set; } = "";
+        _teamService = teamService;
+        _userService = userService;
     }
 
-    [HttpGet("/api/team/members")]
-    public IActionResult GetTeamMembers()
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Members(int? teamId = null)
     {
-        var members = new[]
-        {
-            new TeamMember 
-            { 
-                Id = 1, 
-                Name = "Sarah Johnson", 
-                Avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-                Status = "online",
-                Role = "Developer"
-            },
-            new TeamMember 
-            { 
-                Id = 2, 
-                Name = "Mike Chen", 
-                Avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
-                Status = "away",
-                Role = "Designer"
-            },
-            new TeamMember 
-            { 
-                Id = 3, 
-                Name = "Emily Davis", 
-                Avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-                Status = "online",
-                Role = "Manager"
-            },
-            new TeamMember 
-            { 
-                Id = 4, 
-                Name = "John Smith", 
-                Avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-                Status = "offline",
-                Role = "Developer"
-            }
-        };
+        var currentUser = await _userService.GetCurrentUserAsync(User);
+        var team = teamId.HasValue 
+            ? await _teamService.GetTeamAsync(teamId.Value)
+            : await _teamService.GetUserTeamAsync(currentUser.Id);
+            
+        if (team == null) return NotFound();
         
-        return Json(members);
+        var members = await _teamService.GetTeamMembersAsync(team.Id);
+        
+        return Inertia.Render("Team/Members", new { team, members });
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Directory()
+    {
+        var teams = await _teamService.GetAllTeamsAsync();
+        var teamMembers = teams.Select(team => new 
+        {
+            TeamId = team.Id,
+            TeamName = team.Name,
+            Members = team.Members.Select(m => new 
+            {
+                m.Id,
+                Name = $"{m.FirstName} {m.LastName}",
+                Avatar = m.ProfileImageUrl ?? $"https://api.dicebear.com/7.x/avataaars/svg?seed={m.UserName}",
+                Status = m.IsOnline ? "online" : "offline",
+                m.Role
+            }).ToList()
+        });
+        
+        return Inertia.Render("Team/Directory", new { teamMembers });
+    }
+}
+
+// Models/TeamMember.cs
+public class TeamMember
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public string UserName { get; set; } = "";
+    public string? ProfileImageUrl { get; set; }
+    public bool IsOnline { get; set; }
+    public string Role { get; set; } = "";
+    public DateTime LastSeenAt { get; set; }
 }`;
 
     return (
