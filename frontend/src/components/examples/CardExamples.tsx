@@ -36,25 +36,42 @@ export function BasicCard() {
 public class ProjectsController : Controller
 {
     private readonly IProjectService _projectService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ProjectsController(IProjectService projectService)
+    public ProjectsController(IProjectService projectService, UserManager<ApplicationUser> userManager)
     {
         _projectService = projectService;
+        _userManager = userManager;
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult Create()
     {
         return Inertia.Render("Projects/Create");
     }
 
     [HttpPost]
-    public IActionResult Deploy([FromForm] string projectName)
+    [Authorize]
+    public async Task<IActionResult> Deploy([FromForm] CreateProjectRequest request)
     {
-        var project = _projectService.CreateProject(projectName, User.Identity.Name);
-        return Inertia.Render("Projects/Dashboard", new { project })
-                     .With("success", "Project deployed successfully!");
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        var project = await _projectService.CreateProjectAsync(request.ProjectName, user.Id);
+        
+        return Redirect("/Projects/Dashboard").With("success", "Project deployed successfully!")
+                                             .With("project", project);
     }
+}
+
+// Models/CreateProjectRequest.cs
+public class CreateProjectRequest
+{
+    public string ProjectName { get; set; } = "";
 }`;
 
   const frontendCode2 = `import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -111,30 +128,52 @@ public class User
     public string Avatar { get; set; } = "";
     public string Initials { get; set; } = "";
     public DateTime JoinDate { get; set; }
+    public int FollowersCount { get; set; }
+    public int FollowingCount { get; set; }
 }
 
 // Controllers/UsersController.cs
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IFollowService _followService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UsersController(IUserService userService)
+    public UsersController(
+        IUserService userService, 
+        IFollowService followService,
+        UserManager<ApplicationUser> userManager)
     {
         _userService = userService;
+        _followService = followService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Profile(int id)
+    public async Task<IActionResult> Profile(int id)
     {
-        var user = _userService.GetUserById(id);
-        return Inertia.Render("Users/Profile", new { user });
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user == null) return NotFound();
+        
+        var isFollowing = User.Identity.IsAuthenticated ? 
+            await _followService.IsFollowingAsync(User.Identity.Name, id) : false;
+        
+        return Inertia.Render("Users/Profile", new { user, isFollowing });
     }
 
     [HttpPost]
-    public IActionResult Follow(int userId)
+    [Authorize]
+    public async Task<IActionResult> Follow([FromForm] int userId)
     {
-        _userService.FollowUser(User.Identity.Name, userId);
-        return Inertia.Back().With("success", "User followed successfully!");
+        var currentUser = await _userManager.GetUserAsync(User);
+        var result = await _followService.FollowUserAsync(currentUser.Id, userId);
+        
+        if (result.Success)
+        {
+            return Inertia.Back().With("success", "User followed successfully!");
+        }
+        
+        return Inertia.Back().With("error", result.ErrorMessage);
     }
 }`;
 
@@ -188,30 +227,40 @@ public class DashboardStats
     public string RevenueChange { get; set; } = "";
     public string ActiveUsers { get; set; } = "";
     public string UsersChange { get; set; } = "";
+    public DateTime LastUpdated { get; set; }
+    public string Period { get; set; } = "monthly";
 }
 
 // Controllers/DashboardController.cs
 public class DashboardController : Controller
 {
     private readonly IAnalyticsService _analyticsService;
+    private readonly IDashboardService _dashboardService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public DashboardController(IAnalyticsService analyticsService)
+    public DashboardController(
+        IAnalyticsService analyticsService,
+        IDashboardService dashboardService,
+        UserManager<ApplicationUser> userManager)
     {
         _analyticsService = analyticsService;
+        _dashboardService = dashboardService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    [Authorize]
+    public async Task<IActionResult> Index(string period = "monthly")
     {
-        var stats = new DashboardStats
-        {
-            Revenue = "$45,231.89",
-            RevenueChange = "+20.1% from last month",
-            ActiveUsers = "+2,350",
-            UsersChange = "+180.1% from last month"
-        };
+        var user = await _userManager.GetUserAsync(User);
+        var stats = await _analyticsService.GetDashboardStatsAsync(user.Id, period);
+        var recentActivity = await _dashboardService.GetRecentActivityAsync(user.Id);
         
-        return Inertia.Render("Dashboard/Index", new { stats });
+        return Inertia.Render("Dashboard/Index", new { 
+            stats,
+            recentActivity,
+            period
+        });
     }
 }`;
 
@@ -442,30 +491,47 @@ public class Product
     public double Rating { get; set; }
     public string Badge { get; set; } = "";
     public string ImageUrl { get; set; } = "";
+    public bool InStock { get; set; } = true;
+    public int Stock { get; set; }
 }
 
 // Controllers/ProductsController.cs
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
+    private readonly ICartService _cartService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ProductsController(IProductService productService)
+    public ProductsController(
+        IProductService productService,
+        ICartService cartService,
+        UserManager<ApplicationUser> userManager)
     {
         _productService = productService;
+        _cartService = cartService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var products = _productService.GetFeaturedProducts();
+        var products = await _productService.GetFeaturedProductsAsync();
         return Inertia.Render("Products/Index", new { products });
     }
 
     [HttpPost]
-    public IActionResult AddToCart(int productId)
+    [Authorize]
+    public async Task<IActionResult> AddToCart([FromForm] int productId)
     {
-        _productService.AddToCart(User.Identity.Name, productId);
-        return Inertia.Back().With("success", "Product added to cart!");
+        var user = await _userManager.GetUserAsync(User);
+        var result = await _cartService.AddToCartAsync(user.Id, productId);
+        
+        if (result.Success)
+        {
+            return Inertia.Back().With("success", "Product added to cart!");
+        }
+        
+        return Inertia.Back().With("error", result.ErrorMessage);
     }
 }`
           }}
@@ -573,29 +639,44 @@ public class Notification
     public string Content { get; set; } = "";
     public DateTime CreatedAt { get; set; }
     public bool Read { get; set; }
+    public string Type { get; set; } = "info";
 }
 
 // Controllers/NotificationsController.cs
 public class NotificationsController : Controller
 {
     private readonly INotificationService _notificationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public NotificationsController(INotificationService notificationService)
+    public NotificationsController(
+        INotificationService notificationService,
+        UserManager<ApplicationUser> userManager)
     {
         _notificationService = notificationService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    [Authorize]
+    public async Task<IActionResult> Index()
     {
-        var notifications = _notificationService.GetUserNotifications(User.Identity.Name);
-        return Inertia.Render("Notifications/Index", new { notifications });
+        var user = await _userManager.GetUserAsync(User);
+        var notifications = await _notificationService.GetUserNotificationsAsync(user.Id);
+        var unreadCount = await _notificationService.GetUnreadCountAsync(user.Id);
+        
+        return Inertia.Render("Notifications/Index", new { 
+            notifications,
+            unreadCount
+        });
     }
 
     [HttpPost]
-    public IActionResult MarkAllAsRead()
+    [Authorize]
+    public async Task<IActionResult> MarkAllAsRead()
     {
-        _notificationService.MarkAllAsRead(User.Identity.Name);
+        var user = await _userManager.GetUserAsync(User);
+        await _notificationService.MarkAllAsReadAsync(user.Id);
+        
         return Inertia.Back().With("success", "All notifications marked as read!");
     }
 }`
@@ -691,31 +772,53 @@ public class PricingPlan
     public decimal Price { get; set; }
     public List<string> Features { get; set; } = new();
     public string BillingCycle { get; set; } = "monthly";
+    public bool Popular { get; set; }
+    public string Currency { get; set; } = "USD";
 }
 
 // Controllers/SubscriptionController.cs
 public class SubscriptionController : Controller
 {
     private readonly ISubscriptionService _subscriptionService;
+    private readonly IPaymentService _paymentService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public SubscriptionController(ISubscriptionService subscriptionService)
+    public SubscriptionController(
+        ISubscriptionService subscriptionService,
+        IPaymentService paymentService,
+        UserManager<ApplicationUser> userManager)
     {
         _subscriptionService = subscriptionService;
+        _paymentService = paymentService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Pricing()
+    public async Task<IActionResult> Pricing()
     {
-        var plans = _subscriptionService.GetAvailablePlans();
-        return Inertia.Render("Subscription/Pricing", new { plans });
+        var plans = await _subscriptionService.GetAvailablePlansAsync();
+        var currentPlan = User.Identity.IsAuthenticated ? 
+            await _subscriptionService.GetUserCurrentPlanAsync(User.Identity.Name) : null;
+        
+        return Inertia.Render("Subscription/Pricing", new { 
+            plans,
+            currentPlan
+        });
     }
 
     [HttpPost]
-    public IActionResult Subscribe(int planId)
+    [Authorize]
+    public async Task<IActionResult> Subscribe([FromForm] int planId)
     {
-        _subscriptionService.CreateSubscription(User.Identity.Name, planId);
-        return Inertia.Render("Subscription/Success")
-                     .With("success", "Subscription created successfully!");
+        var user = await _userManager.GetUserAsync(User);
+        var result = await _subscriptionService.CreateSubscriptionAsync(user.Id, planId);
+        
+        if (result.Success)
+        {
+            return Redirect("/Subscription/Success").With("success", "Subscription created successfully!");
+        }
+        
+        return Inertia.Back().With("error", result.ErrorMessage);
     }
 }`
           }}
@@ -810,31 +913,57 @@ public class UserSettings
     public bool EmailNotifications { get; set; } = true;
     public bool MarketingEmails { get; set; } = false;
     public bool TwoFactorEnabled { get; set; } = true;
+    public string Theme { get; set; } = "system";
+    public string Language { get; set; } = "en";
+    public DateTime LastUpdated { get; set; }
 }
 
 // Controllers/SettingsController.cs
 public class SettingsController : Controller
 {
     private readonly IUserSettingsService _settingsService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public SettingsController(IUserSettingsService settingsService)
+    public SettingsController(
+        IUserSettingsService settingsService,
+        UserManager<ApplicationUser> userManager)
     {
         _settingsService = settingsService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    [Authorize]
+    public async Task<IActionResult> Index()
     {
-        var settings = _settingsService.GetUserSettings(User.Identity.Name);
+        var user = await _userManager.GetUserAsync(User);
+        var settings = await _settingsService.GetUserSettingsAsync(user.Id);
+        
         return Inertia.Render("Settings/Index", new { settings });
     }
 
     [HttpPost]
-    public IActionResult Update([FromForm] UserSettings settings)
+    [Authorize]
+    public async Task<IActionResult> Update([FromForm] UpdateSettingsRequest request)
     {
-        _settingsService.UpdateUserSettings(User.Identity.Name, settings);
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _settingsService.UpdateUserSettingsAsync(user.Id, request);
+        
         return Inertia.Back().With("success", "Settings updated successfully!");
     }
+}
+
+// Models/UpdateSettingsRequest.cs
+public class UpdateSettingsRequest
+{
+    public bool EmailNotifications { get; set; }
+    public bool MarketingEmails { get; set; }
+    public bool TwoFactorEnabled { get; set; }
 }`
           }}
         />
