@@ -34,10 +34,19 @@ public class MediaController : Controller
     }
 
     [HttpGet]
-    public IActionResult Image()
+    public async Task<IActionResult> Gallery()
     {
-        var imageData = _mediaService.GetImageData();
-        return Inertia.Render("Media/Image", imageData);
+        var images = await _mediaService.GetGalleryImagesAsync();
+        return Inertia.Render("Media/Gallery", new { images });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var image = await _mediaService.GetImageByIdAsync(id);
+        if (image == null) return NotFound();
+        
+        return Inertia.Render("Media/Details", new { image });
     }
 }
 
@@ -49,16 +58,8 @@ public class MediaItem
     public string Alt { get; set; } = "";
     public int Width { get; set; }
     public int Height { get; set; }
-    public string AspectRatio { get; set; } = ""
-            Url = "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd",
-            Alt = "Photo by Javier Allegue Barros",
-            Width = 800,
-            Height = 450,
-            AspectRatio = "16:9"
-        };
-        
-        return Json(imageData);
-    }
+    public string AspectRatio { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
 }`;
 
     const frontendCode2 = `import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -77,24 +78,43 @@ export default function VideoExample() {
   )
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-
-public class MediaController : Controller
+    const backendCode2 = `// Controllers/VideoController.cs
+public class VideoController : Controller
 {
-    [HttpGet("/media/video")]
-    public IActionResult GetVideo()
+    private readonly IVideoService _videoService;
+
+    public VideoController(IVideoService videoService)
     {
-        var videoData = new
-        {
-            Url = "/videos/sample.mp4",
-            Type = "video/mp4",
-            AspectRatio = "4:3",
-            Width = 640,
-            Height = 480
-        };
-        
-        return Json(videoData);
+        _videoService = videoService;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Player(int id)
+    {
+        var video = await _videoService.GetVideoByIdAsync(id);
+        if (video == null) return NotFound();
+        
+        return Inertia.Render("Video/Player", new { video });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Library()
+    {
+        var videos = await _videoService.GetUserVideosAsync(User.Identity.Name);
+        return Inertia.Render("Video/Library", new { videos });
+    }
+}
+
+// Models/VideoItem.cs
+public class VideoItem
+{
+    public int Id { get; set; }
+    public string Url { get; set; } = "";
+    public string Type { get; set; } = "video/mp4";
+    public string AspectRatio { get; set; } = "4:3";
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public TimeSpan Duration { get; set; }
 }`;
 
     const frontendCode3 = `import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -122,21 +142,35 @@ export default function ComparisonExample() {
   )
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
-
+    const backendCode3 = `// Controllers/MediaController.cs
 public class MediaController : Controller
 {
+    private readonly IMediaService _mediaService;
+
+    public MediaController(IMediaService mediaService)
+    {
+        _mediaService = mediaService;
+    }
+
+    [HttpGet]
     public IActionResult AspectRatios()
     {
         var aspectRatios = new[]
         {
-            new { Ratio = "1:1", Name = "Square", Width = 1, Height = 1 },
-            new { Ratio = "16:9", Name = "Widescreen", Width = 16, Height = 9 },
-            new { Ratio = "21:9", Name = "Ultrawide", Width = 21, Height = 9 },
-            new { Ratio = "4:3", Name = "Standard", Width = 4, Height = 3 }
+            new { Ratio = "1:1", Name = "Square", Width = 1, Height = 1, Description = "Perfect for social media posts" },
+            new { Ratio = "16:9", Name = "Widescreen", Width = 16, Height = 9, Description = "Standard video format" },
+            new { Ratio = "21:9", Name = "Ultrawide", Width = 21, Height = 9, Description = "Cinematic experience" },
+            new { Ratio = "4:3", Name = "Standard", Width = 4, Height = 3, Description = "Classic TV format" }
         };
         
         return Inertia.Render("Media/AspectRatios", new { aspectRatios });
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Examples()
+    {
+        var examples = await _mediaService.GetAspectRatioExamplesAsync();
+        return Inertia.Render("Media/Examples", new { examples });
     }
 }`;
 
