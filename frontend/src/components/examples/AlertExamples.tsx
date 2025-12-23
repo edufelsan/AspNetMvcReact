@@ -140,48 +140,63 @@ export function SuccessAlert() {
         </Alert>
     );
 }`,
-                        backend: `[HttpPost("save-profile")]
-public async Task<IActionResult> SaveProfile([FromForm] ProfileRequest request)
+                        backend: `// Controllers/ProfileController.cs
+public class ProfileController : Controller
 {
-    try
+    private readonly ApplicationDbContext _context;
+    private readonly IFileService _fileService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ProfileController(
+        ApplicationDbContext context, 
+        IFileService fileService,
+        UserManager<ApplicationUser> userManager)
     {
-        var user = await GetCurrentUserAsync();
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
-        user.Email = request.Email;
-        
-        await _context.SaveChangesAsync();
-        
-        return Inertia.Back(new { 
-            success = "Profile updated successfully! Your changes are now live." 
-        });
+        _context = context;
+        _fileService = fileService;
+        _userManager = userManager;
     }
-    catch (Exception ex)
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Update([FromForm] ProfileRequest request)
     {
-        return Inertia.Back(new { 
-            error = "Failed to update profile. Please try again." 
-        });
+        try
+        {
+            var user = await _userManager.GetUserAsync(User);
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Email = request.Email;
+            
+            await _context.SaveChangesAsync();
+            
+            return Inertia.Back().With("success", "Profile updated successfully! Your changes are now live.");
+        }
+        catch (Exception ex)
+        {
+            return Inertia.Back().With("error", "Failed to update profile. Please try again.");
+        }
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UploadFile(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return Inertia.Back().With("error", "Please select a file to upload.");
+        
+        var fileName = await _fileService.SaveFileAsync(file, User.Identity.Name);
+        
+        return Inertia.Back().With("success", $"File '{fileName}' uploaded successfully!");
     }
 }
 
-[HttpPost("upload-file")]
-public async Task<IActionResult> UploadFile(IFormFile file)
-{
-    if (file == null || file.Length == 0)
-        return Inertia.Back(new { error = "Please select a file to upload." });
-    
-    var fileName = await _fileService.SaveFileAsync(file, GetCurrentUserId());
-    
-    return Inertia.Back(new { 
-        success = $"File '{fileName}' uploaded successfully!" 
-    });
-}
-
+// Models/ProfileRequest.cs
 public class ProfileRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public string Email { get; set; } = "";
 }`
                     }}
                 >
@@ -227,50 +242,61 @@ export function WarningAlert() {
         </Alert>
     );
 }`,
-                        backend: `[HttpGet("delete-confirmation/{id}")]
-public async Task<IActionResult> DeleteConfirmation(int id)
+                        backend: `// Controllers/ItemsController.cs
+public class ItemsController : Controller
 {
-    var item = await _context.Items.FindAsync(id);
-    if (item == null) return NotFound();
-    
-    return Inertia.Render("DeleteConfirmation", new { 
-        item = item,
-        warning = "This action cannot be undone. Please proceed with caution."
-    });
-}
+    private readonly ApplicationDbContext _context;
+    private readonly IValidationService _validationService;
 
-[HttpPost("check-session-expiry")]
-public async Task<IActionResult> CheckSessionExpiry()
-{
-    var sessionExpiry = HttpContext.Session.GetString("ExpiryTime");
-    if (DateTime.TryParse(sessionExpiry, out var expiry))
+    public ItemsController(ApplicationDbContext context, IValidationService validationService)
     {
-        var timeLeft = expiry - DateTime.UtcNow;
-        if (timeLeft.TotalMinutes <= 5 && timeLeft.TotalMinutes > 0)
-        {
-            return Inertia.Back(new { 
-                warning = $"Your session will expire in {timeLeft.Minutes} minutes. Save your work to avoid losing changes." 
-            });
-        }
+        _context = context;
+        _validationService = validationService;
     }
-    
-    return Inertia.Back();
-}
 
-[HttpPost("validate-data")]
-public async Task<IActionResult> ValidateData([FromForm] DataRequest request)
-{
-    var validationResult = await _validationService.ValidateAsync(request);
-    
-    if (validationResult.HasWarnings)
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
     {
-        return Inertia.Back(new { 
-            warning = "Data validation completed with warnings. Please review and confirm.",
-            warnings = validationResult.Warnings
+        var item = await _context.Items.FindAsync(id);
+        if (item == null) return NotFound();
+        
+        return Inertia.Render("Items/Delete", new { 
+            item,
+            warning = "This action cannot be undone. Please proceed with caution."
         });
     }
-    
-    return Inertia.Back(new { success = "Data validation passed successfully." });
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult CheckSession()
+    {
+        var sessionExpiry = HttpContext.Session.GetString("ExpiryTime");
+        if (DateTime.TryParse(sessionExpiry, out var expiry))
+        {
+            var timeLeft = expiry - DateTime.UtcNow;
+            if (timeLeft.TotalMinutes <= 5 && timeLeft.TotalMinutes > 0)
+            {
+                return Inertia.Back().With("warning", 
+                    $"Your session will expire in {timeLeft.Minutes} minutes. Save your work to avoid losing changes.");
+            }
+        }
+        
+        return Inertia.Back();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ValidateData([FromForm] DataRequest request)
+    {
+        var validationResult = await _validationService.ValidateAsync(request);
+        
+        if (validationResult.HasWarnings)
+        {
+            return Inertia.Back().With("warning", "Data validation completed with warnings. Please review and confirm.")
+                                .With("warnings", validationResult.Warnings);
+        }
+        
+        return Inertia.Back().With("success", "Data validation passed successfully.");
+    }
 }`
                     }}
                 >
@@ -316,56 +342,68 @@ export function ErrorAlert() {
         </Alert>
     );
 }`,
-                        backend: `[HttpPost("login")]
-public async Task<IActionResult> Login([FromForm] LoginRequest request)
+                        backend: `// Controllers/AuthController.cs  
+public class AuthController : Controller
 {
-    try
-    {
-        var result = await _signInManager.PasswordSignInAsync(
-            request.Email, request.Password, request.RememberMe, false);
-        
-        if (result.Succeeded)
-        {
-            return Inertia.Redirect("/Dashboard");
-        }
-        
-        return Inertia.Back(new { 
-            error = "Authentication failed. Invalid username or password." 
-        });
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Login error for user {Email}", request.Email);
-        return Inertia.Back(new { 
-            error = "An unexpected error occurred. Please try again later." 
-        });
-    }
-}
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IDataService _dataService;
+    private readonly ILogger<AuthController> _logger;
 
-[HttpPost("save-data")]
-public async Task<IActionResult> SaveData([FromForm] SaveDataRequest request)
-{
-    if (!ModelState.IsValid)
+    public AuthController(
+        SignInManager<ApplicationUser> signInManager,
+        IDataService dataService,
+        ILogger<AuthController> logger)
     {
-        return Inertia.Back(new { 
-            error = "Please correct the errors below and try again.",
-            errors = ModelState.ToDictionary(
+        _signInManager = signInManager;
+        _dataService = dataService;
+        _logger = logger;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login([FromForm] LoginRequest request)
+    {
+        try
+        {
+            var result = await _signInManager.PasswordSignInAsync(
+                request.Email, request.Password, request.RememberMe, false);
+            
+            if (result.Succeeded)
+            {
+                return Redirect("/Dashboard");
+            }
+            
+            return Inertia.Back().With("error", "Authentication failed. Invalid username or password.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Login error for user {Email}", request.Email);
+            return Inertia.Back().With("error", "An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveData([FromForm] SaveDataRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-            )
-        });
-    }
-    
-    try
-    {
-        await _dataService.SaveAsync(request);
-        return Inertia.Back(new { success = "Data saved successfully!" });
-    }
-    catch (Exception ex)
-    {
-        return Inertia.Back(new { 
-            error = "Failed to save changes. Please check your connection and try again." 
-        });
+            );
+            
+            return Inertia.Back().With("error", "Please correct the errors below and try again.")
+                                .With("errors", errors);
+        }
+        
+        try
+        {
+            await _dataService.SaveAsync(request);
+            return Inertia.Back().With("success", "Data saved successfully!");
+        }
+        catch (Exception ex)
+        {
+            return Inertia.Back().With("error", "Failed to save changes. Please check your connection and try again.");
+        }
     }
 }`
                     }}
@@ -424,54 +462,82 @@ export function InfoAlert() {
         </div>
     );
 }`,
-                        backend: `[HttpGet("dashboard")]
-public async Task<IActionResult> Dashboard()
+                        backend: `// Controllers/DashboardController.cs
+public class DashboardController : Controller
 {
-    var user = await GetCurrentUserAsync();
-    var hasNewFeatures = await _featureService.HasNewFeaturesAsync(user.LastLoginAt);
-    
-    var dashboardData = await _dashboardService.GetDataAsync(user.Id);
-    
-    var props = new {
-        data = dashboardData,
-        user = user
-    };
-    
-    if (hasNewFeatures)
+    private readonly IFeatureService _featureService;
+    private readonly IDashboardService _dashboardService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public DashboardController(
+        IFeatureService featureService,
+        IDashboardService dashboardService,
+        UserManager<ApplicationUser> userManager)
     {
-        props = props with { 
-            info = "New features are available in this update. Check out the changelog for details." 
-        };
+        _featureService = featureService;
+        _dashboardService = dashboardService;
+        _userManager = userManager;
     }
-    
-    if (user.IsFirstLogin)
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
     {
-        props = props with { 
-            tips = "Use keyboard shortcuts to navigate faster: Ctrl+K to open search, Ctrl+N for new item." 
+        var user = await _userManager.GetUserAsync(User);
+        var hasNewFeatures = await _featureService.HasNewFeaturesAsync(user.LastLoginAt);
+        
+        var dashboardData = await _dashboardService.GetDataAsync(user.Id);
+        
+        var model = new DashboardModel
+        {
+            Data = dashboardData,
+            User = user
         };
+        
+        if (hasNewFeatures)
+        {
+            TempData["info"] = "New features are available in this update. Check out the changelog for details.";
+        }
+        
+        if (user.IsFirstLogin)
+        {
+            TempData["tips"] = "Use keyboard shortcuts to navigate faster: Ctrl+K to open search, Ctrl+N for new item.";
+        }
+        
+        return Inertia.Render("Dashboard/Index", model);
     }
-    
-    return Inertia.Render("Dashboard", props);
 }
 
-[HttpGet("system-status")]
-public async Task<IActionResult> SystemStatus()
+// Controllers/SystemController.cs
+public class SystemController : Controller
 {
-    var systemInfo = await _systemService.GetStatusAsync();
-    var maintenanceScheduled = await _maintenanceService.GetUpcomingMaintenanceAsync();
-    
-    var props = new {
-        systemInfo = systemInfo
-    };
-    
-    if (maintenanceScheduled != null)
+    private readonly ISystemService _systemService;
+    private readonly IMaintenanceService _maintenanceService;
+
+    public SystemController(ISystemService systemService, IMaintenanceService maintenanceService)
     {
-        props = props with {
-            info = $"Scheduled maintenance on {maintenanceScheduled.Date:MMM dd} from {maintenanceScheduled.StartTime} to {maintenanceScheduled.EndTime}. Services may be temporarily unavailable."
-        };
+        _systemService = systemService;
+        _maintenanceService = maintenanceService;
     }
-    
-    return Inertia.Render("SystemStatus", props);
+
+    [HttpGet]
+    public async Task<IActionResult> Status()
+    {
+        var systemInfo = await _systemService.GetStatusAsync();
+        var maintenanceScheduled = await _maintenanceService.GetUpcomingMaintenanceAsync();
+        
+        var model = new SystemStatusModel
+        {
+            SystemInfo = systemInfo
+        };
+        
+        if (maintenanceScheduled != null)
+        {
+            TempData["info"] = $"Scheduled maintenance on {maintenanceScheduled.Date:MMM dd} from {maintenanceScheduled.StartTime} to {maintenanceScheduled.EndTime}. Services may be temporarily unavailable.";
+        }
+        
+        return Inertia.Render("System/Status", model);
+    }
 }`
                     }}
                 >
