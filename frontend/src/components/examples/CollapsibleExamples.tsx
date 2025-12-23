@@ -77,35 +77,52 @@ export function BasicCollapsible() {
 }`;
 
     const backendCode1 = `// Controllers/ContentController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+[Authorize]
 public class ContentController : Controller
 {
     private readonly IContentService _contentService;
     private readonly IInteractionService _interactionService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ContentController(IContentService contentService, IInteractionService interactionService)
+    public ContentController(IContentService contentService, IInteractionService interactionService, UserManager<ApplicationUser> userManager)
     {
         _contentService = contentService;
         _interactionService = interactionService;
+        _userManager = userManager;
     }
 
-    [HttpGet]
-    public IActionResult Collapsible(string id)
+    public async Task<IActionResult> Collapsible(string id)
     {
-        var content = _contentService.GetContentById(id);
-        return Inertia.Render("Content/Collapsible", new { content });
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Redirect("/Account/Login");
+
+        var content = await _contentService.GetContentByIdAsync(id);
+        if (content == null)
+            return NotFound();
+
+        return Inertia.Render("Content/Collapsible", content);
     }
 
     [HttpPost]
-    public IActionResult TrackInteraction(InteractionRequest request)
+    public async Task<IActionResult> TrackInteraction(InteractionRequest request)
     {
-        if (!ModelState.IsValid)
-        {
-            return RedirectToAction("Collapsible", new { id = request.ContentId });
-        }
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Inertia.Back().With("error", "Usuário não autenticado");
 
-        _interactionService.TrackInteraction(request);
-        TempData["Info"] = $"Interação registrada: {(request.IsOpen ? "expanded" : "collapsed")}";
-        return RedirectToAction("Collapsible", new { id = request.ContentId });
+        if (!ModelState.IsValid)
+            return Inertia.Back().WithErrors(ModelState);
+
+        request.UserId = user.Id;
+        await _interactionService.TrackInteractionAsync(request);
+        
+        var message = request.IsOpen ? "Conteúdo expandido" : "Conteúdo recolhido";
+        return Inertia.Back().With("info", $"Interação registrada: {message}");
     }
 }
 
@@ -126,7 +143,6 @@ public class InteractionRequest
     public string ContentId { get; set; } = "";
     public bool IsOpen { get; set; }
     public string UserId { get; set; } = "";
-}
 }`;
 
     // Exemplo 2: FAQ Collapsible
@@ -192,16 +208,31 @@ export function FaqCollapsible() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
+    const backendCode2 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
+    [Authorize]
     public class FaqController : Controller
     {
-        // Exibir perguntas frequentes
-        public IActionResult Index(string? category = null)
+        private readonly IFaqService _faqService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public FaqController(IFaqService faqService, UserManager<ApplicationUser> userManager)
         {
+            _faqService = faqService;
+            _userManager = userManager;
+        }
+
+        // Exibir perguntas frequentes
+        public async Task<IActionResult> Index(string? category = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Redirect("/Account/Login");
+
             var faqs = new[]
             {
                 new { 
@@ -231,39 +262,41 @@ namespace AspNetMvcReact.Controllers
                 ? faqs.Where(f => f.category == category).ToArray()
                 : faqs;
             
-            return Inertia.Render("Faq/Index", new
+            var viewModel = new FaqViewModel
             {
-                total = filtered.Length,
-                data = filtered,
-                category = category
-            });
+                Total = filtered.Length,
+                Data = filtered,
+                Category = category
+            };
+
+            return Inertia.Render("Faq/Index", viewModel);
         }
 
         // Registrar visualização de FAQ
-        [HttpPost("{id}/view")]
-        public IActionResult TrackFaqView(string id)
+        [HttpPost]
+        public async Task<IActionResult> TrackView(string id)
         {
-            var view = new
-            {
-                faqId = id,
-                viewedAt = DateTime.UtcNow,
-                helpful = false
-            };
-            
-            return Ok(view);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            await _faqService.TrackViewAsync(id, user.Id);
+            return Inertia.Back().With("info", "Visualização registrada");
         }
 
         // Marcar FAQ como útil
-        [HttpPost("{id}/helpful")]
-        public IActionResult MarkHelpful(string id, [FromBody] FeedbackRequest request)
+        [HttpPost]
+        public async Task<IActionResult> MarkHelpful(string id, FeedbackRequest request)
         {
-            return Ok(new
-            {
-                faqId = id,
-                helpful = request.Helpful,
-                feedback = request.Comment,
-                submittedAt = DateTime.UtcNow
-            });
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            if (!ModelState.IsValid)
+                return Inertia.Back().WithErrors(ModelState);
+
+            await _faqService.SubmitFeedbackAsync(id, user.Id, request);
+            return Inertia.Back().With("success", "Feedback enviado com sucesso");
         }
     }
 
@@ -271,6 +304,13 @@ namespace AspNetMvcReact.Controllers
     {
         public bool Helpful { get; set; }
         public string? Comment { get; set; }
+    }
+
+    public class FaqViewModel
+    {
+        public int Total { get; set; }
+        public object[] Data { get; set; } = Array.Empty<object>();
+        public string? Category { get; set; }
     }
 }`;
 
@@ -341,18 +381,31 @@ export function MultipleSectionsCollapsible() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode3 = `using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetMvcReact.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class NavigationController : ControllerBase
+    [Authorize]
+    public class NavigationController : Controller
     {
-        // Obter estrutura de navegação colapsável
-        [HttpGet("menu")]
-        public IActionResult GetNavigationMenu()
+        private readonly INavigationService _navigationService;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public NavigationController(INavigationService navigationService, UserManager<ApplicationUser> userManager)
         {
+            _navigationService = navigationService;
+            _userManager = userManager;
+        }
+
+        // Obter estrutura de navegação colapsável
+        public async Task<IActionResult> Menu()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Redirect("/Account/Login");
+
             var menu = new[]
             {
                 new { 
@@ -390,47 +443,45 @@ namespace AspNetMvcReact.Controllers
                 }
             };
             
-            return Ok(menu);
+            var viewModel = new NavigationMenuViewModel { Menu = menu };
+            return Inertia.Render("Navigation/Menu", viewModel);
         }
 
         // Salvar estado de seções abertas
-        [HttpPost("save-state")]
-        public IActionResult SaveNavigationState([FromBody] NavigationStateRequest request)
+        [HttpPost]
+        public async Task<IActionResult> SaveState(NavigationStateRequest request)
         {
-            var state = new
-            {
-                userId = request.UserId,
-                openSections = request.OpenSections,
-                savedAt = DateTime.UtcNow
-            };
-            
-            return Ok(new
-            {
-                success = true,
-                message = "Estado de navegação salvo",
-                state = state
-            });
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            if (!ModelState.IsValid)
+                return Inertia.Back().WithErrors(ModelState);
+
+            await _navigationService.SaveUserStateAsync(user.Id, request.OpenSections);
+            return Inertia.Back().With("success", "Estado de navegação salvo");
         }
 
         // Restaurar estado de navegação
-        [HttpGet("state/{userId}")]
-        public IActionResult GetNavigationState(string userId)
+        public async Task<IActionResult> GetState()
         {
-            var state = new
-            {
-                userId = userId,
-                openSections = new[] { "section1" },
-                lastUpdated = DateTime.UtcNow.AddHours(-2)
-            };
-            
-            return Ok(state);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Inertia.Back().With("error", "Usuário não autenticado");
+
+            var state = await _navigationService.GetUserStateAsync(user.Id);
+            return Inertia.Render("Navigation/State", state);
         }
     }
 
     public class NavigationStateRequest
     {
-        public string UserId { get; set; } = string.Empty;
         public List<string> OpenSections { get; set; } = new();
+    }
+
+    public class NavigationMenuViewModel
+    {
+        public object[] Menu { get; set; } = Array.Empty<object>();
     }
 }`;
 
