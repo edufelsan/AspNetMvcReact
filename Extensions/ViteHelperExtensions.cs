@@ -32,7 +32,7 @@ namespace AspNetMvcReact.Extensions
             if (string.IsNullOrEmpty(assetPath))
                 return new HtmlString($"<script type=\"module\" src=\"/build/{entryPoint}\"></script>");
 
-            return new HtmlString($"<script type=\"module\" src=\"/build/{assetPath}\"></script>");
+            return new HtmlString($"<script type=\"module\" src=\"/{assetPath}\"></script>");
         }
 
         public static IHtmlContent ViteCss(this IHtmlHelper htmlHelper, string entryPoint)
@@ -57,7 +57,7 @@ namespace AspNetMvcReact.Extensions
             if (cssFiles == null || cssFiles.Length == 0)
                 return new HtmlString("");
 
-            var html = string.Join("\n", cssFiles.Select(css => $"<link rel=\"stylesheet\" href=\"/build/{css}\" />"));
+            var html = string.Join("\n", cssFiles.Select(css => $"<link rel=\"stylesheet\" href=\"/{css}\" />"));
             return new HtmlString(html);
         }
     }

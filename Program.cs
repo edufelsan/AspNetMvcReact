@@ -133,6 +133,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Serve files from wwwroot/build/assets as /assets
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(app.Environment.WebRootPath, "build", "assets")),
+    RequestPath = "/assets"
+});
+
 app.UseInertia();
 
 app.UseRouting();
