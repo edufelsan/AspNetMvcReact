@@ -208,23 +208,22 @@ export function FaqCollapsible() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Authorization;
+    const backendCode2 = `// Controllers/FaqController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AspNetMvcReact.Controllers
+[Authorize]
+public class FaqController : Controller
 {
-    [Authorize]
-    public class FaqController : Controller
-    {
-        private readonly IFaqService _faqService;
-        private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IFaqService _faqService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-        public FaqController(IFaqService faqService, UserManager<ApplicationUser> userManager)
-        {
-            _faqService = faqService;
-            _userManager = userManager;
-        }
+    public FaqController(IFaqService faqService, UserManager<ApplicationUser> userManager)
+    {
+        _faqService = faqService;
+        _userManager = userManager;
+    }
 
         // Exibir perguntas frequentes
         public async Task<IActionResult> Index(string? category = null)
@@ -300,18 +299,19 @@ namespace AspNetMvcReact.Controllers
         }
     }
 
-    public class FeedbackRequest
-    {
-        public bool Helpful { get; set; }
-        public string? Comment { get; set; }
-    }
+// Models/FeedbackRequest.cs
+public class FeedbackRequest
+{
+    public bool Helpful { get; set; }
+    public string? Comment { get; set; }
+}
 
-    public class FaqViewModel
-    {
-        public int Total { get; set; }
-        public object[] Data { get; set; } = Array.Empty<object>();
-        public string? Category { get; set; }
-    }
+// Models/FaqViewModel.cs
+public class FaqViewModel
+{
+    public int Total { get; set; }
+    public object[] Data { get; set; } = Array.Empty<object>();
+    public string? Category { get; set; }
 }`;
 
     // Exemplo 3: Collapsible com Seções Múltiplas
@@ -381,23 +381,22 @@ export function MultipleSectionsCollapsible() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Authorization;
+    const backendCode3 = `// Controllers/NavigationController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AspNetMvcReact.Controllers
+[Authorize]
+public class NavigationController : Controller
 {
-    [Authorize]
-    public class NavigationController : Controller
-    {
-        private readonly INavigationService _navigationService;
-        private readonly UserManager<ApplicationUser> _userManager;
+    private readonly INavigationService _navigationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-        public NavigationController(INavigationService navigationService, UserManager<ApplicationUser> userManager)
-        {
-            _navigationService = navigationService;
-            _userManager = userManager;
-        }
+    public NavigationController(INavigationService navigationService, UserManager<ApplicationUser> userManager)
+    {
+        _navigationService = navigationService;
+        _userManager = userManager;
+    }
 
         // Obter estrutura de navegação colapsável
         public async Task<IActionResult> Menu()
@@ -474,15 +473,16 @@ namespace AspNetMvcReact.Controllers
         }
     }
 
-    public class NavigationStateRequest
-    {
-        public List<string> OpenSections { get; set; } = new();
-    }
+// Models/NavigationStateRequest.cs
+public class NavigationStateRequest
+{
+    public List<string> OpenSections { get; set; } = new();
+}
 
-    public class NavigationMenuViewModel
-    {
-        public object[] Menu { get; set; } = Array.Empty<object>();
-    }
+// Models/NavigationMenuViewModel.cs
+public class NavigationMenuViewModel
+{
+    public object[] Menu { get; set; } = Array.Empty<object>();
 }`;
 
     const faqs = [
