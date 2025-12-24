@@ -206,6 +206,13 @@ export function ComponentsSidebar({ selectedComponent, onSelectComponent }: Comp
             icon: Menu,
             description: t('sidebar.drawer.description'),
             examples: 3
+        },
+        {
+            id: 'dropdownMenu',
+            name: 'Dropdown Menu',
+            icon: ChevronDown,
+            description: t('sidebar.dropdownMenu.description'),
+            examples: 3
         }
     ];
 
