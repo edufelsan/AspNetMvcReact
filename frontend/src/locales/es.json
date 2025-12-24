@@ -1018,6 +1018,42 @@
         "cancel": "Cancelar"
       }
     },
+    "dropdownMenu": {
+      "title": "Menú Desplegable",
+      "description": "Menús desplegables elegantes que muestran una lista de opciones o acciones",
+      "basic": {
+        "title": "Menú Básico",
+        "description": "Un menú desplegable simple con opciones de navegación",
+        "options": "Opciones",
+        "myAccount": "Mi Cuenta",
+        "profile": "Perfil",
+        "settings": "Configuración",
+        "logout": "Cerrar Sesión"
+      },
+      "userProfile": {
+        "title": "Menú de Usuario",
+        "description": "Menú desplegable del avatar del usuario con información y acciones",
+        "profile": "Perfil",
+        "settings": "Configuración",
+        "notifications": "Notificaciones",
+        "logout": "Cerrar Sesión",
+        "clickAvatar": "Haz clic en el avatar para abrir el menú"
+      },
+      "actions": {
+        "title": "Menú de Acciones",
+        "description": "Menú desplegable avanzado con múltiples acciones y submenús organizados",
+        "documentActions": "Acciones del Documento",
+        "view": "Ver",
+        "edit": "Editar",
+        "share": "Compartir",
+        "download": "Descargar",
+        "archive": "Archivar",
+        "delete": "Eliminar",
+        "inviteCollaborator": "Invitar colaborador",
+        "copyLink": "Copiar enlace",
+        "exportPdf": "Exportar como PDF"
+      }
+    },
     "dialog": {
       "title": "Dialog",
       "description": "Ventanas modales elegantes y accesibles para mostrar contenido superpuesto",
@@ -1349,6 +1385,9 @@
     },
     "dialog": {
       "description": "Ventanas modales elegantes y accesibles"
+    },
+    "dropdownMenu": {
+      "description": "Menús desplegables elegantes que muestran opciones o acciones"
     },
     "drawer": {
       "description": "Paneles deslizantes desde el borde"
