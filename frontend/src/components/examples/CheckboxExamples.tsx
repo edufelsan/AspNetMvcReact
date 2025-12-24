@@ -55,40 +55,46 @@ export function BasicCheckbox() {
     );
 }`;
 
-    const backendCode1 = `using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
-{
-// Controllers/UserPreferencesController.cs
+    const backendCode1 = `// Controllers/UserPreferencesController.cs
 public class UserPreferencesController : Controller
 {
     private readonly IUserPreferencesService _preferencesService;
     private readonly ITermsService _termsService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserPreferencesController(IUserPreferencesService preferencesService, ITermsService termsService)
+    public UserPreferencesController(
+        IUserPreferencesService preferencesService, 
+        ITermsService termsService,
+        UserManager<ApplicationUser> userManager)
     {
         _preferencesService = preferencesService;
         _termsService = termsService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Terms()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var termsInfo = await _termsService.GetCurrentTermsAsync();
+        
+        return Inertia.Render("UserPreferences/Terms", new { termsInfo });
     }
 
     [HttpPost]
-    public IActionResult AcceptTerms(TermsAcceptanceRequest request)
+    [Authorize]
+    public async Task<IActionResult> AcceptTerms([FromForm] TermsAcceptanceRequest request)
     {
         if (!ModelState.IsValid || !request.Accepted)
         {
-            TempData["Error"] = "Você deve aceitar os termos para continuar";
-            return RedirectToAction("Terms");
+            return Inertia.Back().With("error", "Você deve aceitar os termos para continuar");
         }
 
-        _termsService.RecordAcceptance(request);
-        TempData["Success"] = "Termos aceitos com sucesso";
-        return RedirectToAction("Index", "Dashboard");
-    }
+        var user = await _userManager.GetUserAsync(User);
+        await _termsService.RecordAcceptanceAsync(user.Id, request);
         
-    [HttpGet]
-    public IActionResult Terms()
-    {
-        return Inertia.Render("UserPreferences/Terms");
+        return Redirect("/Dashboard").With("success", "Termos aceitos com sucesso!");
     }
 }
 
@@ -106,9 +112,7 @@ public class TermsAcceptance
 // Models/TermsAcceptanceRequest.cs
 public class TermsAcceptanceRequest
 {
-    public string UserId { get; set; } = "";
     public bool Accepted { get; set; }
-}
 }`;
 
     // Exemplo 2: Checkbox com Notificações
@@ -163,84 +167,60 @@ export function NotificationCheckboxes() {
     );
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode2 = `// Controllers/NotificationsController.cs
+public class NotificationsController : Controller
 {
+    private readonly INotificationService _notificationService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public NotificationsController(INotificationService notificationService, UserManager<ApplicationUser> userManager)
+    {
+        _notificationService = notificationService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
     [Authorize]
-    public class NotificationsController : Controller
+    public async Task<IActionResult> Preferences()
     {
-        private readonly INotificationService _notificationService;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public NotificationsController(INotificationService notificationService, UserManager<ApplicationUser> userManager)
-        {
-            _notificationService = notificationService;
-            _userManager = userManager;
-        }
-
-        // Atualizar preferências de notificação
-        [HttpPost]
-        public async Task<IActionResult> UpdatePreferences(NotificationPreferencesRequest request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
-
-            if (!ModelState.IsValid)
-                return Inertia.Back().WithErrors(ModelState);
-
-            var preferences = new
-            {
-                userId = user.Id,
-                email = request.Email,
-                push = request.Push,
-                sms = request.Sms,
-                updatedAt = DateTime.UtcNow
-            };
-            
-            await _notificationService.UpdatePreferencesAsync(user.Id, request);
-            
-            return Inertia.Back().With("success", "Preferências atualizadas com sucesso");
-        }
-
-        // Exibir preferências atuais
-        public async Task<IActionResult> Preferences()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("/Account/Login");
-
-            var preferences = new NotificationPreferencesViewModel
-            {
-                UserId = user.Id,
-                Email = true,
-                Push = false,
-                Sms = false,
-                LastUpdated = DateTime.UtcNow.AddDays(-5)
-            };
-            
-            return Inertia.Render("Notifications/Preferences", preferences);
-        }
+        var user = await _userManager.GetUserAsync(User);
+        var preferences = await _notificationService.GetUserPreferencesAsync(user.Id);
+        
+        return Inertia.Render("Notifications/Preferences", preferences);
     }
 
-    public class NotificationPreferencesRequest
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdatePreferences([FromForm] NotificationPreferencesRequest request)
     {
-        public bool Email { get; set; }
-        public bool Push { get; set; }
-        public bool Sms { get; set; }
-    }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
 
-    public class NotificationPreferencesViewModel
-    {
-        public string UserId { get; set; } = string.Empty;
-        public bool Email { get; set; }
-        public bool Push { get; set; }
-        public bool Sms { get; set; }
-        public DateTime LastUpdated { get; set; }
+        var user = await _userManager.GetUserAsync(User);
+        await _notificationService.UpdatePreferencesAsync(user.Id, request);
+        
+        return Inertia.Back().With("success", "Preferências atualizadas com sucesso!");
     }
+}
+
+// Models/NotificationPreferencesRequest.cs
+public class NotificationPreferencesRequest
+{
+    public bool Email { get; set; }
+    public bool Push { get; set; }
+    public bool Sms { get; set; }
+}
+
+// Models/NotificationPreferencesViewModel.cs
+public class NotificationPreferencesViewModel
+{
+    public string UserId { get; set; } = "";
+    public bool Email { get; set; }
+    public bool Push { get; set; }
+    public bool Sms { get; set; }
+    public DateTime LastUpdated { get; set; }
 }`;
 
     // Exemplo 3: Checkbox com Seleção Múltipla
@@ -304,101 +284,82 @@ export function MultipleSelectionCheckbox() {
     );
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+    const backendCode3 = `// Controllers/SelectionController.cs
+public class SelectionController : Controller
 {
+    private readonly ISelectionService _selectionService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public SelectionController(ISelectionService selectionService, UserManager<ApplicationUser> userManager)
+    {
+        _selectionService = selectionService;
+        _userManager = userManager;
+    }
+
+    [HttpPost]
     [Authorize]
-    public class SelectionController : Controller
+    public async Task<IActionResult> ProcessSelection([FromForm] MultipleSelectionRequest request)
     {
-        private readonly ISelectionService _selectionService;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public SelectionController(ISelectionService selectionService, UserManager<ApplicationUser> userManager)
+        if (!ModelState.IsValid)
         {
-            _selectionService = selectionService;
-            _userManager = userManager;
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        // Processar seleção múltipla
-        [HttpPost]
-        public async Task<IActionResult> ProcessSelection(MultipleSelectionRequest request)
+        var user = await _userManager.GetUserAsync(User);
+        await _selectionService.ProcessItemsAsync(request.SelectedIds, user.Id);
+        
+        return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens processados com sucesso!");
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Export([FromForm] ExportRequest request)
+    {
+        if (!ModelState.IsValid)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
-
-            if (!ModelState.IsValid)
-                return Inertia.Back().WithErrors(ModelState);
-
-            var processedItems = request.SelectedIds.Select(id => new
-            {
-                id = id,
-                status = "Processed",
-                processedAt = DateTime.UtcNow
-            }).ToList();
-            
-            await _selectionService.ProcessItemsAsync(request.SelectedIds, user.Id);
-            
-            return Inertia.Back().With("success", $"{processedItems.Count} itens processados com sucesso");
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        // Exportar itens selecionados
-        [HttpPost]
-        public async Task<IActionResult> Export(ExportRequest request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
+        var user = await _userManager.GetUserAsync(User);
+        var exportResult = await _selectionService.ExportItemsAsync(request.SelectedIds, request.Format, user.Id);
+        
+        return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens exportados com sucesso!")
+                             .With("downloadUrl", exportResult.DownloadUrl);
+    }
 
-            var exportData = new
-            {
-                exportId = Guid.NewGuid(),
-                itemCount = request.SelectedIds.Count,
-                format = request.Format,
-                createdAt = DateTime.UtcNow,
-                downloadUrl = $"/downloads/{Guid.NewGuid()}.{request.Format}"
-            };
-            
-            await _selectionService.ExportItemsAsync(request.SelectedIds, request.Format, user.Id);
-            
-            return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens exportados com sucesso");
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> BatchDelete([FromForm] BatchDeleteRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        // Deletar itens selecionados
-        [HttpPost]
-        public async Task<IActionResult> BatchDelete(BatchDeleteRequest request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
-
-            if (!ModelState.IsValid)
-                return Inertia.Back().WithErrors(ModelState);
-
-            await _selectionService.DeleteItemsAsync(request.SelectedIds, user.Id);
-            
-            return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens deletados com sucesso");
-        }
+        var user = await _userManager.GetUserAsync(User);
+        await _selectionService.DeleteItemsAsync(request.SelectedIds, user.Id);
+        
+        return Inertia.Back().With("success", $"{request.SelectedIds.Count} itens deletados com sucesso!");
     }
+}
 
-    public class MultipleSelectionRequest
-    {
-        public List<string> SelectedIds { get; set; } = new();
-    }
+// Models/MultipleSelectionRequest.cs
+public class MultipleSelectionRequest
+{
+    public List<string> SelectedIds { get; set; } = new();
+}
 
-    public class ExportRequest
-    {
-        public List<string> SelectedIds { get; set; } = new();
-        public string Format { get; set; } = "csv";
-    }
+// Models/ExportRequest.cs
+public class ExportRequest
+{
+    public List<string> SelectedIds { get; set; } = new();
+    public string Format { get; set; } = "csv";
+}
 
-    public class BatchDeleteRequest
-    {
-        public List<string> SelectedIds { get; set; } = new();
-    }
+// Models/BatchDeleteRequest.cs
+public class BatchDeleteRequest
+{
+    public List<string> SelectedIds { get; set; } = new();
 }`;
 
     return (
