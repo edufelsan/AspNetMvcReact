@@ -63,6 +63,51 @@ export function BasicDatePickerExample() {
         </div>
     )
 }`,
+        backend: `// Controllers/DatePickerController.cs
+public class DatePickerController : Controller
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IDateService _dateService;
+
+    public DatePickerController(UserManager<ApplicationUser> userManager, IDateService dateService)
+    {
+        _userManager = userManager;
+        _dateService = dateService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var savedDates = await _dateService.GetUserSavedDatesAsync(user.Id);
+
+        return Inertia.Render("DatePicker/Index", new { savedDates });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SaveDate([FromForm] SaveDateRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _dateService.SaveDateAsync(user.Id, request.SelectedDate, request.Label);
+        
+        return Inertia.Back().With("success", "Data salva com sucesso!");
+    }
+}
+
+// Models/SaveDateRequest.cs
+public class SaveDateRequest
+{
+    public DateTime SelectedDate { get; set; }
+    public string Label { get; set; } = "";
+    public string Description { get; set; } = "";
+}`
     };
 
     const birthdayDatePickerCode = {
@@ -109,6 +154,65 @@ export function BirthdayDatePickerExample() {
         </div>
     )
 }`,
+        backend: `// Controllers/ProfileController.cs
+public class ProfileController : Controller
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IProfileService _profileService;
+
+    public ProfileController(UserManager<ApplicationUser> userManager, IProfileService profileService)
+    {
+        _userManager = userManager;
+        _profileService = profileService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Birthday()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var profile = await _profileService.GetUserProfileAsync(user.Id);
+
+        return Inertia.Render("Profile/Birthday", new { profile });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdateBirthday([FromForm] BirthdayUpdateRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        if (request.BirthDate > DateTime.Now.Date)
+        {
+            return Inertia.Back().With("error", "Data de nascimento não pode ser no futuro");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _profileService.UpdateBirthdayAsync(user.Id, request.BirthDate);
+        
+        return Inertia.Back().With("success", "Data de nascimento atualizada com sucesso!");
+    }
+}
+
+// Models/BirthdayUpdateRequest.cs
+public class BirthdayUpdateRequest
+{
+    [Required]
+    public DateTime BirthDate { get; set; }
+}
+
+// Models/UserProfile.cs
+public class UserProfile
+{
+    public string Id { get; set; } = "";
+    public string UserId { get; set; } = "";
+    public DateTime? BirthDate { get; set; }
+    public int Age => BirthDate.HasValue ? DateTime.Now.Year - BirthDate.Value.Year : 0;
+    public string ZodiacSign { get; set; } = "";
+}`
     };
 
     const appointmentDatePickerCode = {
@@ -188,82 +292,75 @@ export function AppointmentDatePickerExample() {
         </div>
     )
 }`,
-        backend: `// AppointmentController.cs
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using AspNetMvcReact.Models;
-using InertiaCore;
-
-[Authorize]
+        backend: `// Controllers/AppointmentController.cs
 public class AppointmentController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILogger<AppointmentController> _logger;
+    private readonly IAppointmentService _appointmentService;
 
     public AppointmentController(
         UserManager<ApplicationUser> userManager,
-        ILogger<AppointmentController> logger)
+        IAppointmentService appointmentService)
     {
         _userManager = userManager;
-        _logger = logger;
+        _appointmentService = appointmentService;
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        // Mock appointments data
-        var appointments = new[]
-        {
-            new { Id = 1, Date = DateTime.Now.AddDays(1), Title = "Doctor Appointment", Status = "Scheduled" },
-            new { Id = 2, Date = DateTime.Now.AddDays(7), Title = "Business Meeting", Status = "Confirmed" }
-        };
+        var appointments = await _appointmentService.GetUserAppointmentsAsync(user.Id);
 
         return Inertia.Render("Appointments/Index", new { appointments });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Schedule([FromBody] AppointmentRequest request)
+    [Authorize]
+    public async Task<IActionResult> Schedule([FromForm] AppointmentRequest request)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        if (!ModelState.IsValid)
         {
-            return RedirectToAction("Login", "Auth");
+            return Inertia.Back().With("errors", ModelState);
         }
 
         if (request.Date < DateTime.Now.Date)
         {
-            return Inertia.Render("Appointments/Create", new {
-                error = "Cannot schedule appointment in the past",
-                data = request
-            });
+            return Inertia.Back().With("error", "Não é possível agendar compromissos no passado");
         }
 
-        // In real app, save to database
-        _logger.LogInformation($"Appointment scheduled for {request.Date} by user {user.Id}");
+        var user = await _userManager.GetUserAsync(User);
+        await _appointmentService.ScheduleAppointmentAsync(user.Id, request);
 
-        return RedirectToAction("Index", new { 
-            success = "Appointment scheduled successfully" 
-        });
+        return Inertia.Back().With("success", "Compromisso agendado com sucesso!");
     }
 }
 
+// Models/AppointmentRequest.cs
 public class AppointmentRequest
 {
+    [Required]
     public DateTime Date { get; set; }
-    public string Title { get; set; }
+    
+    [Required]
+    [StringLength(200)]
+    public string Title { get; set; } = "";
+    
+    [StringLength(500)]
+    public string Description { get; set; } = "";
 }
 
-public class AppointmentRequest
+// Models/Appointment.cs
+public class Appointment
 {
+    public int Id { get; set; }
+    public string UserId { get; set; } = "";
     public DateTime Date { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string Status { get; set; } = "Scheduled";
+    public DateTime CreatedAt { get; set; }
 }`
     };
 
