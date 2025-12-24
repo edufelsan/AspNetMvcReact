@@ -1,6 +1,6 @@
 # ASP.NET Core + Inertia.js + React
 
-Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, **multilingual support** (Portuguese, English, Spanish), **SEO optimization**, **PWA ready**, and **comprehensive component showcase** with **21 shadcn/ui components** and **69+ interactive examples**.
+Complete full-stack template with ASP.NET Core 8, Inertia.js, React 18, TypeScript, shadcn/ui, ASP.NET Core Identity, **multilingual support** (Portuguese, English, Spanish), **SEO optimization**, **PWA ready**, and **comprehensive component showcase** with **23 shadcn/ui components** and **70+ interactive examples**.
 
 ## 🌐 Live Demo
 
@@ -220,7 +220,7 @@ npm run type-check           # TypeScript type checking
 
 ### 🎨 Component Showcase Features
 
-**Currently Implemented**: 21 shadcn/ui components with 69+ interactive examples
+**Currently Implemented**: 23 shadcn/ui components with 70+ interactive examples
 **Status**: Progressive implementation - new components added regularly
 
 ### 📋 Component Examples Available (Current Implementation)
@@ -413,7 +413,7 @@ AspNetMvcReact/
 │   │   │   │   ├── Login.tsx
 │   │   │   │   ├── Register.tsx
 │   │   │   │   └── ForgotPassword.tsx
-│   │   │   ├── ComponentsDemo.tsx  # 69+ interactive examples
+│   │   │   ├── ComponentsDemo.tsx  # 70+ interactive examples
 │   │   │   ├── Dashboard.tsx       # Admin panel
 │   │   │   ├── Profile/           # User profile management
 │   │   │   │   └── Index.tsx
@@ -598,7 +598,7 @@ dotnet ef database update
 ## 📊 Component Implementation Status
 
 ### Currently Available (19/56+ Components)
-The project implements **21 shadcn/ui components** with **69+ interactive examples**:
+The project implements **23 shadcn/ui components** with **70+ interactive examples**:
 
 ✅ **Fully Implemented Components:**
 - Accordion (3 examples) • Alert (6 examples) • Alert Dialog (3 examples)
@@ -630,7 +630,7 @@ The project implements **21 shadcn/ui components** with **69+ interactive exampl
 - **✅ Complete Coverage**: Every UI element and example properly translated
 
 ### Component Showcase Implementation
-- **📈 69+ Examples**: Currently implemented across 21 shadcn/ui components
+- **📈 70+ Examples**: Currently implemented across 23 shadcn/ui components
 - **🎯 Practical Use Cases**: Real-world examples for each component
 - **📋 Progressive Documentation**: Enhanced descriptions and use case explanations
 - **🔍 Improved Navigation**: Sidebar with component counts and implementation status
