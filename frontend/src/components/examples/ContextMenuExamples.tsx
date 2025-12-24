@@ -69,38 +69,58 @@ import {
         </ContextMenuItem>
     </ContextMenuContent>
 </ContextMenu>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/ContextMenuController.cs
+public class ContextMenuController : Controller
 {
-    public class ContextMenuController : Controller
+    private readonly IContextMenuService _contextMenuService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ContextMenuController(IContextMenuService contextMenuService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Items()
-        {
-            var menuItems = new[]
-            {
-                new { id = "profile", icon = "User", label = "Profile" },
-                new { id = "settings", icon = "Settings", label = "Settings" },
-                new { id = "logout", icon = "LogOut", label = "Log out", separator = true }
-            };
-            
-            return Inertia.Render("ContextMenu/Items", new { menuItems });
-        }
+        _contextMenuService = contextMenuService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Items()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var menuItems = await _contextMenuService.GetMenuItemsAsync(user.Id);
         
-        [HttpPost]
-        public IActionResult ExecuteAction(MenuAction action)
-        {
-            // Execute the menu action
-            return RedirectToAction("Index", new { message = $"Executed action: {action.ActionId}" });
-        }
+        return Inertia.Render("ContextMenu/Items", new { menuItems });
     }
-    
-    public class MenuAction
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ExecuteAction([FromForm] MenuActionRequest action)
     {
-        public string ActionId { get; set; }
-        public Dictionary<string, object> Context { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _contextMenuService.ExecuteActionAsync(user.Id, action.ActionId, action.Context);
+        
+        return Inertia.Back().With("success", $"Ação {action.ActionId} executada com sucesso!");
     }
+}
+
+// Models/MenuAction.cs
+public class MenuAction
+{
+    public string ActionId { get; set; } = "";
+    public Dictionary<string, string> Context { get; set; } = new();
+    public string UserId { get; set; } = "";
+    public DateTime ExecutedAt { get; set; }
+}
+
+// Models/MenuActionRequest.cs
+public class MenuActionRequest
+{
+    public string ActionId { get; set; } = "";
+    public Dictionary<string, string> Context { get; set; } = new();
 }`,
     }
 
@@ -202,71 +222,79 @@ import {
         </ContextMenuItem>
     </ContextMenuContent>
 </ContextMenu>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/AdvancedMenuController.cs
+public class AdvancedMenuController : Controller
 {
-    public class AdvancedMenuController : Controller
+    private readonly IAdvancedMenuService _advancedMenuService;
+    private readonly IInviteService _inviteService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public AdvancedMenuController(
+        IAdvancedMenuService advancedMenuService,
+        IInviteService inviteService,
+        UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Structure()
-        {
-            var menuStructure = new
-            {
-                mainItems = new[]
-                {
-                    new { id = "profile", icon = "User", label = "Profile" },
-                    new { id = "billing", icon = "CreditCard", label = "Billing" },
-                    new { id = "settings", icon = "Settings", label = "Settings" }
-                },
-                subMenus = new[]
-                {
-                    new 
-                    { 
-                        id = "invite",
-                        icon = "UserPlus",
-                        label = "Invite users",
-                        items = new[]
-                        {
-                            new { id = "email", icon = "Mail", label = "Email" },
-                            new { id = "message", icon = "MessageSquare", label = "Message" },
-                            new { id = "more", icon = "PlusCircle", label = "More..." }
-                        }
-                    },
-                    new 
-                    { 
-                        id = "create",
-                        icon = "Plus",
-                        label = "Create",
-                        items = new[]
-                        {
-                            new { id = "repository", icon = "Github", label = "Repository" },
-                            new { id = "team", icon = "Users", label = "Team" }
-                        }
-                    }
-                }
-            };
-            
-            return Inertia.Render("AdvancedMenu/Structure", menuStructure);
-        }
+        _advancedMenuService = advancedMenuService;
+        _inviteService = inviteService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Structure()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var menuStructure = await _advancedMenuService.GetMenuStructureAsync(user.Id);
         
-        [HttpPost]
-        public IActionResult Invite(InviteRequest request)
-        {
-            // Process user invitation
-            return RedirectToAction("Index", new 
-            { 
-                message = $"Invitation sent via {request.Method}",
-                recipient = request.Email
-            });
-        }
+        return Inertia.Render("AdvancedMenu/Structure", menuStructure);
     }
-    
-    public class InviteRequest
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Invite([FromForm] InviteRequest request)
     {
-        public string Method { get; set; }
-        public string Email { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _inviteService.SendInviteAsync(user.Id, request.Email, request.Method);
+        
+        return Inertia.Back().With("success", $"Convite enviado via {request.Method} para {request.Email}!");
     }
+}
+
+// Models/InviteRequest.cs
+public class InviteRequest
+{
+    public string Method { get; set; } = "";
+    public string Email { get; set; } = "";
+}
+
+// Models/MenuStructure.cs
+public class MenuStructure
+{
+    public List<MenuItem> MainItems { get; set; } = new();
+    public List<SubMenu> SubMenus { get; set; } = new();
+}
+
+// Models/MenuItem.cs
+public class MenuItem
+{
+    public string Id { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Label { get; set; } = "";
+    public bool Disabled { get; set; }
+}
+
+// Models/SubMenu.cs
+public class SubMenu
+{
+    public string Id { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Label { get; set; } = "";
+    public List<MenuItem> Items { get; set; } = new();
 }`,
     }
 
@@ -337,65 +365,82 @@ import {
         </ContextMenuItem>
     </ContextMenuContent>
 </ContextMenu>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/ShortcutMenuController.cs
+public class ShortcutMenuController : Controller
 {
-    public class ShortcutMenuController : Controller
-    {
-        public IActionResult Shortcuts()
-        {
-            var shortcuts = new[]
-            {
-                new { action = "profile", shortcut = "⌘P", icon = "User", label = "Profile" },
-                new { action = "settings", shortcut = "⌘S", icon = "Settings", label = "Settings" },
-                new { action = "keyboard", shortcut = "⌘K", icon = "Keyboard", label = "Keyboard shortcuts" },
-                new { action = "logout", shortcut = "⇧⌘Q", icon = "LogOut", label = "Log out" }
-            };
-            
-            return Inertia.Render("ContextMenu/Shortcuts", new { shortcuts });
-        }
-        
-        public IActionResult Preferences()
-        {
-            var preferences = new
-            {
-                checkboxes = new[]
-                {
-                    new { id = "bookmarks", label = "Show Bookmarks Bar", checked = true },
-                    new { id = "fullurls", label = "Show Full URLs", checked = false }
-                },
-                viewMode = new
-                {
-                    label = "View Mode",
-                    options = new[] { "compact", "comfortable", "spacious" },
-                    selected = "comfortable"
-                }
-            };
-            
-            return Inertia.Render("ContextMenu/Preferences", preferences);
-        }
-        
-        [HttpPost]
-        public IActionResult UpdatePreference(PreferenceUpdate update)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Preferences");
-            }
+    private readonly IShortcutMenuService _shortcutMenuService;
+    private readonly IUserPreferencesService _userPreferencesService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-            // Update user preference
-            TempData["Success"] = "Preference updated successfully";
-            return RedirectToAction("Preferences");
-        }
-    }
-    
-    public class PreferenceUpdate
+    public ShortcutMenuController(
+        IShortcutMenuService shortcutMenuService,
+        IUserPreferencesService userPreferencesService,
+        UserManager<ApplicationUser> userManager)
     {
-        public string Key { get; set; }
-        public object Value { get; set; }
+        _shortcutMenuService = shortcutMenuService;
+        _userPreferencesService = userPreferencesService;
+        _userManager = userManager;
     }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Shortcuts()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var shortcuts = await _shortcutMenuService.GetUserShortcutsAsync(user.Id);
+        
+        return Inertia.Render("ContextMenu/Shortcuts", new { shortcuts });
+    }
+        
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Preferences()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var preferences = await _userPreferencesService.GetUserPreferencesAsync(user.Id);
+        
+        return Inertia.Render("ContextMenu/Preferences", preferences);
+    }
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdatePreference([FromForm] PreferenceUpdateRequest update)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _userPreferencesService.UpdatePreferenceAsync(user.Id, update.Key, update.Value);
+        
+        return Inertia.Back().With("success", "Preferência atualizada com sucesso!");
+    }
+}
+
+// Models/PreferenceUpdate.cs
+public class PreferenceUpdate
+{
+    public string Key { get; set; } = "";
+    public string Value { get; set; } = "";
+    public string UserId { get; set; } = "";
+    public DateTime UpdatedAt { get; set; }
+}
+
+// Models/PreferenceUpdateRequest.cs
+public class PreferenceUpdateRequest
+{
+    public string Key { get; set; } = "";
+    public string Value { get; set; } = "";
+}
+
+// Models/UserShortcut.cs
+public class UserShortcut
+{
+    public string Action { get; set; } = "";
+    public string Shortcut { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Label { get; set; } = "";
 }`,
     }
 
