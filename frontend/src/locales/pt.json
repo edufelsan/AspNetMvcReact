@@ -985,6 +985,42 @@
         "cancel": "Cancelar"
       }
     },
+    "dropdownMenu": {
+      "title": "Dropdown Menu",
+      "description": "Menus suspensos elegantes que exibem uma lista de opções ou ações",
+      "basic": {
+        "title": "Menu Básico",
+        "description": "Um menu suspenso simples com opções de navegação",
+        "options": "Opções",
+        "myAccount": "Minha Conta",
+        "profile": "Perfil",
+        "settings": "Configurações",
+        "logout": "Sair"
+      },
+      "userProfile": {
+        "title": "Menu do Usuário",
+        "description": "Menu suspenso do avatar do usuário com informações e ações",
+        "profile": "Perfil",
+        "settings": "Configurações",
+        "notifications": "Notificações",
+        "logout": "Sair",
+        "clickAvatar": "Clique no avatar para abrir o menu"
+      },
+      "actions": {
+        "title": "Menu de Ações",
+        "description": "Menu suspenso com múltiplas ações e submenus organizados",
+        "documentActions": "Ações do Documento",
+        "view": "Visualizar",
+        "edit": "Editar",
+        "share": "Compartilhar",
+        "download": "Baixar",
+        "archive": "Arquivar",
+        "delete": "Excluir",
+        "inviteCollaborador": "Convidar colaborador",
+        "copyLink": "Copiar link",
+        "exportPdf": "Exportar como PDF"
+      }
+    },
     "dialog": {
       "title": "Dialog",
       "description": "Janelas modais elegantes e acessíveis para exibir conteúdo sobreposto",
@@ -1319,6 +1355,9 @@
     },
     "drawer": {
       "description": "Painéis deslizantes da borda da tela"
+    },
+    "dropdownMenu": {
+      "description": "Menus suspensos elegantes que exibem opções ou ações"
     },
     "dataTable": {
       "description": "Tabela de dados com ordenação, filtragem e paginação"
