@@ -985,6 +985,42 @@
         "cancel": "Cancel"
       }
     },
+    "dropdownMenu": {
+      "title": "Dropdown Menu",
+      "description": "Elegant dropdown menus that display a list of options or actions",
+      "basic": {
+        "title": "Basic Menu",
+        "description": "A simple dropdown menu with navigation options",
+        "options": "Options",
+        "myAccount": "My Account",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Log out"
+      },
+      "userProfile": {
+        "title": "User Menu",
+        "description": "User avatar dropdown menu with information and actions",
+        "profile": "Profile",
+        "settings": "Settings",
+        "notifications": "Notifications",
+        "logout": "Log out",
+        "clickAvatar": "Click the avatar to open the menu"
+      },
+      "actions": {
+        "title": "Actions Menu",
+        "description": "Advanced dropdown menu with multiple actions and organized submenus",
+        "documentActions": "Document Actions",
+        "view": "View",
+        "edit": "Edit",
+        "share": "Share",
+        "download": "Download",
+        "archive": "Archive",
+        "delete": "Delete",
+        "inviteCollaborator": "Invite collaborator",
+        "copyLink": "Copy link",
+        "exportPdf": "Export as PDF"
+      }
+    },
     "dialog": {
       "title": "Dialog",
       "description": "Elegant and accessible modal windows for displaying overlay content",
@@ -1371,6 +1407,9 @@
     },
     "drawer": {
       "description": "Sliding panels from screen edge"
+    },
+    "dropdownMenu": {
+      "description": "Elegant dropdown menus that display options or actions"
     },
     "dataTable": {
       "description": "Data table with sorting, filtering, and pagination"
