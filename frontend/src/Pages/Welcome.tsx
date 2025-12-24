@@ -173,7 +173,7 @@ export default function Welcome() {
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div className="text-center">
-                            <div className="text-3xl font-bold text-foreground mb-2">19+</div>
+                            <div className="text-3xl font-bold text-foreground mb-2">23+</div>
                             <div className="text-sm text-muted-foreground">{t('welcome.stats.components')}</div>
                         </div>
                         <div className="text-center">
