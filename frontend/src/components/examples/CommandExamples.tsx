@@ -86,49 +86,67 @@ import {
         </CommandGroup>
     </CommandList>
 </Command>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/CommandsController.cs
+public class CommandsController : Controller
 {
-    public class CommandsController : Controller
+    private readonly ICommandService _commandService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public CommandsController(ICommandService commandService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Suggestions()
-        {
-            var suggestions = new[]
-            {
-                new { id = "calendar", icon = "Calendar", label = "Calendar" },
-                new { id = "emoji", icon = "Smile", label = "Search Emoji" },
-                new { id = "calculator", icon = "Calculator", label = "Calculator" }
-            };
-            
-            return Inertia.Render("Commands/Suggestions", new { suggestions });
-        }
-        
-        public IActionResult Settings()
-        {
-            var settings = new[]
-            {
-                new { id = "profile", icon = "User", label = "Profile" },
-                new { id = "billing", icon = "CreditCard", label = "Billing" },
-                new { id = "settings", icon = "Settings", label = "Settings" }
-            };
-            
-            return Inertia.Render("Commands/Settings", new { settings });
-        }
-        
-        [HttpPost]
-        public IActionResult Execute(CommandExecution command)
-        {
-            // Execute the command
-            return RedirectToAction("Index", new { message = $"Executed command: {command.CommandId}" });
-        }
+        _commandService = commandService;
+        _userManager = userManager;
     }
-    
-    public class CommandExecution
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Suggestions()
     {
-        public string CommandId { get; set; }
+        var user = await _userManager.GetUserAsync(User);
+        var suggestions = await _commandService.GetSuggestionsAsync(user.Id);
+        
+        return Inertia.Render("Commands/Suggestions", new { suggestions });
     }
+        
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Settings()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var settings = await _commandService.GetSettingsAsync(user.Id);
+        
+        return Inertia.Render("Commands/Settings", new { settings });
+    }
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Execute([FromForm] CommandExecutionRequest command)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _commandService.ExecuteCommandAsync(user.Id, command.CommandId);
+        
+        return Inertia.Back().With("success", $"Comando {command.CommandId} executado com sucesso!");
+    }
+}
+
+// Models/CommandExecution.cs
+public class CommandExecution
+{
+    public string CommandId { get; set; } = "";
+    public DateTime ExecutedAt { get; set; }
+    public string UserId { get; set; } = "";
+    public string Parameters { get; set; } = "";
+}
+
+// Models/CommandExecutionRequest.cs
+public class CommandExecutionRequest
+{
+    public string CommandId { get; set; } = "";
 }`,
     }
 
@@ -193,49 +211,68 @@ const [open, setOpen] = useState(false)
         </CommandList>
     </CommandDialog>
 </>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/CommandMenuController.cs
+public class CommandMenuController : Controller
 {
-    public class CommandMenuController : Controller
+    private readonly ICommandMenuService _commandMenuService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public CommandMenuController(ICommandMenuService commandMenuService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Actions()
-        {
-            var actions = new[]
-            {
-                new { id = "search", icon = "Search", label = "Search" },
-                new { id = "new-doc", icon = "FileText", label = "New Document" },
-                new { id = "send-email", icon = "Mail", label = "Send Email" }
-            };
-            
-            return Inertia.Render("CommandMenu/Actions", new { actions });
-        }
-        
-        public IActionResult User()
-        {
-            var userCommands = new[]
-            {
-                new { id = "profile", icon = "User", label = "Profile Settings" },
-                new { id = "preferences", icon = "Settings", label = "Preferences" }
-            };
-            
-            return Inertia.Render("CommandMenu/User", new { userCommands });
-        }
-        
-        [HttpPost]
-        public IActionResult Execute(CommandRequest request)
-        {
-            // Execute the command based on action
-            return RedirectToAction("Index", new { success = true, action = request.Action });
-        }
+        _commandMenuService = commandMenuService;
+        _userManager = userManager;
     }
-    
-    public class CommandRequest
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Actions()
     {
-        public string Action { get; set; }
-        public Dictionary<string, object> Parameters { get; set; }
+        var user = await _userManager.GetUserAsync(User);
+        var actions = await _commandMenuService.GetActionsAsync(user.Id);
+        
+        return Inertia.Render("CommandMenu/Actions", new { actions });
     }
+        
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> User()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var userCommands = await _commandMenuService.GetUserCommandsAsync(user.Id);
+        
+        return Inertia.Render("CommandMenu/User", new { userCommands });
+    }
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Execute([FromForm] CommandRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _commandMenuService.ExecuteActionAsync(user.Id, request.Action, request.Parameters);
+        
+        return Inertia.Back().With("success", $"Ação {request.Action} executada com sucesso!");
+    }
+}
+
+// Models/CommandRequest.cs
+public class CommandRequest
+{
+    public string Action { get; set; } = "";
+    public Dictionary<string, string> Parameters { get; set; } = new();
+}
+
+// Models/CommandAction.cs
+public class CommandAction
+{
+    public string Id { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Category { get; set; } = "";
 }`,
     }
 
@@ -307,59 +344,80 @@ useEffect(() => {
     </kbd>
     {" "}to open
 </p>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/ShortcutsController.cs
+public class ShortcutsController : Controller
 {
-    public class ShortcutsController : Controller
+    private readonly IShortcutsService _shortcutsService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public ShortcutsController(IShortcutsService shortcutsService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Index()
-        {
-            var shortcuts = new[]
-            {
-                new { id = "calendar", icon = "Calendar", label = "Calendar", shortcut = "⌘C" },
-                new { id = "profile", icon = "User", label = "Profile", shortcut = "⌘P" },
-                new { id = "calculator", icon = "Calculator", label = "Calculator", shortcut = "⌘A" },
-                new { id = "settings", icon = "Settings", label = "Settings", shortcut = "⌘S" }
-            };
-            
-            return Inertia.Render("Shortcuts/Index", new { shortcuts });
-        }
+        _shortcutsService = shortcutsService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var shortcuts = await _shortcutsService.GetUserShortcutsAsync(user.Id);
         
-        [HttpPost]
-        public IActionResult Register(ShortcutRegistration registration)
-        {
-            // Register custom keyboard shortcut
-            return RedirectToAction("Index", new 
-            { 
-                message = $"Registered shortcut {registration.Shortcut} for {registration.Action}" 
-            });
-        }
+        return Inertia.Render("Shortcuts/Index", new { shortcuts });
+    }
         
-        [HttpPost]
-        public IActionResult Execute(ShortcutExecution execution)
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Register([FromForm] ShortcutRegistrationRequest registration)
+    {
+        if (!ModelState.IsValid)
         {
-            // Execute command triggered by shortcut
-            return RedirectToAction("Index", new 
-            { 
-                success = true, 
-                command = execution.CommandId,
-                triggeredBy = execution.Shortcut
-            });
+            return Inertia.Back().With("errors", ModelState);
         }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _shortcutsService.RegisterShortcutAsync(user.Id, registration.Action, registration.Shortcut);
+        
+        return Inertia.Back().With("success", $"Atalho {registration.Shortcut} registrado para {registration.Action}!");
     }
-    
-    public class ShortcutRegistration
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Execute([FromForm] ShortcutExecutionRequest execution)
     {
-        public string Action { get; set; }
-        public string Shortcut { get; set; }
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _shortcutsService.ExecuteShortcutAsync(user.Id, execution.CommandId, execution.Shortcut);
+        
+        return Inertia.Back().With("success", $"Comando {execution.CommandId} executado via atalho {execution.Shortcut}!");
     }
-    
-    public class ShortcutExecution
-    {
-        public string CommandId { get; set; }
-        public string Shortcut { get; set; }
-    }
+}
+
+// Models/ShortcutRegistration.cs
+public class ShortcutRegistration
+{
+    public string Action { get; set; } = "";
+    public string Shortcut { get; set; } = "";
+    public string UserId { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+}
+
+// Models/ShortcutRegistrationRequest.cs
+public class ShortcutRegistrationRequest
+{
+    public string Action { get; set; } = "";
+    public string Shortcut { get; set; } = "";
+}
+
+// Models/ShortcutExecutionRequest.cs
+public class ShortcutExecutionRequest
+{
+    public string CommandId { get; set; } = "";
+    public string Shortcut { get; set; } = "";
 }`,
     }
 
