@@ -387,16 +387,20 @@ const table = useReactTable({
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, UserManager<ApplicationUser> userManager)
     {
         _userService = userService;
+        _userManager = userManager;
     }
 
     [HttpGet]
-    public IActionResult Index(string? sortBy = null, string? sortOrder = "asc")
+    [Authorize]
+    public async Task<IActionResult> Index(string? sortBy = null, string? sortOrder = "asc")
     {
-        var users = _userService.GetAllUsers();
+        var user = await _userManager.GetUserAsync(User);
+        var users = await _userService.GetAllUsersAsync(user.Id);
 
         if (!string.IsNullOrEmpty(sortBy))
         {
@@ -536,53 +540,57 @@ const table = useReactTable({
         </Table>
     </div>
 </div>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-using InertiaNetCore;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/UsersController.cs
+public class UsersController : Controller
 {
-    public class UsersController : Controller
+    private readonly IUserService _userService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UsersController(IUserService userService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Index(
-            string? sortBy = null, 
-            string? sortOrder = "asc",
-            string? filterEmail = null)
-        {
-            var users = new List<User>
-            {
-                new User { Id = "1", Name = "John Doe", Email = "john@example.com", Role = "Admin", Status = "Active" },
-                new User { Id = "2", Name = "Jane Smith", Email = "jane@example.com", Role = "User", Status = "Active" },
-                new User { Id = "3", Name = "Bob Johnson", Email = "bob@example.com", Role = "User", Status = "Inactive" },
-                new User { Id = "4", Name = "Alice Brown", Email = "alice@example.com", Role = "Manager", Status = "Active" },
-                new User { Id = "5", Name = "Charlie Wilson", Email = "charlie@example.com", Role = "User", Status = "Active" },
-                new User { Id = "6", Name = "David Lee", Email = "david@example.com", Role = "User", Status = "Inactive" },
-                new User { Id = "7", Name = "Emma Davis", Email = "emma@example.com", Role = "Manager", Status = "Active" }
-            };
-
-            // Apply email filter
-            if (!string.IsNullOrEmpty(filterEmail))
-            {
-                users = users.Where(u => u.Email.Contains(filterEmail, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            // Apply sorting
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                users = sortBy.ToLower() switch
-                {
-                    "name" => sortOrder == "desc" 
-                        ? users.OrderByDescending(u => u.Name).ToList() 
-                        : users.OrderBy(u => u.Name).ToList(),
-                    "email" => sortOrder == "desc" 
-                        ? users.OrderByDescending(u => u.Email).ToList() 
-                        : users.OrderBy(u => u.Email).ToList(),
-                    _ => users
-                };
-            }
-
-            return Inertia.Render("DataTable/Filtered", new { users });
-        }
+        _userService = userService;
+        _userManager = userManager;
     }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index(
+        string? sortBy = null, 
+        string? sortOrder = "asc",
+        string? filterEmail = null)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var users = await _userService.GetFilteredUsersAsync(user.Id, filterEmail);
+
+        // Apply sorting
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            users = sortBy.ToLower() switch
+            {
+                "name" => sortOrder == "desc" 
+                    ? users.OrderByDescending(u => u.Name).ToList() 
+                    : users.OrderBy(u => u.Name).ToList(),
+                "email" => sortOrder == "desc" 
+                    ? users.OrderByDescending(u => u.Email).ToList() 
+                    : users.OrderBy(u => u.Email).ToList(),
+                _ => users
+            };
+        }
+
+        return Inertia.Render("DataTable/Filtered", new { users });
+    }
+}
+
+// Models/User.cs
+public class User
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
+    public string Role { get; set; } = "";
+    public string Status { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastLoginAt { get; set; }
 }`,
     }
 
@@ -758,95 +766,95 @@ const table = useReactTable({
         </div>
     </div>
 </div>`,
-        backend: `using Microsoft.AspNetCore.Mvc;
-
-namespace YourApp.Controllers
+        backend: `// Controllers/UsersController.cs
+public class UsersController : Controller
 {
-    public class UsersController : Controller
+    private readonly IUserService _userService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UsersController(IUserService userService, UserManager<ApplicationUser> userManager)
     {
-        public IActionResult Index(
-            int page = 1,
-            int pageSize = 10,
-            string? sortBy = null,
-            string? sortOrder = "asc",
-            string? filterEmail = null)
-        {
-            var allUsers = GenerateUsers(50); // Generate sample data
-
-            // Apply email filter
-            var filteredUsers = allUsers;
-            if (!string.IsNullOrEmpty(filterEmail))
-            {
-                filteredUsers = filteredUsers
-                    .Where(u => u.Email.Contains(filterEmail, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
-
-            // Apply sorting
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                filteredUsers = sortBy.ToLower() switch
-                {
-                    "name" => sortOrder == "desc" 
-                        ? filteredUsers.OrderByDescending(u => u.Name).ToList() 
-                        : filteredUsers.OrderBy(u => u.Name).ToList(),
-                    "email" => sortOrder == "desc" 
-                        ? filteredUsers.OrderByDescending(u => u.Email).ToList() 
-                        : filteredUsers.OrderBy(u => u.Email).ToList(),
-                    _ => filteredUsers
-                };
-            }
-
-            // Apply pagination
-            var totalCount = filteredUsers.Count;
-            var paginatedUsers = filteredUsers
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return Inertia.Render("DataTable/Paginated", new
-            {
-                Data = paginatedUsers,
-                Page = page,
-                PageSize = pageSize,
-                TotalCount = totalCount,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
-            });
-        }
-
-        [HttpPost]
-        public IActionResult DeleteUser(string id)
-        {
-            // Delete user logic
-            TempData["Success"] = $"User {id} deleted successfully";
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult UpdateUser(string id, User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Inertia.Render("DataTable/Edit", new { user, errors = ModelState });
-            }
-
-            // Update user logic
-            TempData["Success"] = $"User {id} updated successfully";
-            return RedirectToAction("Index");
-        }
-
-        private List<User> GenerateUsers(int count)
-        {
-            return Enumerable.Range(1, count).Select(i => new User
-            {
-                Id = i.ToString(),
-                Name = $"User {i}",
-                Email = $"user{i}@example.com",
-                Role = new[] { "Admin", "User", "Manager" }[i % 3],
-                Status = i % 3 == 0 ? "Inactive" : "Active"
-            }).ToList();
-        }
+        _userService = userService;
+        _userManager = userManager;
     }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index(
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        string? sortOrder = "asc",
+        string? filterEmail = null)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var paginatedResult = await _userService.GetPaginatedUsersAsync(
+            user.Id, page, pageSize, sortBy, sortOrder, filterEmail);
+
+        return Inertia.Render("DataTable/Paginated", paginatedResult);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteUser([FromForm] string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return Inertia.Back().With("error", "ID do usuário é obrigatório");
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _userService.DeleteUserAsync(id, user.Id);
+        
+        return Inertia.Back().With("success", $"Usuário {id} deletado com sucesso!");
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdateUser([FromForm] UserUpdateRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _userService.UpdateUserAsync(request.Id, request, user.Id);
+        
+        return Inertia.Back().With("success", $"Usuário {request.Id} atualizado com sucesso!");
+    }
+}
+
+// Models/User.cs
+public class User
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
+    public string Role { get; set; } = "";
+    public string Status { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastLoginAt { get; set; }
+}
+
+// Models/UserUpdateRequest.cs
+public class UserUpdateRequest
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
+    public string Role { get; set; } = "";
+    public string Status { get; set; } = "";
+}
+
+// Models/PaginatedResult.cs
+public class PaginatedResult<T>
+{
+    public List<T> Data { get; set; } = new();
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalCount { get; set; }
+    public int TotalPages { get; set; }
 }`,
     }
 
