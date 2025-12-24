@@ -140,11 +140,6 @@ const [value, setValue] = useState('')
     </PopoverContent>
 </Popover>`,
         backend: `// Controllers/FrameworksController.cs
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-[Authorize]
 public class FrameworksController : Controller
 {
     private readonly IFrameworkService _frameworkService;
@@ -156,32 +151,38 @@ public class FrameworksController : Controller
         _userManager = userManager;
     }
 
+    [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-            return Redirect("/Account/Login");
-
         var frameworks = await _frameworkService.GetAllFrameworksAsync();
-        var viewModel = new FrameworksViewModel { Frameworks = frameworks };
+        
+        var viewModel = new FrameworksViewModel 
+        { 
+            Frameworks = frameworks,
+            UserPreference = await _frameworkService.GetUserPreferenceAsync(user.Id)
+        };
+        
         return Inertia.Render("Frameworks/Index", viewModel);
     }
         
     [HttpPost]
-    public async Task<IActionResult> SelectFramework(FrameworkSelectionRequest selection)
+    [Authorize]
+    public async Task<IActionResult> SelectFramework([FromForm] FrameworkSelectionRequest selection)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-            return Inertia.Back().With("error", "Usuário não autenticado");
-
         if (!ModelState.IsValid)
-            return Inertia.Back().WithErrors(ModelState);
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
 
+        var user = await _userManager.GetUserAsync(User);
         await _frameworkService.SaveUserPreferenceAsync(user.Id, selection.Value);
-        return Inertia.Back().With("success", $"Framework selecionado: {selection.Value}");
+        
+        return Inertia.Back().With("success", $"Framework {selection.Value} selecionado com sucesso!");
     }
 }
-    
+
 // Models/Framework.cs
 public class Framework
 {
@@ -197,10 +198,11 @@ public class FrameworkSelectionRequest
     public string Value { get; set; } = "";
 }
 
-// ViewModels/FrameworksViewModel.cs
+// Models/FrameworksViewModel.cs
 public class FrameworksViewModel
 {
-    public IEnumerable<Framework> Frameworks { get; set; } = Enumerable.Empty<Framework>();
+    public List<Framework> Frameworks { get; set; } = new();
+    public string? UserPreference { get; set; }
 }`,
     }
 
@@ -280,78 +282,72 @@ const [value, setValue] = useState('')
         </Command>
     </PopoverContent>
 </Popover>`,
-        backend: `using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+        backend: `// Controllers/CountriesController.cs
+public class CountriesController : Controller
 {
+    private readonly ICountriesService _countriesService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public CountriesController(ICountriesService countriesService, UserManager<ApplicationUser> userManager)
+    {
+        _countriesService = countriesService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
     [Authorize]
-    public class CountriesController : Controller
+    public async Task<IActionResult> Index(string? search = null)
     {
-        private readonly ICountriesService _countriesService;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public CountriesController(ICountriesService countriesService, UserManager<ApplicationUser> userManager)
-        {
-            _countriesService = countriesService;
-            _userManager = userManager;
-        }
-
-        public async Task<IActionResult> Index(string? search = null)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("/Account/Login");
-
-            var countries = new[]
-            {
-                new { value = "us", label = "United States" },
-                new { value = "ca", label = "Canada" },
-                new { value = "mx", label = "Mexico" },
-                new { value = "br", label = "Brazil" },
-                new { value = "ar", label = "Argentina" },
-                new { value = "uk", label = "United Kingdom" },
-                new { value = "de", label = "Germany" },
-                new { value = "fr", label = "France" }
-            };
-            
-            if (!string.IsNullOrEmpty(search))
-            {
-                countries = countries
-                    .Where(c => c.label.Contains(search, StringComparison.OrdinalIgnoreCase))
-                    .ToArray();
-            }
-            
-            var viewModel = new CountriesViewModel { Countries = countries, SearchTerm = search };
-            return Inertia.Render("Countries/Index", viewModel);
-        }
+        var user = await _userManager.GetUserAsync(User);
+        var countries = await _countriesService.SearchCountriesAsync(search);
         
-        [HttpPost]
-        public async Task<IActionResult> SelectCountry(CountrySelectionRequest selection)
+        var viewModel = new CountriesViewModel 
+        { 
+            Countries = countries, 
+            SearchTerm = search,
+            UserSelection = await _countriesService.GetUserSelectionAsync(user.Id)
+        };
+        
+        return Inertia.Render("Countries/Index", viewModel);
+    }
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SelectCountry([FromForm] CountrySelectionRequest selection)
+    {
+        if (!ModelState.IsValid)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
-
-            if (!ModelState.IsValid)
-                return Inertia.Back().WithErrors(ModelState);
-
-            await _countriesService.SaveUserSelectionAsync(user.Id, selection.Value);
-            return Inertia.Back().With("success", $"País selecionado: {selection.Value}");
+            return Inertia.Back().With("errors", ModelState);
         }
-    }
-    
-    public class CountrySelectionRequest
-    {
-        public string Value { get; set; } = string.Empty;
-    }
 
-    public class CountriesViewModel
-    {
-        public object[] Countries { get; set; } = Array.Empty<object>();
-        public string? SearchTerm { get; set; }
+        var user = await _userManager.GetUserAsync(User);
+        await _countriesService.SaveUserSelectionAsync(user.Id, selection.Value);
+        
+        return Inertia.Back().With("success", $"País {selection.Value} selecionado com sucesso!");
     }
+}
+
+// Models/Country.cs
+public class Country
+{
+    public string Value { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Code { get; set; } = "";
+    public string Flag { get; set; } = "";
+}
+
+// Models/CountrySelectionRequest.cs
+public class CountrySelectionRequest
+{
+    public string Value { get; set; } = "";
+}
+
+// Models/CountriesViewModel.cs
+public class CountriesViewModel
+{
+    public List<Country> Countries { get; set; } = new();
+    public string? SearchTerm { get; set; }
+    public string? UserSelection { get; set; }
 }`,
     }
 
@@ -444,68 +440,71 @@ const toggleLanguage = (language: string) => {
         </p>
     </div>
 )}`,
-        backend: `using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AspNetMvcReact.Controllers
+        backend: `// Controllers/LanguagesController.cs
+public class LanguagesController : Controller
 {
+    private readonly ILanguagesService _languagesService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public LanguagesController(ILanguagesService languagesService, UserManager<ApplicationUser> userManager)
+    {
+        _languagesService = languagesService;
+        _userManager = userManager;
+    }
+
+    [HttpGet]
     [Authorize]
-    public class LanguagesController : Controller
+    public async Task<IActionResult> Index()
     {
-        private readonly ILanguagesService _languagesService;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public LanguagesController(ILanguagesService languagesService, UserManager<ApplicationUser> userManager)
-        {
-            _languagesService = languagesService;
-            _userManager = userManager;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Redirect("/Account/Login");
-
-            var languages = new[]
-            {
-                new { value = "javascript", label = "JavaScript" },
-                new { value = "typescript", label = "TypeScript" },
-                new { value = "python", label = "Python" },
-                new { value = "java", label = "Java" },
-                new { value = "csharp", label = "C#" },
-                new { value = "go", label = "Go" }
-            };
-            
-            var viewModel = new LanguagesViewModel { Languages = languages };
-            return Inertia.Render("Languages/Index", viewModel);
-        }
+        var user = await _userManager.GetUserAsync(User);
+        var languages = await _languagesService.GetAllLanguagesAsync();
+        var userLanguages = await _languagesService.GetUserLanguagesAsync(user.Id);
         
-        [HttpPost]
-        public async Task<IActionResult> SelectMultiple(MultipleLanguageSelectionRequest selection)
+        var viewModel = new LanguagesViewModel 
+        { 
+            Languages = languages,
+            UserSelections = userLanguages
+        };
+        
+        return Inertia.Render("Languages/Index", viewModel);
+    }
+        
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> SelectMultiple([FromForm] MultipleLanguageSelectionRequest selection)
+    {
+        if (!ModelState.IsValid)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Inertia.Back().With("error", "Usuário não autenticado");
-
-            if (!ModelState.IsValid)
-                return Inertia.Back().WithErrors(ModelState);
-
-            await _languagesService.SaveUserLanguagesAsync(user.Id, selection.Languages);
-            return Inertia.Back().With("success", $"Selecionadas {selection.Languages.Count} linguagem(ns)");
+            return Inertia.Back().With("errors", ModelState);
         }
-    }
-    
-    public class MultipleLanguageSelectionRequest
-    {
-        public List<string> Languages { get; set; } = new();
-    }
 
-    public class LanguagesViewModel
-    {
-        public object[] Languages { get; set; } = Array.Empty<object>();
+        var user = await _userManager.GetUserAsync(User);
+        await _languagesService.SaveUserLanguagesAsync(user.Id, selection.Languages);
+        
+        return Inertia.Back().With("success", $"{selection.Languages.Count} linguagem(ns) selecionada(s) com sucesso!");
     }
+}
+
+// Models/Language.cs
+public class Language
+{
+    public string Value { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Category { get; set; } = "";
+    public bool IsPopular { get; set; }
+}
+
+// Models/MultipleLanguageSelectionRequest.cs
+public class MultipleLanguageSelectionRequest
+{
+    public List<string> Languages { get; set; } = new();
+}
+
+// Models/LanguagesViewModel.cs
+public class LanguagesViewModel
+{
+    public List<Language> Languages { get; set; } = new();
+    public List<string> UserSelections { get; set; } = new();
 }`,
     }
 
