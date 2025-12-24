@@ -44,20 +44,32 @@ export function BasicBreadcrumb() {
 }`;
 
     const backendCode1 = `// Controllers/NavigationController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+[Authorize]
 public class NavigationController : Controller
 {
     private readonly INavigationService _navigationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public NavigationController(INavigationService navigationService)
+    public NavigationController(INavigationService navigationService, UserManager<ApplicationUser> userManager)
     {
         _navigationService = navigationService;
+        _userManager = userManager;
     }
 
-    [HttpGet]
-    public IActionResult Breadcrumb(string path)
+    public async Task<IActionResult> Breadcrumb(string path)
     {
-        var breadcrumbs = _navigationService.GenerateBreadcrumbs(path);
-        return Inertia.Render("Navigation/Breadcrumb", new { breadcrumbs, path });
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Redirect("/Account/Login");
+
+        var breadcrumbs = await _navigationService.GenerateBreadcrumbsAsync(path);
+        var viewModel = new BreadcrumbViewModel { Breadcrumbs = breadcrumbs, Path = path };
+        
+        return Inertia.Render("Navigation/Breadcrumb", viewModel);
     }
 }
 
@@ -69,6 +81,12 @@ public class BreadcrumbItem
     public bool IsCurrentPage { get; set; }
     public string Icon { get; set; } = "";
 }
+
+// Models/BreadcrumbViewModel.cs
+public class BreadcrumbViewModel
+{
+    public IEnumerable<BreadcrumbItem> Breadcrumbs { get; set; } = Enumerable.Empty<BreadcrumbItem>();
+    public string Path { get; set; } = string.Empty;
 }`;
 
     const frontendCode2 = `import {
@@ -108,21 +126,29 @@ export function BreadcrumbWithIcons() {
   )
 }`;
 
-    const backendCode2 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode2 = `// Controllers/BreadcrumbController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 public class BreadcrumbController : Controller
 {
-    public class NavItem
+    private readonly IBreadcrumbService _breadcrumbService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public BreadcrumbController(IBreadcrumbService breadcrumbService, UserManager<ApplicationUser> userManager)
     {
-        public string Label { get; set; } = "";
-        public string? Url { get; set; }
-        public string? Icon { get; set; }
-        public bool IsCurrent { get; set; }
+        _breadcrumbService = breadcrumbService;
+        _userManager = userManager;
     }
 
-    [HttpGet("/api/navigation/breadcrumb")]
-    public IActionResult GetNavigationBreadcrumb()
+    public async Task<IActionResult> NavigationBreadcrumb()
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Redirect("/Account/Login");
+
         var navigation = new[]
         {
             new NavItem 
@@ -155,8 +181,24 @@ public class BreadcrumbController : Controller
             }
         };
         
-        return Json(navigation);
+        var viewModel = new NavigationBreadcrumbViewModel { Navigation = navigation };
+        return Inertia.Render("Breadcrumb/Navigation", viewModel);
     }
+}
+
+// Models/NavItem.cs
+public class NavItem
+{
+    public string Label { get; set; } = "";
+    public string? Url { get; set; }
+    public string? Icon { get; set; }
+    public bool IsCurrent { get; set; }
+}
+
+// Models/NavigationBreadcrumbViewModel.cs
+public class NavigationBreadcrumbViewModel
+{
+    public NavItem[] Navigation { get; set; } = Array.Empty<NavItem>();
 }`;
 
     const frontendCode3 = `import {
@@ -199,21 +241,29 @@ export function CustomSeparatorBreadcrumb() {
   )
 }`;
 
-    const backendCode3 = `using Microsoft.AspNetCore.Mvc;
+    const backendCode3 = `// Controllers/DocumentationController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
+[Authorize]
 public class DocumentationController : Controller
 {
-    public class DocBreadcrumb
+    private readonly IDocumentationService _documentationService;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public DocumentationController(IDocumentationService documentationService, UserManager<ApplicationUser> userManager)
     {
-        public int Level { get; set; }
-        public string Title { get; set; } = "";
-        public string? Path { get; set; }
-        public bool IsActive { get; set; }
+        _documentationService = documentationService;
+        _userManager = userManager;
     }
 
-    [HttpGet("/api/docs/breadcrumb")]
-    public IActionResult GetDocsBreadcrumb(string currentPath)
+    public async Task<IActionResult> DocsBreadcrumb(string currentPath)
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Redirect("/Account/Login");
+
         // Parse path and build breadcrumb dynamically
         var pathSegments = currentPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
         var breadcrumbs = new List<DocBreadcrumb>
@@ -242,7 +292,8 @@ public class DocumentationController : Controller
             });
         }
         
-        return Json(breadcrumbs);
+        var viewModel = new DocsBreadcrumbViewModel { Breadcrumbs = breadcrumbs, CurrentPath = currentPath };
+        return Inertia.Render("Documentation/Breadcrumb", viewModel);
     }
 
     private string FormatTitle(string segment)
@@ -252,6 +303,22 @@ public class DocumentationController : Controller
             .Select(word => char.ToUpper(word[0]) + word.Substring(1))
             .Aggregate((a, b) => a + " " + b);
     }
+}
+
+// Models/DocBreadcrumb.cs
+public class DocBreadcrumb
+{
+    public int Level { get; set; }
+    public string Title { get; set; } = "";
+    public string? Path { get; set; }
+    public bool IsActive { get; set; }
+}
+
+// Models/DocsBreadcrumbViewModel.cs
+public class DocsBreadcrumbViewModel
+{
+    public List<DocBreadcrumb> Breadcrumbs { get; set; } = new();
+    public string CurrentPath { get; set; } = string.Empty;
 }`;
 
     return (
