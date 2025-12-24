@@ -118,6 +118,50 @@ export function BasicDrawerExample() {
             </DrawerContent>
         </Drawer>
     )
+}`,
+        backend: `// Controllers/NavigationController.cs
+public class NavigationController : Controller
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly INotificationService _notificationService;
+
+    public NavigationController(UserManager<ApplicationUser> userManager, INotificationService notificationService)
+    {
+        _userManager = userManager;
+        _notificationService = notificationService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var navigationData = await _notificationService.GetNavigationDataAsync(user.Id);
+
+        return Inertia.Render("Navigation/Index", new { navigationData });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> LogNavigation([FromForm] NavigationLogRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _notificationService.LogNavigationAsync(user.Id, request.Section);
+        
+        return Inertia.Back().With("success", "Navegação registrada com sucesso!");
+    }
+}
+
+// Models/NavigationLogRequest.cs
+public class NavigationLogRequest
+{
+    public string Section { get; set; } = "";
+    public DateTime AccessedAt { get; set; } = DateTime.UtcNow;
 }`
     };
 
@@ -208,87 +252,76 @@ export function CartDrawerExample() {
         </Drawer>
     )
 }`,
-        backend: `// CartController.cs
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using AspNetMvcReact.Models;
-using InertiaCore;
-
-[Authorize]
+        backend: `// Controllers/CartController.cs
 public class CartController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILogger<CartController> _logger;
+    private readonly ICartService _cartService;
 
-    public CartController(
-        UserManager<ApplicationUser> userManager,
-        ILogger<CartController> logger)
+    public CartController(UserManager<ApplicationUser> userManager, ICartService cartService)
     {
         _userManager = userManager;
-        _logger = logger;
+        _cartService = cartService;
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        // Mock cart data - in real app, get from database
-        var cartItems = new[]
-        {
-            new { Id = 1, Name = "Wireless Headphones", Price = 199.99m, Quantity = 1 },
-            new { Id = 2, Name = "Smartphone Case", Price = 29.99m, Quantity = 2 }
-        };
+        var cartItems = await _cartService.GetCartItemsAsync(user.Id);
 
         return Inertia.Render("Cart/Index", new { items = cartItems });
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
+    [Authorize]
+    public async Task<IActionResult> AddToCart([FromForm] AddToCartRequest request)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        if (!ModelState.IsValid)
         {
-            return RedirectToAction("Login", "Auth");
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        // In real app, add to database
-        _logger.LogInformation($"Added item {request.ProductId} to cart for user {user.Id}");
+        var user = await _userManager.GetUserAsync(User);
+        await _cartService.AddToCartAsync(user.Id, request.ProductId, request.Quantity);
 
-        return RedirectToAction("Index", new { 
-            success = "Item added to cart successfully" 
-        });
+        return Inertia.Back().With("success", "Item adicionado ao carrinho com sucesso!");
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateQuantity([FromBody] UpdateQuantityRequest request)
+    [Authorize]
+    public async Task<IActionResult> UpdateQuantity([FromForm] UpdateQuantityRequest request)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        if (!ModelState.IsValid)
         {
-            return RedirectToAction("Login", "Auth");
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        // In real app, update in database
-        _logger.LogInformation($"Updated item {request.ItemId} quantity to {request.Quantity}");
+        var user = await _userManager.GetUserAsync(User);
+        await _cartService.UpdateQuantityAsync(user.Id, request.ItemId, request.Quantity);
 
-        return RedirectToAction("Index");
+        return Inertia.Back().With("success", "Quantidade atualizada com sucesso!");
     }
 }
 
+// Models/AddToCartRequest.cs
 public class AddToCartRequest
 {
+    [Required]
     public int ProductId { get; set; }
-    public int Quantity { get; set; }
+    
+    [Range(1, 100)]
+    public int Quantity { get; set; } = 1;
 }
 
+// Models/UpdateQuantityRequest.cs
 public class UpdateQuantityRequest
 {
+    [Required]
     public int ItemId { get; set; }
+    
+    [Range(1, 100)]
     public int Quantity { get; set; }
 }`
     };
@@ -422,86 +455,80 @@ export function SettingsDrawerExample() {
         </Drawer>
     )
 }`,
-        backend: `// SettingsController.cs
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using AspNetMvcReact.Models;
-using InertiaCore;
-
-[Authorize]
+        backend: `// Controllers/SettingsController.cs
 public class SettingsController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IEmailService _emailService;
-    private readonly ILogger<SettingsController> _logger;
+    private readonly ISettingsService _settingsService;
 
-    public SettingsController(
-        UserManager<ApplicationUser> userManager,
-        IEmailService emailService,
-        ILogger<SettingsController> logger)
+    public SettingsController(UserManager<ApplicationUser> userManager, ISettingsService settingsService)
     {
         _userManager = userManager;
-        _emailService = emailService;
-        _logger = logger;
+        _settingsService = settingsService;
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        var settings = new
-        {
-            Profile = new { user.FirstName, user.LastName, user.Email },
-            Notifications = new { EmailEnabled = true, PushEnabled = false }
-        };
+        var settings = await _settingsService.GetUserSettingsAsync(user.Id);
 
         return Inertia.Render("Settings/Index", new { settings });
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    [Authorize]
+    public async Task<IActionResult> Update([FromForm] UpdateSettingsRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        await _settingsService.UpdateSettingsAsync(user.Id, request);
+
+        return Inertia.Back().With("success", "Configurações atualizadas com sucesso!");
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileRequest request)
+    {
+        if (!ModelState.IsValid)
         {
-            return RedirectToAction("Login", "Auth");
+            return Inertia.Back().With("errors", ModelState);
         }
 
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
-        user.Email = request.Email;
+        var user = await _userManager.GetUserAsync(User);
+        await _settingsService.UpdateProfileAsync(user.Id, request);
 
-        var result = await _userManager.UpdateAsync(user);
-        
-        if (result.Succeeded)
-        {
-            return RedirectToAction("Index", new { 
-                success = "Profile updated successfully" 
-            });
-        }
-
-        return Inertia.Render("Settings/Index", new {
-            errors = result.Errors
-        });
+        return Inertia.Back().With("success", "Perfil atualizado com sucesso!");
     }
 }
 
-public class UpdateProfileRequest
+// Models/UpdateSettingsRequest.cs
+public class UpdateSettingsRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    public bool NotificationsEnabled { get; set; }
+    public string EmailFrequency { get; set; } = "daily";
+    public bool PushEnabled { get; set; }
 }
 
-public class NotificationSettingsRequest
+// Models/UpdateProfileRequest.cs
+public class UpdateProfileRequest
 {
-    public bool EmailEnabled { get; set; }
-    public bool PushEnabled { get; set; }
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; } = "";
+    
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = "";
+    
+    [StringLength(500)]
+    public string Bio { get; set; } = "";
 }`
     };
 
