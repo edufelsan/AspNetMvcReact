@@ -118,21 +118,7 @@ export function UserProfileCard({ user }: { user: User }) {
   );
 }`;
 
-  const backendCode2 = `// Models/User.cs
-public class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Username { get; set; } = "";
-    public string Bio { get; set; } = "";
-    public string Avatar { get; set; } = "";
-    public string Initials { get; set; } = "";
-    public DateTime JoinDate { get; set; }
-    public int FollowersCount { get; set; }
-    public int FollowingCount { get; set; }
-}
-
-// Controllers/UsersController.cs
+  const backendCode2 = `// Controllers/UsersController.cs
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
@@ -175,6 +161,20 @@ public class UsersController : Controller
         
         return Inertia.Back().With("error", result.ErrorMessage);
     }
+}
+
+// Models/User.cs
+public class User
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Username { get; set; } = "";
+    public string Bio { get; set; } = "";
+    public string Avatar { get; set; } = "";
+    public string Initials { get; set; } = "";
+    public DateTime JoinDate { get; set; }
+    public int FollowersCount { get; set; }
+    public int FollowingCount { get; set; }
 }`;
 
   const frontendCode3 = `import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -220,18 +220,7 @@ export function StatsCards({ stats }: { stats: Stats }) {
   );
 }`;
 
-  const backendCode3 = `// Models/DashboardStats.cs
-public class DashboardStats
-{
-    public string Revenue { get; set; } = "";
-    public string RevenueChange { get; set; } = "";
-    public string ActiveUsers { get; set; } = "";
-    public string UsersChange { get; set; } = "";
-    public DateTime LastUpdated { get; set; }
-    public string Period { get; set; } = "monthly";
-}
-
-// Controllers/DashboardController.cs
+  const backendCode3 = `// Controllers/DashboardController.cs
 public class DashboardController : Controller
 {
     private readonly IAnalyticsService _analyticsService;
@@ -262,6 +251,17 @@ public class DashboardController : Controller
             period
         });
     }
+}
+
+// Models/DashboardStats.cs
+public class DashboardStats
+{
+    public string Revenue { get; set; } = "";
+    public string RevenueChange { get; set; } = "";
+    public string ActiveUsers { get; set; } = "";
+    public string UsersChange { get; set; } = "";
+    public DateTime LastUpdated { get; set; }
+    public string Period { get; set; } = "monthly";
 }`;
 
   return (
@@ -481,21 +481,7 @@ export function ProductCard({ product }: { product: Product }) {
     </Card>
   );
 }`,
-            backend: `// Models/Product.cs
-public class Product
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public decimal Price { get; set; }
-    public double Rating { get; set; }
-    public string Badge { get; set; } = "";
-    public string ImageUrl { get; set; } = "";
-    public bool InStock { get; set; } = true;
-    public int Stock { get; set; }
-}
-
-// Controllers/ProductsController.cs
+            backend: `// Controllers/ProductsController.cs
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
@@ -533,6 +519,20 @@ public class ProductsController : Controller
         
         return Inertia.Back().With("error", result.ErrorMessage);
     }
+}
+
+// Models/Product.cs
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal Price { get; set; }
+    public double Rating { get; set; }
+    public string Badge { get; set; } = "";
+    public string ImageUrl { get; set; } = "";
+    public bool InStock { get; set; } = true;
+    public int Stock { get; set; }
 }`
           }}
         />
@@ -629,20 +629,7 @@ export function NotificationCard({ notifications }: { notifications: Notificatio
     </Card>
   );
 }`,
-            backend: `// Models/Notification.cs
-public class Notification
-{
-    public int Id { get; set; }
-    public string User { get; set; } = "";
-    public string Initials { get; set; } = "";
-    public string Title { get; set; } = "";
-    public string Content { get; set; } = "";
-    public DateTime CreatedAt { get; set; }
-    public bool Read { get; set; }
-    public string Type { get; set; } = "info";
-}
-
-// Controllers/NotificationsController.cs
+            backend: `// Controllers/NotificationsController.cs
 public class NotificationsController : Controller
 {
     private readonly INotificationService _notificationService;
@@ -679,6 +666,19 @@ public class NotificationsController : Controller
         
         return Inertia.Back().With("success", "All notifications marked as read!");
     }
+}
+
+// Models/Notification.cs
+public class Notification
+{
+    public int Id { get; set; }
+    public string User { get; set; } = "";
+    public string Initials { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Content { get; set; } = "";
+    public DateTime CreatedAt { get; set; }
+    public bool Read { get; set; }
+    public string Type { get; set; } = "info";
 }`
           }}
         />
@@ -763,20 +763,7 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
     </Card>
   );
 }`,
-            backend: `// Models/PricingPlan.cs
-public class PricingPlan
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public decimal Price { get; set; }
-    public List<string> Features { get; set; } = new();
-    public string BillingCycle { get; set; } = "monthly";
-    public bool Popular { get; set; }
-    public string Currency { get; set; } = "USD";
-}
-
-// Controllers/SubscriptionController.cs
+            backend: `// Controllers/SubscriptionController.cs
 public class SubscriptionController : Controller
 {
     private readonly ISubscriptionService _subscriptionService;
@@ -820,6 +807,19 @@ public class SubscriptionController : Controller
         
         return Inertia.Back().With("error", result.ErrorMessage);
     }
+}
+
+// Models/PricingPlan.cs
+public class PricingPlan
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal Price { get; set; }
+    public List<string> Features { get; set; } = new();
+    public string BillingCycle { get; set; } = "monthly";
+    public bool Popular { get; set; }
+    public string Currency { get; set; } = "USD";
 }`
           }}
         />
@@ -906,19 +906,7 @@ export function SettingsCard({ settings }: { settings: Setting[] }) {
     </Card>
   );
 }`,
-            backend: `// Models/UserSettings.cs
-public class UserSettings
-{
-    public string UserId { get; set; } = "";
-    public bool EmailNotifications { get; set; } = true;
-    public bool MarketingEmails { get; set; } = false;
-    public bool TwoFactorEnabled { get; set; } = true;
-    public string Theme { get; set; } = "system";
-    public string Language { get; set; } = "en";
-    public DateTime LastUpdated { get; set; }
-}
-
-// Controllers/SettingsController.cs
+            backend: `// Controllers/SettingsController.cs
 public class SettingsController : Controller
 {
     private readonly IUserSettingsService _settingsService;
@@ -956,6 +944,18 @@ public class SettingsController : Controller
         
         return Inertia.Back().With("success", "Settings updated successfully!");
     }
+}
+
+// Models/UserSettings.cs
+public class UserSettings
+{
+    public string UserId { get; set; } = "";
+    public bool EmailNotifications { get; set; } = true;
+    public bool MarketingEmails { get; set; } = false;
+    public bool TwoFactorEnabled { get; set; } = true;
+    public string Theme { get; set; } = "system";
+    public string Language { get; set; } = "en";
+    public DateTime LastUpdated { get; set; }
 }
 
 // Models/UpdateSettingsRequest.cs
