@@ -89,6 +89,51 @@ export function BasicDialogExample() {
             </DialogContent>
         </Dialog>
     )
+}`,
+        backend: `// Controllers/DialogController.cs
+public class DialogController : Controller
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IDialogService _dialogService;
+
+    public DialogController(UserManager<ApplicationUser> userManager, IDialogService dialogService)
+    {
+        _userManager = userManager;
+        _dialogService = dialogService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var dialogHistory = await _dialogService.GetUserDialogHistoryAsync(user.Id);
+
+        return Inertia.Render("Dialog/Index", new { dialogHistory });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> LogDialogAction([FromForm] DialogActionRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        await _dialogService.LogDialogActionAsync(user.Id, request);
+        
+        return Inertia.Back().With("success", "Ação do diálogo registrada com sucesso!");
+    }
+}
+
+// Models/DialogActionRequest.cs
+public class DialogActionRequest
+{
+    public string DialogType { get; set; } = "";
+    public string Action { get; set; } = "";
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 }`
     };
 
@@ -185,58 +230,57 @@ export function ProfileDialogExample() {
         </Dialog>
     )
 }`,
-        backend: `// ProfileController.cs
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using InertiaCore;
-using AspNetMvcReact.Models;
-
-[Authorize]
+        backend: `// Controllers/ProfileController.cs
 public class ProfileController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IEmailService _emailService;
+    private readonly IProfileService _profileService;
 
-    public ProfileController(UserManager<ApplicationUser> userManager, IEmailService emailService)
+    public ProfileController(UserManager<ApplicationUser> userManager, IProfileService profileService)
     {
         _userManager = userManager;
-        _emailService = emailService;
+        _profileService = profileService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var profile = await _profileService.GetUserProfileAsync(user.Id);
+
+        return Inertia.Render("Profile/Index", new { profile });
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    [Authorize]
+    public async Task<IActionResult> Update([FromForm] UpdateProfileRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return Inertia.Back().With("errors", ModelState);
+        }
+
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return RedirectToAction("Login", "Auth");
-        }
+        await _profileService.UpdateProfileAsync(user.Id, request);
 
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
-        user.Email = request.Email;
-
-        var result = await _userManager.UpdateAsync(user);
-
-        if (result.Succeeded)
-        {
-            return RedirectToAction("Index", new { 
-                success = "Profile updated successfully" 
-            });
-        }
-
-        return Inertia.Render("Profile/Index", new {
-            user = user,
-            errors = result.Errors
-        });
+        return Inertia.Back().With("success", "Perfil atualizado com sucesso!");
     }
 }
 
+// Models/UpdateProfileRequest.cs
 public class UpdateProfileRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; } = "";
+    
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = "";
+    
+    [StringLength(500)]
+    public string Bio { get; set; } = "";
 }`
     };
 
@@ -337,21 +381,16 @@ export function ContactDialogExample() {
         </Dialog>
     )
 }`,
-        backend: `// ContactController.cs
-using Microsoft.AspNetCore.Mvc;
-using AspNetMvcReact.Models;
-using AspNetMvcReact.Services.Interfaces;
-using InertiaCore;
-
+        backend: `// Controllers/ContactController.cs
 public class ContactController : Controller
 {
     private readonly IEmailService _emailService;
-    private readonly ILogger<ContactController> _logger;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ContactController(IEmailService emailService, ILogger<ContactController> logger)
+    public ContactController(IEmailService emailService, UserManager<ApplicationUser> userManager)
     {
         _emailService = emailService;
-        _logger = logger;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -361,20 +400,16 @@ public class ContactController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Send([FromBody] ContactRequest request)
+    public async Task<IActionResult> Send([FromForm] ContactRequest request)
     {
         if (!ModelState.IsValid)
         {
-            return Inertia.Render("Contact/Index", new {
-                errors = ModelState,
-                data = request
-            });
+            return Inertia.Back().With("errors", ModelState);
         }
 
         try
         {
-            // Send email notification to admin
-            var variables = new Dictionary<string, object>
+            var emailVariables = new Dictionary<string, object>
             {
                 { "Name", request.Name },
                 { "Email", request.Email },
@@ -386,41 +421,37 @@ public class ContactController : Controller
                 "ContactForm",
                 "admin@yoursite.com",
                 $"Nova mensagem de contato - {request.Name}",
-                variables
+                emailVariables
             );
 
             if (result.IsSuccess)
             {
-                return RedirectToAction("Index", new { 
-                    success = "Your message has been sent successfully!" 
-                });
+                return Inertia.Back().With("success", "Sua mensagem foi enviada com sucesso!");
             }
 
-            return RedirectToAction("Index", new { 
-                error = "There was an error sending your message. Please try again." 
-            });
+            return Inertia.Back().With("error", "Erro ao enviar mensagem. Tente novamente.");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError(ex, "Error sending contact form");
-            return RedirectToAction("Index", new { 
-                error = "There was an error sending your message. Please try again." 
-            });
+            return Inertia.Back().With("error", "Erro interno. Tente novamente mais tarde.");
         }
     }
 }
 
+// Models/ContactRequest.cs
 public class ContactRequest
 {
-    [Required]
-    public string Name { get; set; }
+    [Required(ErrorMessage = "Nome é obrigatório")]
+    [StringLength(100)]
+    public string Name { get; set; } = "";
     
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+    [Required(ErrorMessage = "Email é obrigatório")]
+    [EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; } = "";
     
-    [Required]
-    public string Message { get; set; }
+    [Required(ErrorMessage = "Mensagem é obrigatória")]
+    [StringLength(1000)]
+    public string Message { get; set; } = "";
 }`
     };
 
